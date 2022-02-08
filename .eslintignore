@@ -1,0 +1,15 @@
+**/*.gif
+**/*.html
+**/*.ico
+**/*.jpg
+**/*.scss
+**/*.svg
+**/*.eot
+**/*.ttf
+**/*.woff
+**/*.woff2
+**/*.md
+coverage/
+dist/
+parcel-bundle-reports/
+node_modules/
