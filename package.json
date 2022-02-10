@@ -1,6 +1,9 @@
 {
-  "name": "svg-draw",
+  "name": "@studysync/svg-draw",
   "version": "0.1.0",
+  "publishConfig": {
+    "access": "public"
+  },
   "private": false,
   "license": "MIT",
   "author": "Sergey Koloney <sergey.koloney@gmail.com> (https://github.com/pieceofmeat)",
@@ -36,9 +39,7 @@
     "@mui/lab": "5.0.0-alpha.67",
     "@mui/material": "5.4.0",
     "@mui/styled-engine": "^5.3.0",
-    "immer": "^9.0.12",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "immer": "^9.0.12"
   },
   "devDependencies": {
     "@parcel/packager-ts": "^2.2.1",
