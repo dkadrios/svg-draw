@@ -4,6 +4,23 @@
   "publishConfig": {
     "access": "public"
   },
+  "description": "SVG image editor with customizable shapes and controls",
+  "keywords": [
+    "svg",
+    "editor",
+    "shape",
+    "material-ui",
+    "tldraw"
+  ],
+  "homepage": "https://github.com/PieceOfMeat/svg-draw#readme",
+  "bugs": {
+    "url": "https://github.com/PieceOfMeat/svg-draw/issues",
+    "email": "sergey.koloney@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PieceOfMeat/svg-draw.git"
+  },
   "private": false,
   "license": "MIT",
   "author": "Sergey Koloney <sergey.koloney@gmail.com> (https://github.com/pieceofmeat)",
@@ -22,15 +39,11 @@
     "build:prod": "NODE_ENV=production parcel build src/SvgDraw.tsx --no-source-maps --detailed-report --reporter=@parcel/reporter-bundle-analyzer --no-cache --no-autoinstall",
     "build:report": "open ./parcel-bundle-reports/module.html",
     "build": "yarn run clean && yarn run build:prod",
+    "clean": "rimraf dist",
     "lint": "eslint . --ext js,json,ts,tsx",
     "lint:fix": "yarn run lint --fix",
-    "cov": "open ./coverage/lcov-report/index.html",
     "dev": "parcel src/examples/index.html --port 9000 --no-autoinstall",
     "graph": "madge --exclude spec.js --image graph.svg src/svgDraw.tsx && open graph.svg"
-  },
-  "peerDependencies": {
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
   },
   "dependencies": {
     "@emotion/react": "^11.7.1",
@@ -39,7 +52,9 @@
     "@mui/lab": "5.0.0-alpha.67",
     "@mui/material": "5.4.0",
     "@mui/styled-engine": "^5.3.0",
-    "immer": "^9.0.12"
+    "immer": "^9.0.12",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   },
   "devDependencies": {
     "@parcel/packager-ts": "^2.2.1",
@@ -79,6 +94,7 @@
     "eslint-plugin-testing-library": "5.0.5",
     "madge": "^5.0.1",
     "parcel": "^2.2.1",
+    "rimraf": "^3.0.2",
     "typescript": "^4.4.2"
   },
   "alias": {
