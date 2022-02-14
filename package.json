@@ -45,18 +45,20 @@
     "dev": "parcel src/examples/index.html --port 9000 --no-autoinstall",
     "graph": "madge --exclude spec.js --image graph.svg src/svgDraw.tsx && open graph.svg"
   },
-  "dependencies": {
-    "@emotion/react": "^11.7.1",
-    "@emotion/styled": "^11.6.0",
-    "@mui/icons-material": "5.3.1",
-    "@mui/lab": "5.0.0-alpha.67",
-    "@mui/material": "5.4.0",
-    "@mui/styled-engine": "^5.3.0",
-    "immer": "^9.0.12",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+  "peerDependencies": {
+    "@emotion/react": "11",
+    "@emotion/styled": "11",
+    "@mui/icons-material": "5",
+    "@mui/material": "5",
+    "immer": "9",
+    "react": "17",
+    "react-dom": "17"
   },
   "devDependencies": {
+    "@emotion/react": "11",
+    "@emotion/styled": "11",
+    "@mui/icons-material": "5",
+    "@mui/material": "5",
     "@parcel/packager-ts": "^2.2.1",
     "@parcel/reporter-bundle-analyzer": "^2.2.1",
     "@parcel/reporter-bundle-buddy": "^2.2.1",
@@ -92,8 +94,11 @@
     "eslint-plugin-react": "7.28.0",
     "eslint-plugin-react-hooks": "4.3.0",
     "eslint-plugin-testing-library": "5.0.5",
+    "immer": "9",
     "madge": "^5.0.1",
     "parcel": "^2.2.1",
+    "react": "17",
+    "react-dom": "17",
     "rimraf": "^3.0.2",
     "typescript": "^4.4.2"
   },
