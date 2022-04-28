@@ -9,13 +9,6 @@ export enum TLPerformanceMode {
   TranslateAll = 'translate_all',
 }
 
-export type TLAssets = Record<string, TLAsset>
-
-export interface TLAsset {
-  id: string
-  type: string
-}
-
 export type TLForwardedRef<T> =
   | ((instance: T | null) => void)
   | React.MutableRefObject<T | null>
@@ -30,11 +23,11 @@ export interface TLPage<T extends TLShape = TLShape> {
 
 export interface TLPageState {
   id: string
-  selectedIds: string[]
   camera: {
     point: number[]
     zoom: number
   }
+  selectedId: string | null
   hoveredId: string | null
   editingId: string | null
   [key: string]: unknown
@@ -49,28 +42,21 @@ export interface TLHandle {
 export interface TLShape {
   id: string
   type: string
-  parentId: string
   childIndex: number
   point: number[]
-  assetId?: string
   rotation?: number
-  children?: string[]
   handles?: Record<string, TLHandle>
   isGhost?: boolean
   isHidden?: boolean
   isLocked?: boolean
-  isGenerated?: boolean
-  isAspectRatioLocked?: boolean
 }
 
 export interface TLComponentProps<T extends TLShape, E = any, M = any> {
   shape: T
-  asset?: TLAsset
   isEditing: boolean
   isHovered: boolean
   isSelected: boolean
   isGhost?: boolean
-  isChildOfSelected?: boolean
   bounds: TLBounds
   meta: M
   onShapeChange?: TLShapeChangeHandler
@@ -273,10 +259,7 @@ export interface TLKeyboardInfo {
 /* -------------------- Internal -------------------- */
 export interface IShapeTreeNode<T extends TLShape, M = any> {
   shape: T
-  asset?: TLAsset
-  children?: IShapeTreeNode<TLShape, M>[]
   isGhost: boolean
-  isChildOfSelected: boolean
   isEditing: boolean
   isHovered: boolean
   isSelected: boolean

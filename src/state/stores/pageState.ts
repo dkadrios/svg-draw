@@ -14,7 +14,7 @@ class PageState extends Store {
       },
       editingId = null,
       id = uniqueId(),
-      selectedIds = [],
+      selectedId = null,
     } = opts
 
     const settings = {
@@ -22,11 +22,11 @@ class PageState extends Store {
       grid: 8,
     }
 
-    this.state = { id, camera, selectedIds, hoveredId: null, editingId, settings }
+    this.state = { id, camera, selectedId, hoveredId: null, editingId, settings }
   }
 
-  getSelectedIds() {
-    return this.state.selectedIds
+  getSelectedId() {
+    return this.state.selectedId
   }
 
   getCamera() {
@@ -56,15 +56,9 @@ class PageState extends Store {
     })
   }
 
-  setSelected(id = '') {
+  setSelected(id: string | null = null) {
     this.action((draft) => {
-      if (!id) {
-        draft.selectedIds = []
-        return
-      }
-      if (!draft.selectedIds.includes(id)) {
-        draft.selectedIds = [id]
-      }
+      draft.selectedId = id
     })
   }
 

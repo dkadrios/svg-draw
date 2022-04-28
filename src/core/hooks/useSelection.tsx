@@ -15,7 +15,7 @@ const useSelection = <T extends TLShape>(
   shapeUtils: TLShapeUtilsMap<T>,
 ) => {
   const { rSelectionBounds } = useTLContext()
-  const { selectedIds } = pageState
+  const { selectedId } = pageState
   const rPrevBounds = React.useRef<TLBounds>()
   // TODO: refactor knowing that there' will be not more than 1 selected item
 
@@ -23,9 +23,8 @@ const useSelection = <T extends TLShape>(
   let rotation = 0
   let isLocked = false
 
-  if (selectedIds.length === 1) {
-    const id = selectedIds[0]
-    const shape = page.shapes[id]
+  if (selectedId) {
+    const shape = page.shapes[selectedId]
     rotation = shape.rotation || 0
     isLocked = shape.isLocked || false
     const utils = getShapeUtils(shapeUtils, shape)

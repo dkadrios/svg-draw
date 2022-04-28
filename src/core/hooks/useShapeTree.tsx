@@ -3,7 +3,6 @@
 import * as React from 'react'
 import type {
   IShapeTreeNode,
-  TLAssets,
   TLBounds,
   TLPage,
   TLPageState,
@@ -12,61 +11,6 @@ import type {
 import { boundsCollide, boundsContain, vec } from '../../utils'
 import { useTLContext } from './useTLContext'
 
-function addToShapeTree<T extends TLShape, M extends Record<string, unknown>>(
-  shape: T,
-  branch: IShapeTreeNode<T, M>[],
-  shapes: TLPage<T>['shapes'],
-  pageState: TLPageState,
-  assets: TLAssets,
-  isChildOfGhost = false,
-  isChildOfSelected = false,
-  meta?: M,
-) {
-  // Create a node for this shape
-  const node: IShapeTreeNode<T, M> = {
-    shape,
-    asset: shape.assetId ? assets[shape.assetId] : undefined,
-    meta: meta as any,
-    isChildOfSelected,
-    isGhost: shape.isGhost || isChildOfGhost,
-    isEditing: pageState.editingId === shape.id,
-    isSelected: pageState.selectedIds.includes(shape.id),
-    isHovered:
-    // The shape is hovered..
-      pageState.hoveredId === shape.id
-      // Or the shape has children and...
-      || (shape.children !== undefined
-        // One of the children is hovered
-        && ((pageState.hoveredId && shape.children.includes(pageState.hoveredId))
-          // Or one of the children is selected
-          || shape.children.some(childId => pageState.selectedIds.includes(childId)))),
-  }
-
-  // Add the node to the branch
-  branch.push(node)
-
-  // If the shape has children, add nodes for each child to the node's children array
-  if (shape.children) {
-    node.children = []
-
-    shape.children
-      .map(id => shapes[id])
-      .sort((a, b) => a.childIndex - b.childIndex)
-      .forEach(childShape =>
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        addToShapeTree(
-          childShape,
-          node.children!,
-          shapes,
-          pageState,
-          assets,
-          node.isGhost,
-          node.isSelected || node.isChildOfSelected,
-          meta,
-        ))
-  }
-}
-
 function shapeIsInViewport(bounds: TLBounds, viewport: TLBounds) {
   return boundsContain(viewport, bounds) || boundsCollide(viewport, bounds)
 }
@@ -74,7 +18,6 @@ function shapeIsInViewport(bounds: TLBounds, viewport: TLBounds) {
 const useShapeTree = <T extends TLShape, M extends Record<string, unknown>>(
   page: TLPage<T>,
   pageState: TLPageState,
-  assets: TLAssets,
   meta?: M,
 ) => {
   const { bounds, callbacks, shapeUtils } = useTLContext()
@@ -82,9 +25,9 @@ const useShapeTree = <T extends TLShape, M extends Record<string, unknown>>(
   const rTimeout = React.useRef<unknown>()
   const rPreviousCount = React.useRef(0)
   const rShapesIdsToRender = React.useRef(new Set<string>())
-  const rShapesToRender = React.useRef(new Set<TLShape>())
+  const rShapesToRender = React.useRef(new Set<T>())
 
-  const { camera, selectedIds } = pageState
+  const { camera, selectedId } = pageState
 
   // Filter the page's shapes down to only those that:
   // - are the direct child of the page
@@ -110,29 +53,18 @@ const useShapeTree = <T extends TLShape, M extends Record<string, unknown>>(
 
   Object.values(page.shapes)
     .filter(shape =>
-    // Always render shapes that are flagged as stateful
+      // Always render shapes that are flagged as stateful
       shapeUtils[shape.type as T['type']].isStateful
         // Always render selected shapes (this preserves certain drag interactions)
-        || selectedIds.includes(shape.id)
+        || selectedId === shape.id
         // Otherwise, only render shapes that are in view
         || shapeIsInViewport(shapeUtils[shape.type as T['type']].getBounds(shape as any), viewport))
     .forEach((shape) => {
-      // If the shape's parent is the page, add it to our sets of shapes to render
-      if (shape.parentId === page.id) {
-        shapesIdsToRender.add(shape.id)
-        shapesToRender.add(shape)
-        return
-      }
-
-      // If the shape's parent is a different shape (e.g. a group),
-      // add the parent to the sets of shapes to render. The parent's
-      // children will all be rendered.
-      shapesIdsToRender.add(shape.parentId)
-      shapesToRender.add(page.shapes[shape.parentId])
+      shapesIdsToRender.add(shape.id)
+      shapesToRender.add(shape)
     })
 
   // Call onChange callback when number of rendering shapes changes
-
   if (shapesToRender.size !== rPreviousCount.current) {
     // Use a timeout to clear call stack, in case the onChange handler
     // produces a new state change, which could cause nested state
@@ -147,18 +79,14 @@ const useShapeTree = <T extends TLShape, M extends Record<string, unknown>>(
   }
 
   // Populate the shape tree
-  const tree: IShapeTreeNode<T, M>[] = []
-
-  shapesToRender.forEach(shape => addToShapeTree(
+  const tree: IShapeTreeNode<T, M>[] = Array.from(shapesToRender).map(shape => ({
     shape,
-    tree,
-    page.shapes,
-    pageState,
-    assets,
-    shape.isGhost,
-    false,
-    meta,
-  ))
+    meta: meta as any,
+    isGhost: !!shape.isGhost,
+    isEditing: pageState.editingId === shape.id,
+    isSelected: pageState.selectedId === shape.id,
+    isHovered: pageState.hoveredId === shape.id,
+  }))
 
   tree.sort((a, b) => a.shape.childIndex - b.shape.childIndex)
 

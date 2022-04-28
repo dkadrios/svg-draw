@@ -1,3 +1,3 @@
-import ShapeNode from './ShapeNode'
+import Shape from './Shape'
 
-export default ShapeNode
+export default Shape

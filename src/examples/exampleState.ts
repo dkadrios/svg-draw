@@ -6,7 +6,6 @@ const defaultPageData = {
     rect1: {
       id: 'rect1',
       type: TDShapeType.Rectangle,
-      parentId: 'page',
       childIndex: 1,
       rotation: 0,
       styles: {
@@ -19,7 +18,6 @@ const defaultPageData = {
     line1: {
       id: 'line1',
       type: TDShapeType.Line,
-      parentId: 'page',
       childIndex: 2,
       rotation: 0,
       styles: {
@@ -42,7 +40,6 @@ const defaultPageData = {
     '0ebbf255-ea5d-4018-103f-152ced3e6e5f': {
       id: '0ebbf255-ea5d-4018-103f-152ced3e6e5f',
       type: 'freedraw',
-      parentId: 'page',
       childIndex: 3,
       point: [41.9, 226.69],
       rotation: 0,
@@ -76,7 +73,6 @@ const defaultPageData = {
     text1: {
       id: 'text1',
       type: 'text',
-      parentId: 'page',
       childIndex: 4,
       point: [300, 300],
       rotation: 0,
@@ -89,7 +85,6 @@ const defaultPageData = {
     image1: {
       id: 'image1',
       type: 'image',
-      parentId: 'page',
       childIndex: 5,
       point: [0, 0],
       rotation: 0,

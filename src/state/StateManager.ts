@@ -66,13 +66,13 @@ class StateManager {
   }
 
   getSelectedShape() {
-    const selectedIds = this.pageState.getSelectedIds()
+    const selectedId = this.pageState.getSelectedId()
 
-    if (selectedIds.length === 0) return null
-    return this.page.getShape(selectedIds[0])
+    if (!selectedId) return null
+    return this.page.getShape(selectedId)
   }
 
-  setSelected(id = '') {
+  setSelected(id: string | null = null) {
     this.pageState.setSelected(id)
 
     // Refresh styles in styles selector to conform with currently selected shape

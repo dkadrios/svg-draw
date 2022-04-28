@@ -45,7 +45,6 @@ class Page extends Store {
       draft.shapes[id] = {
         ...shape,
         id,
-        parentId: 'page',
         childIndex: this.getNextChildIndex(),
         rotation: 0,
       }

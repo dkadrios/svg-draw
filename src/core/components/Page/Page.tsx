@@ -1,17 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from 'react'
-import type { TLAssets, TLPage, TLPageState, TLShape } from '../../types'
-import { useSelection, useShapeTree, useTLContext } from '../../hooks'
+import type { TLPage, TLPageState, TLShape } from 'core/types'
+import { useSelection, useShapeTree, useTLContext } from 'core/hooks'
 import Bounds from '../Bounds'
 import BoundsBg from '../Bounds/BoundsBg'
 import Handles from '../Handles'
-import ShapeNode from '../Shape'
 import ShapeIndicator from '../ShapeIndicator'
+import Shape from '../Shape'
 
 interface PageProps<T extends TLShape> {
   page: TLPage<T>
   pageState: TLPageState
-  assets: TLAssets
   hideBounds: boolean
   hideHandles: boolean
   hideIndicators: boolean
@@ -26,7 +25,6 @@ interface PageProps<T extends TLShape> {
 const Page = <T extends TLShape, M extends Record<string, unknown>>({
   page,
   pageState,
-  assets,
   hideBounds,
   hideHandles,
   hideIndicators,
@@ -36,7 +34,7 @@ const Page = <T extends TLShape, M extends Record<string, unknown>>({
 }: PageProps<T>) => {
   const { bounds: rendererBounds, shapeUtils } = useTLContext()
 
-  const shapeTree = useShapeTree(page, pageState, assets, meta)
+  const shapeTree = useShapeTree(page, pageState, meta)
 
   const { bounds, isLocked, rotation } = useSelection(page, pageState, shapeUtils)
 
@@ -44,24 +42,21 @@ const Page = <T extends TLShape, M extends Record<string, unknown>>({
     camera: { zoom },
     editingId,
     hoveredId,
-    selectedIds,
+    selectedId,
   } = pageState
 
-  let _hideIndicators = hideIndicators
-  let _isEditing = false
+  let shouldHideIndicators = hideIndicators
+  let isEditing = false
 
   // Does the selected shape have handles?
   let shapeWithHandles: TLShape | undefined
-  const selectedShapes = selectedIds.map(id => page.shapes[id])
+  const selectedShape = selectedId && page.shapes[selectedId]
 
-  // TODO: we probably will always have only one shape selected;
-  // this can be simplified
-  if (selectedShapes.length === 1) {
-    const shape = selectedShapes[0]
-    _isEditing = editingId === shape.id
-    if (_isEditing) _hideIndicators = true
-    if (shape.handles !== undefined && !_isEditing) {
-      shapeWithHandles = shape
+  if (selectedShape) {
+    isEditing = editingId === selectedId
+    if (isEditing) shouldHideIndicators = true
+    if (selectedShape.handles !== undefined && !isEditing) {
+      shapeWithHandles = selectedShape
     }
   }
 
@@ -75,23 +70,18 @@ const Page = <T extends TLShape, M extends Record<string, unknown>>({
         />
       )}
       {shapeTree.map(node => (
-        <ShapeNode
-          key={node.shape.id}
-          utils={shapeUtils}
-          {...node}
-        />
+        <Shape key={node.shape.id} {...node} utils={shapeUtils[node.shape.type as T['type']]} />
       ))}
-      {!_hideIndicators
-      && selectedShapes.map(shape => (
+      {!shouldHideIndicators && selectedShape && (
         <ShapeIndicator
-          isEditing={_isEditing}
+          isEditing={isEditing}
           isSelected
-          key={`selected_${ shape.id}`}
+          key={`selected_${ selectedId}`}
           meta={meta as any}
-          shape={shape}
+          shape={selectedShape}
         />
-      ))}
-      {!_hideIndicators && hoveredId && hoveredId !== editingId && (
+      )}
+      {!shouldHideIndicators && hoveredId && hoveredId !== editingId && (
         <ShapeIndicator
           isHovered
           key={`hovered_${ hoveredId}`}

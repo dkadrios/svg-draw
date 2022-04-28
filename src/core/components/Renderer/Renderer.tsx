@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from 'react'
 import type {
-  TLAssets,
   TLBounds,
   TLCallbacks,
   TLPage,
@@ -28,10 +27,6 @@ export interface RendererProps<T extends TLShape> extends Partial<TLCallbacks> {
    * The current page state.
    */
   pageState: TLPageState
-  /**
-   * A map of assets to be used in the renderer.
-   */
-  assets?: TLAssets
   /**
    * (optional) A unique id to be applied to the renderer element, used to scope styles.
    */
@@ -104,7 +99,6 @@ const Renderer = <T extends TLShape>({
   shapeUtils,
   page,
   pageState,
-  assets = {} as TLAssets,
   theme,
   meta,
   grid,
@@ -154,7 +148,6 @@ const Renderer = <T extends TLShape>({
   return (
     <TLContext.Provider value={context as unknown as TLContextType<TLShape>}>
       <Canvas
-        assets={assets}
         externalContainerRef={containerRef}
         grid={grid}
         hideBounds={hideBounds}

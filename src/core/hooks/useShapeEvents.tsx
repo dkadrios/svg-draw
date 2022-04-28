@@ -24,7 +24,7 @@ const useShapeEvents = (id: string) => {
         if (
           rSelectionBounds.current
           && pointInBounds(info.point, rSelectionBounds.current)
-          && !rPageState.current.selectedIds.includes(id)
+          && rPageState.current.selectedId !== id
         ) {
           callbacks.onPointBounds?.(inputs.pointerDown(e, 'bounds'), e)
           callbacks.onPointShape?.(info, e)

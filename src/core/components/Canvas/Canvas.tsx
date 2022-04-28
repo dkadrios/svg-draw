@@ -8,7 +8,6 @@ import {
   useResizeObserver,
 } from '../../hooks'
 import type {
-  TLAssets,
   TLBounds,
   TLPage,
   TLPageState,
@@ -23,7 +22,6 @@ import Overlay from '../Overlay'
 interface CanvasProps<T extends TLShape, M extends Record<string, unknown>> {
   page: TLPage<T>
   pageState: TLPageState
-  assets: TLAssets
   grid?: number
   hideBounds: boolean
   hideHandles: boolean
@@ -31,7 +29,6 @@ interface CanvasProps<T extends TLShape, M extends Record<string, unknown>> {
   hideResizeHandles: boolean
   hideRotateHandle: boolean
   hideGrid: boolean
-  externalContainerRef?: React.RefObject<HTMLElement>
   performanceMode?: TLPerformanceMode
   meta?: M
   id?: string
@@ -42,11 +39,9 @@ const Canvas = <T extends TLShape, M extends Record<string, unknown>>({
   id,
   page,
   pageState,
-  assets,
   grid,
   meta,
   performanceMode,
-  externalContainerRef,
   hideHandles,
   hideBounds,
   hideIndicators,
@@ -97,7 +92,6 @@ const Canvas = <T extends TLShape, M extends Record<string, unknown>>({
           ref={rLayer}
         >
           <Page
-            assets={assets}
             hideBounds={hideBounds}
             hideHandles={hideHandles}
             hideIndicators={hideIndicators}
