@@ -1,11 +1,11 @@
-import type { TDShape, TLPage } from 'types'
+import type { TDPage, TDShape } from 'types'
 import { uniqueId } from 'utils'
 import Store from './store'
 
 class Page extends Store {
-  state: TLPage<TDShape>
+  state: TDPage
 
-  constructor(opts = {} as TLPage<TDShape>) {
+  constructor(opts: Partial<TDPage> = {}) {
     super()
     const { id = uniqueId(), name = 'page', shapes = {} } = opts
     this.state = {
@@ -25,12 +25,11 @@ class Page extends Store {
     return maxIndex + 1
   }
 
-  updateShape(id: string, patch: Partial<TDShape>) {
+  updateShape(patch: TDShape) {
     this.action((draft) => {
-      const shape = draft.shapes[id]
-      draft.shapes[id] = { ...shape, ...patch }
+      draft.shapes[patch.id] = patch
     })
-    return this.getShape(id)
+    return patch
   }
 
   removeShape(id: string) {
@@ -39,18 +38,12 @@ class Page extends Store {
     })
   }
 
-  createShape(shape: Partial<TDShape>) {
-    const id = uniqueId()
+  addShape(shape: TDShape) {
     this.action((draft) => {
-      draft.shapes[id] = {
-        ...shape,
-        id,
-        childIndex: this.getNextChildIndex(),
-        rotation: 0,
-      }
+      draft.shapes[shape.id] = shape
     })
 
-    return this.getShape(id)
+    return shape
   }
 }
 export default Page

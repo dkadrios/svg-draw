@@ -1,52 +1,53 @@
-import { CallbacksList, TDShape, TLBounds, TLBoundsCorner, TLBoundsEdge, TLPointerInfo, isTLBoundsCorner, isTLBoundsEdge } from 'types'
+import {
+  TDCallbacks,
+  TDShape,
+  TLBoundsCorner,
+  TLBoundsEdge,
+  TLPointerInfo,
+  Transformable, isTLBoundsCorner, isTLBoundsEdge,
+} from 'types'
 import { getTransformedBoundingBox, snapBoundsToGrid, vec } from 'utils'
 import type StateManager from '../StateManager'
+import BaseSession from '../BaseSession'
 
-class TransformSession implements CallbacksList {
-  shape: TDShape
-
+class TransformSession extends BaseSession implements TDCallbacks {
   target: TLBoundsCorner | TLBoundsEdge
 
   originalPoint: number[]
 
-  originalBounds: TLBounds
+  constructor(sm: StateManager, info: TLPointerInfo) {
+    super(sm)
+    this.captureShape()
 
-  constructor(stateManager: StateManager, info: TLPointerInfo) {
-    const shape = stateManager.getSelectedShape()
-    if (!shape || !(isTLBoundsEdge(info.target) || isTLBoundsCorner(info.target))) {
-      stateManager.completeSession()
-      throw new TypeError('No selected shape or incorrect handle name')
+    if (!(isTLBoundsEdge(info.target) || isTLBoundsCorner(info.target))) {
+      this.throwFromSession('Incorrect handle name')
     }
 
-    this.shape = shape
     this.target = info.target
     this.originalPoint = info.point
-    const util = stateManager.getUtil(this.shape)
-    this.originalBounds = util.getBounds(shape)
   }
 
-  onPointerMove(stateManager: StateManager, info: TLPointerInfo) {
-    const { grid, hideGrid } = stateManager.getSettings()
+  onPointerMove(info: TLPointerInfo) {
+    const grid = this.sm.getGridFactor()
     const delta = vec.sub(info.point, this.originalPoint)
-    const util = stateManager.getUtil(this.shape)
+    const shape = this.getCapturedShape() as TDShape & Transformable
 
     const newBounds = getTransformedBoundingBox(
-      this.originalBounds,
+      shape.getBounds(),
       this.target,
       delta,
-      this.shape.rotation,
-      info.shiftKey || util.isAspectRatioLocked,
-    )
-    const newShape = util.transform(
-      this.shape,
-      hideGrid ? newBounds : snapBoundsToGrid(newBounds, grid),
+      shape.rotation,
+      info.shiftKey || shape.isAspectRatioLocked,
     )
 
-    stateManager.page.updateShape(this.shape.id, newShape)
+    const bounds = grid === 1 ? newBounds : snapBoundsToGrid(newBounds, grid)
+    const newShape = shape.transform(bounds)
+
+    this.sm.updateShape(newShape)
   }
 
-  onPointerUp(stateManager: StateManager) {
-    stateManager.completeSession()
+  onPointerUp() {
+    this.complete()
   }
 }
 export default TransformSession

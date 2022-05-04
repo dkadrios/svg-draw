@@ -7,7 +7,7 @@ const useHandleEvents = (id: string) => {
   return React.useMemo(() => ({
     onPointerDown: (e: React.PointerEvent) => {
       if ((e as any).dead) return
-      else (e as any).dead = true
+      (e as any).dead = true
       if (!inputs.pointerIsValid(e)) return
       if (e.button !== 0) return
       if (!inputs.pointerIsValid(e)) return
@@ -18,7 +18,7 @@ const useHandleEvents = (id: string) => {
     },
     onPointerUp: (e: React.PointerEvent) => {
       if ((e as any).dead) return
-      else (e as any).dead = true
+      (e as any).dead = true
       if (e.button !== 0) return
       if (!inputs.pointerIsValid(e)) return
       const isDoubleClick = inputs.isDoubleClick()
@@ -34,7 +34,7 @@ const useHandleEvents = (id: string) => {
     },
     onPointerMove: (e: React.PointerEvent) => {
       if ((e as any).dead) return
-      else (e as any).dead = true
+      (e as any).dead = true
       if (!inputs.pointerIsValid(e)) return
       const info = inputs.pointerMove(e, id)
       if (e.currentTarget.hasPointerCapture(e.pointerId)) {

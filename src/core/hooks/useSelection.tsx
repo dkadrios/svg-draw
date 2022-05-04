@@ -28,7 +28,7 @@ const useSelection = <T extends TLShape>(
     rotation = shape.rotation || 0
     isLocked = shape.isLocked || false
     const utils = getShapeUtils(shapeUtils, shape)
-    bounds = utils.hideBounds ? undefined : utils.getBounds(shape)
+    bounds = utils.hideBounds ? undefined : shape.getBounds()
   }
 
   if (bounds) {

@@ -142,12 +142,13 @@ export const centerBounds = (bounds: TLBounds, point: number[]): TLBounds => {
 }
 
 /* Snap a bounding box to a grid size. */
-export const snapBoundsToGrid = (bounds: TLBounds, gridSize: number): TLBounds => {
+export const snapBoundsToGrid = <T extends TLBounds>(bounds: T, gridSize: number): T => {
   const minX = Math.round(bounds.minX / gridSize) * gridSize
   const minY = Math.round(bounds.minY / gridSize) * gridSize
   const maxX = Math.round(bounds.maxX / gridSize) * gridSize
   const maxY = Math.round(bounds.maxY / gridSize) * gridSize
   return {
+    ...bounds,
     minX,
     minY,
     maxX,

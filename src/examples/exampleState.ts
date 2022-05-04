@@ -67,7 +67,6 @@ const defaultPageData = {
         [10.26, 0.12],
         [10.39, 0.05],
         [10.44, 0],
-        [10.5, 2.1316282072803006e-14],
       ],
     },
     text1: {
@@ -81,7 +80,6 @@ const defaultPageData = {
         color: '#ff2133',
       },
     },
-    /*
     image1: {
       id: 'image1',
       type: 'image',
@@ -90,7 +88,7 @@ const defaultPageData = {
       rotation: 0,
       src: 'https://avatars.githubusercontent.com/u/128515?s=400&v=4',
       size: [300, 300],
-    }, */
+    },
   },
 } as TLPage<TDShape>
 

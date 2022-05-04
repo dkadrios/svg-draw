@@ -12,7 +12,7 @@ interface ContainerProps extends HTMLProps<HTMLDivElement> {
   children: React.ReactNode
 }
 
-const Container = function Container({
+const Container = ({
   id,
   bounds,
   rotation = 0,
@@ -20,7 +20,7 @@ const Container = function Container({
   isSelected = false,
   children,
   ...props
-}: ContainerProps) {
+}: ContainerProps) => {
   const rPositioned = usePosition(bounds, rotation)
 
   return (

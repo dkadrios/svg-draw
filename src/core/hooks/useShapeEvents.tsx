@@ -9,7 +9,7 @@ const useShapeEvents = (id: string) => {
     () => ({
       onPointerDown: (e: React.PointerEvent) => {
         if ((e as any).dead) return
-        else (e as any).dead = true
+        (e as any).dead = true
         if (!inputs.pointerIsValid(e)) return
         if (e.button === 2) {
           callbacks.onRightPointShape?.(inputs.pointerDown(e, id), e)
@@ -36,7 +36,7 @@ const useShapeEvents = (id: string) => {
       },
       onPointerUp: (e: React.PointerEvent) => {
         if ((e as any).dead) return
-        else (e as any).dead = true
+        (e as any).dead = true
         if (e.button !== 0) return
         inputs.activePointer = undefined
         if (!inputs.pointerIsValid(e)) return
@@ -53,7 +53,7 @@ const useShapeEvents = (id: string) => {
       },
       onPointerMove: (e: React.PointerEvent) => {
         if ((e as any).dead) return
-        else (e as any).dead = true
+        (e as any).dead = true
         if (!inputs.pointerIsValid(e)) return
         if (inputs.pointer && e.pointerId !== inputs.pointer.pointerId) return
         const info = inputs.pointerMove(e, id)

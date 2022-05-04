@@ -1,37 +1,34 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import type {
-  CallbacksList,
-  ShapeStyle, TDCallbacks,
-  TDSession, TDSettings,
-  TDShape, TLBounds,
-  TLCallbackNames,
-  TLPage,
-  TLPageState,
+  Class,
+  TDCallbacks,
+  TDEntitiesList,
+  TDEntity,
+  TDSerializedPage,
+  TDSettings,
+  TDShape,
+  TDShapeStyle,
+  TDShapesList, TLBounds, TLCallbackNames, TLPageState,
 } from 'types'
-import { TDShapeType, TDToolType } from 'types'
+import { TDToolType } from 'types'
 import { getBoundsFromPoints, vec } from 'utils'
+import { TLShapeUtil } from '../core'
 import { Page, PageState, Toolbar } from './stores'
-import { FreeDrawTool, LineTool, RectTool, SelectTool, TextTool } from './tools'
-import { FreeDrawUtil, ImageUtil, LineUtil, RectUtil, ShapeUtil, TextUtil } from './shapes'
+import SelectTool from './SelectTool'
+import BaseShape from './shapes/BaseShape'
+import { ImageShape } from './shapes/Image'
+import registerShapes from './shapes'
 
 class StateManager {
-  utils = {
-    [TDShapeType.Rectangle]: new RectUtil(),
-    [TDShapeType.Line]: new LineUtil(),
-    [TDShapeType.FreeDraw]: new FreeDrawUtil(),
-    [TDShapeType.Text]: new TextUtil(),
-    [TDShapeType.Image]: new ImageUtil(),
-  }
+  shapes: Record<string, Class<TDShape>> = {}
 
-  tools = {
+  utils: Record<string, TLShapeUtil<any>> = {}
+
+  tools: Record<string, TDCallbacks> = {
     [TDToolType.Select]: new SelectTool(this),
-    [TDToolType.Rectangle]: new RectTool(this),
-    [TDToolType.Line]: new LineTool(this),
-    [TDToolType.FreeDraw]: new FreeDrawTool(this),
-    [TDToolType.Text]: new TextTool(this),
   }
 
-  session: CallbacksList | null = null
+  session: TDCallbacks | null = null
 
   onSessionComplete: (() => void) | null = null
 
@@ -48,28 +45,48 @@ class StateManager {
     [100, 100],
   ])
 
-  constructor(initState: { page?: TLPage<TDShape>, pageState?: TLPageState } = {}) {
-    this.page = new Page(initState.page)
+  constructor(initState: { page?: TDSerializedPage, pageState?: TLPageState } = {}) {
+    registerShapes(this)
+    BaseShape.init(this)
+
+    const shapes = (initState && initState.page)
+      ? this.loadShapes(initState.page.shapes)
+      : {} as TDShapesList
+    this.page = new Page({ ...initState.page, shapes })
     this.pageState = new PageState(initState.pageState)
     this.toolbar = new Toolbar()
+  }
+
+  registerShape<T extends TDShape>(key: string, Shape: Class<TDShape>, util: TLShapeUtil<T>) {
+    this.shapes[key] = Shape
+    this.utils[key] = util
+  }
+
+  registerTool(key: string, tool: TDCallbacks) {
+    this.tools[key] = tool
+  }
+
+  loadShapes(shapes: TDEntitiesList = {}) {
+    return Object.keys(shapes).reduce((acc, key) => ({
+      ...acc, [key]: this.initShapeByType(shapes[key]),
+    }), {} as TDShapesList)
+  }
+
+  initShapeByType(shape: TDEntity) {
+    const { type } = shape
+    if (!this.shapes[type]) {
+      throw new Error(`Unknown shape type: ${type}`)
+    }
+    return new this.shapes[type](shape)
   }
 
   getShape(id: string) {
     return this.page.getShape(id)
   }
 
-  getUtil<T extends TDShape>(shape: T | T['type']) {
-    const util = typeof shape === 'string'
-      ? this.utils[shape]
-      : this.utils[shape.type]
-    return util as unknown as ShapeUtil<T>
-  }
-
   getSelectedShape() {
     const selectedId = this.pageState.getSelectedId()
-
-    if (!selectedId) return null
-    return this.page.getShape(selectedId)
+    return selectedId ? this.page.getShape(selectedId) : null
   }
 
   setSelected(id: string | null = null) {
@@ -98,24 +115,30 @@ class StateManager {
     return this.pageState.getSettings()
   }
 
+  getGridFactor() {
+    const { grid, hideGrid } = this.getSettings()
+    return hideGrid ? 1 : grid
+  }
+
   setSettings(settings: Partial<TDSettings>) {
     this.pageState.setSettings(settings)
   }
 
-  createShape(shape: Partial<TDShape>) {
-    if (!shape.type) throw new TypeError('Shape type is mandatory')
-
-    const util = this.getUtil(shape.type)
-    const allStyles = this.toolbar.getStyles()
-    return this.page.createShape({
-      ...shape,
-      // add only styles inherent to shape
-      styles: util.filterStyles(allStyles),
-    })
+  getNextChildIndex() {
+    return this.page.getNextChildIndex()
   }
 
-  updateShape(id: string, patch: Partial<TDShape>) {
-    return this.page.updateShape(id, patch)
+  getCurrentStyles() {
+    return this.toolbar.getStyles()
+  }
+
+  // type checking is too hard here; need tests coverage
+  addShape(shape: TDShape) {
+    return this.page.addShape(shape)
+  }
+
+  updateShape(shape: TDShape) {
+    return this.page.updateShape(shape)
   }
 
   removeShape(id: string) {
@@ -133,8 +156,8 @@ class StateManager {
 
   async addImageByUrl(url: string) {
     try {
-      const shape = await ImageUtil.getImageShapeFromUrl(url, this.getCenterPoint())
-      this.createShape(shape)
+      const shape = await ImageShape.createImageShapeFromUrl(url, this.getCenterPoint())
+      this.addShape(shape)
     } catch (e) {
       console.warn((e as Error).message)
     }
@@ -161,7 +184,7 @@ class StateManager {
 
     if (this.session) {
       // @ts-ignore
-      this.session[callbackName]?.(this, ...params)
+      this.session[callbackName]?.(...params)
       return
     }
 
@@ -171,7 +194,7 @@ class StateManager {
     }
   }
 
-  startSession(session: TDSession, cb: (() => void) | null = null) {
+  startSession(session: TDCallbacks, cb: (() => void) | null = null) {
     if (this.session) {
       throw new Error('Session already in progress - need to complete it first')
     }
@@ -194,18 +217,18 @@ class StateManager {
   }
 
   // Set styles in toolbar state
-  setStyles(stylesPatch: Partial<ShapeStyle>) {
+  setStyles(stylesPatch: Partial<TDShapeStyle>) {
     this.toolbar.setStyles(stylesPatch)
   }
 
   // Change style in selector => need to change it in currently selected shape
-  handleStylesChange(stylesPatch: Partial<ShapeStyle>) {
+  handleStylesChange(stylesPatch: Partial<TDShapeStyle>) {
     this.setStyles(stylesPatch)
     const styles = this.toolbar.getStyles()
 
     const shape = this.getSelectedShape()
     if (shape) {
-      this.page.updateShape(shape.id, { styles })
+      this.page.updateShape(shape.setStyles(styles))
     }
   }
 

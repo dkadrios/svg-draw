@@ -27,7 +27,7 @@ const usePreventNavigationCss = (rCanvas: React.RefObject<HTMLDivElement>): void
 
     const elm = rCanvas.current
 
-    if (!elm) return () => void null
+    if (!elm) return () => null
 
     elm.addEventListener('touchstart', preventGestureNavigation)
 

@@ -1,6 +1,0 @@
-export { default as BaseTool } from './BaseTool'
-export { default as SelectTool } from './SelectTool'
-export { default as RectTool } from './RectTool'
-export { default as LineTool } from './LineTool'
-export { default as FreeDrawTool } from './FreeDrawTool'
-export { default as TextTool } from './TextTool'

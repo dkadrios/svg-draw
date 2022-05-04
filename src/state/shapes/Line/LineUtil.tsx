@@ -1,21 +1,17 @@
 import * as React from 'react'
-import type { LineShape, ShapeStyleKeys } from 'types'
 import { TDShapeType, strokeWidths } from 'types'
-import { getBoundsFromPoints, translateBounds } from 'utils'
-import { SVGContainer } from 'core'
-import ShapeUtil from './ShapeUtil'
+import { SVGContainer, TLShapeUtil } from 'core'
+import type LineShape from './LineShape'
 
 type T = LineShape
 type E = SVGSVGElement
 
-class LineUtil extends ShapeUtil<T, E> {
+class LineUtil extends TLShapeUtil<T, E> {
   type = TDShapeType.Line as const
-
-  shapeStyleKeys: ShapeStyleKeys = ['color', 'size']
 
   hideBounds = true
 
-  Component = ShapeUtil.Component<T, E>(({ shape, events, meta }, ref) => {
+  Component = TLShapeUtil.Component<T, E>(({ shape, events }, ref) => {
     const { handles: { start, end } } = shape
 
     return (
@@ -43,12 +39,6 @@ class LineUtil extends ShapeUtil<T, E> {
     )
   })
 
-  Indicator = ShapeUtil.Indicator<LineShape>(() => null)
-
-  getBounds(shape: LineShape) {
-    const { handles: { start, end }, point } = shape
-    const bounds = getBoundsFromPoints([start.point, end.point])
-    return translateBounds(bounds, point)
-  }
+  Indicator = TLShapeUtil.Indicator<LineShape>(() => null)
 }
 export default LineUtil

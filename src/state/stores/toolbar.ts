@@ -1,4 +1,4 @@
-import { ShapeStyle, TDToolType } from 'types'
+import { TDShapeStyle, TDToolType } from 'types'
 import Store from './store'
 
 class Toolbar extends Store {
@@ -8,7 +8,7 @@ class Toolbar extends Store {
     styles: {
       color: '#000000',
       fill: 'transparent',
-    } as ShapeStyle,
+    } as TDShapeStyle,
   }
 
   getTool() {
@@ -35,7 +35,7 @@ class Toolbar extends Store {
     })
   }
 
-  setStyles(styles: Partial<ShapeStyle>) {
+  setStyles(styles: Partial<TDShapeStyle>) {
     this.action((draft) => {
       draft.styles = { ...draft.styles, ...styles }
     })

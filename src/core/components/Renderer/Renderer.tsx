@@ -32,10 +32,6 @@ export interface RendererProps<T extends TLShape> extends Partial<TLCallbacks> {
    */
   id?: string
   /**
-   * (optional) A ref for the renderer's container element, used for scoping event handlers.
-   */
-  containerRef?: React.RefObject<HTMLElement>
-  /**
    * (optional) An object of custom options that should be passed to rendered shapes.
    */
   meta?: Record<string, unknown>
@@ -102,7 +98,6 @@ const Renderer = <T extends TLShape>({
   theme,
   meta,
   grid,
-  containerRef,
   performanceMode,
   hideHandles = false,
   hideIndicators = false,
@@ -148,7 +143,6 @@ const Renderer = <T extends TLShape>({
   return (
     <TLContext.Provider value={context as unknown as TLContextType<TLShape>}>
       <Canvas
-        externalContainerRef={containerRef}
         grid={grid}
         hideBounds={hideBounds}
         hideGrid={hideGrid}

@@ -8,7 +8,7 @@ const useBoundsHandleEvents = (id: TLBoundsHandle) => {
   const onPointerDown = React.useCallback(
     (e: React.PointerEvent) => {
       if ((e as any).dead) return
-      else (e as any).dead = true
+      (e as any).dead = true
       if (e.button !== 0) return
       if (!inputs.pointerIsValid(e)) return
       e.currentTarget?.setPointerCapture(e.pointerId)
@@ -25,7 +25,7 @@ const useBoundsHandleEvents = (id: TLBoundsHandle) => {
   const onPointerUp = React.useCallback(
     (e: React.PointerEvent) => {
       if ((e as any).dead) return
-      else (e as any).dead = true
+      (e as any).dead = true
       if (e.button !== 0) return
       if (!inputs.pointerIsValid(e)) return
       const info = inputs.pointerUp(e, id)
@@ -41,7 +41,7 @@ const useBoundsHandleEvents = (id: TLBoundsHandle) => {
   const onPointerMove = React.useCallback(
     (e: React.PointerEvent) => {
       if ((e as any).dead) return
-      else (e as any).dead = true
+      (e as any).dead = true
       if (!inputs.pointerIsValid(e)) return
       if (e.currentTarget.hasPointerCapture(e.pointerId)) {
         callbacks.onDragBoundsHandle?.(inputs.pointerMove(e, id), e)

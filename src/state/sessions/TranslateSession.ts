@@ -1,29 +1,27 @@
-import type { CallbacksList, TLPointerInfo } from 'types'
+import type { TDCallbacks, TLPointerInfo } from 'types'
 import { vec } from 'utils'
 import type StateManager from '../StateManager'
+import BaseSession from '../BaseSession'
 
-class TranslateSession implements CallbacksList {
-  shapeId: string
-
+class TranslateSession extends BaseSession implements TDCallbacks {
   dragStartPoint: number[]
 
-  constructor(stateManager: StateManager, id: string, point: number[]) {
-    const shape = stateManager.getShape(id)
-    this.shapeId = id
-    this.dragStartPoint = vec.sub(point, shape.point)
+  constructor(stateManager: StateManager, info: TLPointerInfo) {
+    super(stateManager)
+    const shape = this.captureShape()
+
+    this.dragStartPoint = vec.sub(info.point, shape.point)
   }
 
-  onDragShape(stateManager: StateManager, info: TLPointerInfo) {
-    const { grid, hideGrid } = stateManager.getSettings()
+  onDragShape(info: TLPointerInfo) {
+    const shape = this.getCapturedShape()
     const newPoint = vec.sub(info.point, this.dragStartPoint)
 
-    stateManager.updateShape(this.shapeId, {
-      point: hideGrid ? newPoint : vec.snap(newPoint, grid),
-    })
+    this.sm.updateShape(shape.translate(newPoint, this.sm.getGridFactor()))
   }
 
-  onReleaseShape(stateManager: StateManager) {
-    stateManager.completeSession()
+  onReleaseShape() {
+    this.complete()
   }
 }
 export default TranslateSession

@@ -14,7 +14,7 @@ export type TLForwardedRef<T> =
   | React.MutableRefObject<T | null>
   | null
 
-export interface TLPage<T extends TLShape = TLShape> {
+export interface TLPage<T extends TLShape | TLEntity = TLShape> {
   id: string
   name?: string
   childIndex?: number
@@ -39,16 +39,19 @@ export interface TLHandle {
   point: number[]
 }
 
-export interface TLShape {
+export interface TLEntity {
   id: string
   type: string
   childIndex: number
   point: number[]
-  rotation?: number
+  rotation: number
   handles?: Record<string, TLHandle>
+}
+
+export interface TLShape extends TLEntity {
   isGhost?: boolean
-  isHidden?: boolean
   isLocked?: boolean
+  getBounds: () => TLBounds
 }
 
 export interface TLComponentProps<T extends TLShape, E = any, M = any> {

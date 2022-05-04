@@ -23,7 +23,7 @@ const ShapeIndicator = ({
 }: IndicatorProps) => {
   const { shapeUtils } = useTLContext()
   const utils = shapeUtils[shape.type]
-  const bounds = utils.getBounds(shape)
+  const bounds = shape.getBounds()
   const rPositioned = usePosition(bounds, shape.rotation)
 
   return (

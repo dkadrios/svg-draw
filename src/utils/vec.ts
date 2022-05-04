@@ -210,6 +210,7 @@ export const vec = {
 
   /* Snap vector to nearest step */
   snap(a: number[], step = 1) {
+    if (step === 1) return a
     return [Math.round(a[0] / step) * step, Math.round(a[1] / step) * step]
   },
 

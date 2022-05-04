@@ -1,28 +1,20 @@
-import type { CallbacksList, TLPointerInfo } from 'types'
-import { getBoundsCenter, normalizedAngle, snapAngleToSegments } from 'utils'
+import type { TDCallbacks, TLPointerInfo } from 'types'
 import type StateManager from '../StateManager'
+import BaseSession from '../BaseSession'
 
-class RotateSession implements CallbacksList {
-  onDragBoundsHandle(stateManager: StateManager, e: TLPointerInfo) {
-    const shape = stateManager.getSelectedShape()
-    if (!shape) {
-      stateManager.completeSession()
-      return
-    }
-
-    const util = stateManager.getUtil(shape)
-    const bounds = util.getBounds(shape)
-    const center = getBoundsCenter(bounds)
-
-    const newAngle = normalizedAngle(center, e.point)
-    const rotation = e.shiftKey
-      ? snapAngleToSegments(newAngle, 24)
-      : newAngle
-    stateManager.page.updateShape(shape.id, { rotation })
+class RotateSession extends BaseSession implements TDCallbacks {
+  constructor(stateManager: StateManager) {
+    super(stateManager)
+    this.captureShape()
   }
 
-  onReleaseBoundsHandle(stateManager: StateManager) {
-    stateManager.completeSession()
+  onDragBoundsHandle(e: TLPointerInfo) {
+    const shape = this.getCapturedShape()
+    this.sm.updateShape(shape.rotate(e.point, e.shiftKey))
+  }
+
+  onReleaseBoundsHandle() {
+    this.complete()
   }
 }
 export default RotateSession

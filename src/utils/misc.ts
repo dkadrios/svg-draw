@@ -9,62 +9,32 @@ const TAU = Math.PI * 2
 /*                    Math & Geometry                 */
 /* -------------------------------------------------- */
 
+/* Clamp a value into a range */
+export const clamp = (n: number, min: number, max: number): number => Math.max(min, Math.min(n, max))
+
 /* Linear interpolation between two numbers */
 export const lerp = (y1: number, y2: number, mu: number) => {
-  mu = clamp(mu, 0, 1)
-  return y1 * (1 - mu) + y2 * mu
-}
-
-/**
- * Linear interpolation between two colors
- *
- * ### Example
- *
- *```ts
- * lerpColor("#000000", "#0099FF", .25)
- *```
- */
-export const lerpColor = (color1: string, color2: string, factor = 0.5): string => {
-  const h2r = (hex: string) => {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)!
-    return [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)]
-  }
-
-  const r2h = (rgb: number[]) => `#${ ((1 << 24) + (rgb[0] << 16) + (rgb[1] << 8) + rgb[2]).toString(16).slice(1)}`
-
-  const c1 = h2r(color1) || [0, 0, 0]
-  const c2 = h2r(color2) || [0, 0, 0]
-
-  const result = c1.slice()
-
-  for (let i = 0; i < 3; i++) {
-    result[i] = Math.round(result[i] + factor * (c2[i] - c1[i]))
-  }
-
-  return r2h(result)
+  const m = clamp(mu, 0, 1)
+  return y1 * (1 - m) + y2 * m
 }
 
 /* Modulate a value between two ranges */
-export const modulate = (value: number, rangeA: number[], rangeB: number[], clamp = false): number => {
+export const modulate = (value: number, rangeA: number[], rangeB: number[], needClamp = false): number => {
   const [fromLow, fromHigh] = rangeA
   const [v0, v1] = rangeB
   const result = v0 + ((value - fromLow) / (fromHigh - fromLow)) * (v1 - v0)
 
-  return clamp
+  return needClamp
     ? v0 < v1
       ? Math.max(Math.min(result, v1), v0)
       : Math.max(Math.min(result, v0), v1)
     : result
 }
 
-/* Clamp a value into a range */
-export const clamp = (n: number, min: number, max: number): number => Math.max(min, Math.min(n, max))
-
 /* ---------------------- Boxes --------------------- */
 export const pointsToLineSegments = (points: number[][], closed = false) => {
   const segments = []
-  for (let i = 1; i < points.length; i++) segments.push([points[i - 1], points[i]])
+  for (let i = 1; i < points.length; i += 1) segments.push([points[i - 1], points[i]])
   if (closed) segments.push([points[points.length - 1], points[0]])
   return segments
 }
@@ -212,9 +182,8 @@ export const getEllipseDashOffset = (A: number[], step: number): number => {
 export const pointInCircle = (A: number[], C: number[], r: number): boolean => vec.dist(A, C) <= r
 
 export const pointInEllipse = (A: number[], C: number[], rx: number, ry: number, rotation = 0): boolean => {
-  rotation = rotation || 0
-  const cos = Math.cos(rotation)
-  const sin = Math.sin(rotation)
+  const cos = Math.cos(rotation || 0)
+  const sin = Math.sin(rotation || 0)
   const delta = vec.sub(A, C)
   const tdx = cos * delta[0] + sin * delta[1]
   const tdy = sin * delta[0] - cos * delta[1]
@@ -246,7 +215,7 @@ export const pointInPolygon = (p: number[], points: number[][]): boolean => {
  * @param distance (optional) The mininum distance that qualifies a hit.
  */
 export const pointInPolyline = (A: number[], points: number[][], distance = 3): boolean => {
-  for (let i = 1; i < points.length; i++) {
+  for (let i = 1; i < points.length; i += 1) {
     if (vec.distanceToLineSegment(points[i - 1], points[i], A) < distance) {
       return true
     }
@@ -254,7 +223,9 @@ export const pointInPolyline = (A: number[], points: number[][], distance = 3): 
   return false
 }
 
-export const translatePoints = (points: number[][], delta: number[]) => points.map(point => ([point[0] + delta[0], point[1] + delta[1]]))
+export const translatePoints = (points: number[][], delta: number[]) => (
+  points.map(point => ([point[0] + delta[0], point[1] + delta[1]]))
+)
 
 /* -------------------------------------------------- */
 /*                Lists and Collections               */
@@ -288,18 +259,19 @@ export const getFromCache = <V, I extends object>(cache: WeakMap<I, V>, key: I, 
 /**
  * Get a unique string id.
  */
-export const uniqueId = (a = ''): string => a
-  ? /* eslint-disable no-bitwise */
-  ((Number(a) ^ (Math.random() * 16)) >> (Number(a) / 4)).toString(16)
-  : `${1e7}-${1e3}-${4e3}-${8e3}-${1e11}`.replace(/[018]/g, uniqueId)
+export const uniqueId = (a = ''): string => {
+  // eslint-disable-next-line no-bitwise
+  if (a) return ((Number(a) ^ (Math.random() * 16)) >> (Number(a) / 4)).toString(16)
+  return `${1e7}-${1e3}-${4e3}-${8e3}-${1e11}`.replace(/[018]/g, uniqueId)
+}
 
 /**
  * Debounce a function.
  */
-export const debounce = <T extends (...args: any[]) => void>(fn: T, ms = 0) => {
+export const debounce = <T extends (...args: unknown[]) => void>(fn: T, ms = 0) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let timeoutId: number | any
-  return function (...args: Parameters<T>) {
+  return (...args: Parameters<T>) => {
     clearTimeout(timeoutId)
     timeoutId = setTimeout(() => fn.apply(args), ms)
   }

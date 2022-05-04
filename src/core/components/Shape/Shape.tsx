@@ -11,7 +11,7 @@ interface ShapeProps<T extends TLShape, E extends Element, M> extends IShapeTree
 
 const Shape = <T extends TLShape, E extends Element, M>({ shape, utils, meta, ...rest }: ShapeProps<T, E, M>) => {
   const { callbacks } = useTLContext()
-  const bounds = utils.getBounds(shape)
+  const bounds = shape.getBounds()
   const events = useShapeEvents(shape.id)
 
   return (

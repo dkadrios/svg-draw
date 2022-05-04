@@ -1,29 +1,14 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import * as React from 'react'
 import styled from '@emotion/styled'
-import { ShapeStyleKeys, TDShapeType, TextShape, TransformedBounds } from 'types'
-import { getFromCache, translateBounds, vec } from 'utils'
-import { HTMLContainer } from 'core'
-import ShapeUtil from './ShapeUtil'
+import { HTMLContainer, TLShapeUtil } from 'core'
+import TextShape from './TextShape'
 
 type T = TextShape
 type E = HTMLDivElement
 
-const fontSize = 28
-const fontFace = '"Source Sans Pro", sans-serif'
-
-const getFontStyle = ({ scale = 1 }) => `${fontSize * scale}px/1 ${fontFace}`
-
-class TextUtil extends ShapeUtil<T, E> {
-  type = TDShapeType.Text as const
-
-  canEdit = true
-
-  isAspectRatioLocked = true
-
-  shapeStyleKeys: ShapeStyleKeys = ['color']
-
-  Component = ShapeUtil.Component<T, E>(({
+class TextUtil extends TLShapeUtil<T, E> {
+  Component = TLShapeUtil.Component<T, E>(({
     shape,
     isGhost,
     isEditing,
@@ -31,7 +16,7 @@ class TextUtil extends ShapeUtil<T, E> {
     onShapeBlur,
     onShapeChange,
   }, ref) => {
-    const { styles, text } = shape
+    const { text } = shape
     const rInput = React.useRef<HTMLTextAreaElement>(null)
 
     const handlePointerDown = React.useCallback(
@@ -52,17 +37,17 @@ class TextUtil extends ShapeUtil<T, E> {
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
       if (e.key === 'Escape') {
-        onShapeChange?.(shape, { reset: true })
+        onShapeChange?.({ reset: true })
       }
       if (e.key === 'Tab' || (e.key === 'Enter' && e.metaKey)) {
-        onShapeBlur?.({ text: e.currentTarget.value })
+        onShapeBlur?.()
         e.stopPropagation()
         e.preventDefault()
       }
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      onShapeChange?.(shape, { text: e.currentTarget.value })
+      onShapeChange?.({ text: e.currentTarget.value })
     }
 
     return (
@@ -71,7 +56,7 @@ class TextUtil extends ShapeUtil<T, E> {
           <InnerWrapper
             isEditing={isEditing}
             style={{
-              font: getFontStyle(styles),
+              font: shape.getFontStyle(),
               color: shape.styles.color,
             }}
           >
@@ -105,84 +90,10 @@ class TextUtil extends ShapeUtil<T, E> {
     )
   })
 
-  Indicator = ShapeUtil.Indicator<T>(({ shape }) => {
-    const { height, width } = this.getBounds(shape)
+  Indicator = TLShapeUtil.Indicator<T>(({ shape }) => {
+    const { height, width } = shape.getBounds()
     return <rect height={height} width={width} x={0} y={0} />
   })
-
-  getBounds = (shape: T) => {
-    const bounds = getFromCache(this.boundsCache, shape, () => {
-      if (!melm) {
-        return { minX: 0, minY: 0, maxX: 10, maxY: 10, width: 10, height: 10 }
-      }
-
-      melm.textContent = shape.text || '&#8203;'
-      melm.style.font = getFontStyle(shape.styles)
-
-      // In tests, offsetWidth and offsetHeight will be 0
-      const width = melm.offsetWidth || 1
-      const height = melm.offsetHeight || 1
-
-      return {
-        minX: 0,
-        maxX: width,
-        minY: 0,
-        maxY: height,
-        width,
-        height,
-      }
-    })
-
-    return translateBounds(bounds, shape.point)
-  }
-
-  transform(shape: TextShape, newBounds: TransformedBounds) {
-    const { styles: { scale = 1 } } = shape
-    const bounds = this.getBounds(shape)
-
-    return {
-      point: vec.toFixed([bounds.minX, bounds.minY]),
-      styles: {
-        ...shape.styles,
-        scale: scale * Math.max(Math.abs(newBounds.scaleY), Math.abs(newBounds.scaleX)),
-      },
-    }
-  }
-}
-
-let melm: HTMLPreElement
-function getMeasurementDiv() {
-  // A div used for measurement
-  document.getElementById('__textMeasure')?.remove()
-
-  const pre = document.createElement('pre')
-  pre.id = '__textMeasure'
-
-  Object.assign(pre.style, {
-    whiteSpace: 'pre',
-    width: 'auto',
-    border: '1px solid transparent',
-    padding: '4px',
-    margin: '0px',
-    opacity: '0',
-    position: 'absolute',
-    top: '-500px',
-    left: '0px',
-    zIndex: '9999',
-    pointerEvents: 'none',
-    userSelect: 'none',
-    alignmentBaseline: 'mathematical',
-    dominantBaseline: 'mathematical',
-  })
-
-  pre.tabIndex = -1
-
-  document.body.appendChild(pre)
-  return pre
-}
-
-if (typeof window !== 'undefined') {
-  melm = getMeasurementDiv()
 }
 
 type WrapperProps = {

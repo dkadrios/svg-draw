@@ -1,6 +1,4 @@
 export { default as TranslateSession } from './TranslateSession'
 export { default as RotateSession } from './RotateSession'
 export { default as TransformSession } from './TransformSession'
-export { default as LineSession } from './LineSession'
-export { default as FreeDrawSession } from './FreeDrawSession'
-export { default as TextEditSession } from './TextEditSession'
+export { default as MoveHandleSession } from './MoveHandleSession'

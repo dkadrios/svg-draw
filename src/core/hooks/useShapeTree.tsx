@@ -58,7 +58,7 @@ const useShapeTree = <T extends TLShape, M extends Record<string, unknown>>(
         // Always render selected shapes (this preserves certain drag interactions)
         || selectedId === shape.id
         // Otherwise, only render shapes that are in view
-        || shapeIsInViewport(shapeUtils[shape.type as T['type']].getBounds(shape as any), viewport))
+        || shapeIsInViewport(shape.getBounds(), viewport))
     .forEach((shape) => {
       shapesIdsToRender.add(shape.id)
       shapesToRender.add(shape)

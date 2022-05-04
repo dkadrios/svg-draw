@@ -1,7 +1,6 @@
-import { TDCallbacks, TDShapeType, TLDropEventHandler } from 'types'
-import type StateManager from '../StateManager'
-import { ImageUtil } from '../shapes'
-import { vec } from '../../utils/vec'
+import { TDCallbacks, TLDropEventHandler } from 'types'
+import type StateManager from './StateManager'
+import { ImageShape } from './shapes/Image'
 
 /* Base operations inherent to each tool: drop file, delete shape, zoom etc */
 class BaseTool implements TDCallbacks {
@@ -24,13 +23,15 @@ class BaseTool implements TDCallbacks {
     e.preventDefault()
     if (!e.dataTransfer.files?.length) return
 
-    const shape = await ImageUtil.getImageShapeFromFile(
+    const shape = await ImageShape.createImageShapeFromFile(
       e.dataTransfer.files[0],
       // Better to use canvas point file has been dropped at,
       // but currently onDrop handler doesn't calculate it correctly
       this.sm.getCenterPoint(),
     )
-    this.sm.createShape(shape)
+    this.sm.addShape(shape)
   }
 }
+
 export default BaseTool
+export { BaseTool }

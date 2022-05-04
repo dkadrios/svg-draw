@@ -1,11 +1,11 @@
 import { TDCallbacks, TDShapeType, TLPointerInfo, isTLBoundsCorner, isTLBoundsEdge } from 'types'
-import { LineSession, RotateSession, TransformSession, TranslateSession } from '../sessions'
-import TextEditSession from '../sessions/TextEditSession'
 import BaseTool from './BaseTool'
+import { MoveHandleSession, RotateSession, TransformSession, TranslateSession } from './sessions'
+import TextSession from './shapes/Text/TextSession'
 
 class SelectTool extends BaseTool implements TDCallbacks {
   onDragShape(e: TLPointerInfo) {
-    this.sm.startSession(new TranslateSession(this.sm, e.target, e.point))
+    this.sm.startSession(new TranslateSession(this.sm, e))
   }
 
   onPointShape(info: TLPointerInfo) {
@@ -28,16 +28,15 @@ class SelectTool extends BaseTool implements TDCallbacks {
     const shape = this.sm.getShape(info.target)
     if (!shape) return
 
-    const util = this.sm.getUtil(shape)
-    if (util.canEdit) this.sm.setEditing(info.target)
-    if (util.type === TDShapeType.Text) {
-      this.sm.startSession(new TextEditSession(this.sm, info.target))
+    if (shape.type === TDShapeType.Text) {
+      this.sm.setEditing(info.target)
+      this.sm.startSession(new TextSession(this.sm, info.target))
     }
   }
 
   onDragBoundsHandle(info: TLPointerInfo) {
     if (info.target === 'rotate') {
-      this.sm.startSession(new RotateSession())
+      this.sm.startSession(new RotateSession(this.sm))
     }
 
     if (isTLBoundsEdge(info.target) || isTLBoundsCorner(info.target)) {
@@ -46,7 +45,7 @@ class SelectTool extends BaseTool implements TDCallbacks {
   }
 
   onDragHandle(info: TLPointerInfo) {
-    this.sm.startSession(new LineSession(this.sm, info))
+    this.sm.startSession(new MoveHandleSession(this.sm, info))
   }
 
   /*

@@ -1,16 +1,16 @@
-import { TDCallbacks, TDShapeType, TDToolType, TLBoundsCorner, TLPointerInfo } from 'types'
-import { TransformSession } from '../sessions'
-import BaseTool from './BaseTool'
+import { TDCallbacks, TDToolType, TLBoundsCorner, TLPointerInfo } from 'types'
+import { TransformSession } from '../../sessions'
+import BaseTool from '../../BaseTool'
+import RectShape from './RectShape'
 
 class RectTool extends BaseTool implements TDCallbacks {
   onPointerDown(info: TLPointerInfo) {
-    const newShape = this.sm.createShape({
-      type: TDShapeType.Rectangle,
+    const shape = new RectShape({
       point: info.point,
-      size: [1, 1],
     })
 
-    this.sm.pageState.setSelected(newShape.id)
+    this.sm.addShape(shape)
+    this.sm.setSelected(shape.id)
     this.sm.startSession(new TransformSession(this.sm, {
       ...info,
       target: TLBoundsCorner.BottomRight,

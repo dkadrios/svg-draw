@@ -1,7 +1,9 @@
-import { TLCallbackNames, TLCallbacks, TLHandle, TLPage, TLPageState, TLShape } from 'core'
-import type { FreeDrawSession, LineSession, RotateSession, TextEditSession, TransformSession, TranslateSession } from 'state/sessions'
-import type StateManager from 'state'
-
+import type { TLCallbacks, TLPage, TLPageState, TransformedBounds } from 'core'
+import type { LineEntity, LineShape } from 'state/shapes/Line'
+import type { RectEntity, RectShape } from 'state/shapes/Rect'
+import type { FreeDrawEntity, FreeDrawShape } from 'state/shapes/FreeDraw'
+import type { TextEntity, TextShape } from './state/shapes/Text'
+import type { ImageEntity, ImageShape } from './state/shapes/Image'
 // Re-export core types
 export * from './core/types'
 
@@ -12,7 +14,10 @@ export type TDSettings = {
 
 export type TDPageState = TLPageState & { settings: TDSettings }
 
-export type ShapeStyle = {
+export type TDPage = TLPage<TDShape>
+export type TDSerializedPage = TLPage<TDEntity>
+
+export type TDShapeStyle = {
   color?: string
   fill?: string,
   size?: 'S' | 'M' | 'L'
@@ -25,8 +30,8 @@ export const strokeWidths: Record<'S' | 'M' | 'L', number> = {
   L: 5,
 }
 
-export type ShapeStyleKey = keyof ShapeStyle
-export type ShapeStyleKeys = ShapeStyleKey[]
+export type TDShapeStyleKey = keyof TDShapeStyle
+export type TDShapeStyleKeys = TDShapeStyleKey[]
 
 export enum TDShapeType {
   Rectangle = 'rectangle',
@@ -44,62 +49,30 @@ export enum TDToolType {
   Text = 'text'
 }
 
-export interface TDBaseShape extends TLShape {
-  styles?: Partial<ShapeStyle>
-  type: TDShapeType
+export type TDShape = LineShape | RectShape | FreeDrawShape | TextShape | ImageShape
+
+export type TDShapesList = Record<string, TDShape>
+
+export type TDEntity = LineEntity | RectEntity | FreeDrawEntity | TextEntity | ImageEntity
+
+export type TDEntitiesList = Record<string, TDEntity>
+
+export interface Moveable {
+  translate(point: number[], grid?: number): this
+  rotate(point: number[], snapToAngle?: boolean): this
 }
 
-export interface RectShape extends TDBaseShape {
-  type: TDShapeType.Rectangle
-  size: number[]
-  styles: Pick<ShapeStyle, 'color' | 'fill' | 'size'>;
+export interface Transformable {
+  isAspectRatioLocked?: boolean
+  transform(bounds: TransformedBounds): this
 }
 
-export interface LineShape extends TDBaseShape {
-  type: TDShapeType.Line
-  handles: {
-    start: TLHandle
-    end: TLHandle
-  }
-  styles: Pick<ShapeStyle, 'color' | 'size'>;
+export interface HandlesMoveable {
+  moveHandle(handleKey: string, delta: number[], snapToAngle?: boolean, grid?: number): this
 }
-
-export interface FreeDrawShape extends TDBaseShape {
-  type: TDShapeType.FreeDraw
-  points: number[][]
-  styles: Pick<ShapeStyle, 'color' | 'size'>;
-}
-
-export interface TextShape extends TDBaseShape {
-  type: TDShapeType.Text
-  text: string
-  styles: Pick<ShapeStyle, 'color' | 'scale'>;
-}
-
-export interface ImageShape extends TDBaseShape {
-  type: TDShapeType.Image
-  size: number[]
-  src: string,
-}
-
-// A union of all shapes
-export type TDShape = RectShape | LineShape | FreeDrawShape | TextShape | ImageShape
-
-export type TDSession =
-  TranslateSession |
-  RotateSession |
-  TransformSession |
-  LineSession |
-  FreeDrawSession |
-  TextEditSession
-
-export type CallbacksList = {
-  [index in TLCallbackNames]?: (
-    stateManager: StateManager,
-    a: Parameters<TLCallbacks[index]>[0],
-    b: Parameters<TLCallbacks[index]>[1],
-    c: Parameters<TLCallbacks[index]>[2],
-    ) => void
-};
 
 export type TDCallbacks = Partial<TLCallbacks>
+
+export type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
+
+export type Class<T> = new (...args: unknown[]) => T;
