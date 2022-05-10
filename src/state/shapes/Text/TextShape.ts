@@ -1,10 +1,7 @@
 import { TDShapeStyle, TDShapeStyleKeys, TDShapeType, TransformedBounds } from 'types'
 import { translateBounds, vec } from 'utils'
 import BaseShape, { BaseEntity, BaseShapeCreateProps } from '../BaseShape'
-import measurementHelper from './MeasurementHelper'
-
-const fontSize = 28
-const fontFace = '"Source Sans Pro", sans-serif'
+import { getFontStyle, getTextSize } from '../shared/textUtils'
 
 type TextShapeStyles = Pick<TDShapeStyle, 'color' | 'scale'>
 
@@ -34,7 +31,7 @@ class TextShape extends BaseShape implements TextEntity {
   }
 
   getBounds() {
-    const { height, width } = measurementHelper.getSize(this.text, this.getFontStyle())
+    const { height, width } = getTextSize(this.text, this.getFontStyle())
 
     return translateBounds({
       minX: 0,
@@ -64,8 +61,7 @@ class TextShape extends BaseShape implements TextEntity {
   }
 
   getFontStyle() {
-    const { scale = 1 } = this.styles
-    return `${fontSize * scale}px/1 ${fontFace}`
+    return getFontStyle(this.styles.scale)
   }
 }
 

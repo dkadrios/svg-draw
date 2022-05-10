@@ -22,7 +22,7 @@ import registerShapes from './shapes'
 class StateManager {
   shapes: Record<string, Class<TDShape>> = {}
 
-  utils: Record<string, TLShapeUtil<any>> = {}
+  utils: Record<string, TLShapeUtil<TDShape>> = {}
 
   tools: Record<string, TDCallbacks> = {
     [TDToolType.Select]: new SelectTool(this),
@@ -57,7 +57,7 @@ class StateManager {
     this.toolbar = new Toolbar()
   }
 
-  registerShape<T extends TDShape>(key: string, Shape: Class<TDShape>, util: TLShapeUtil<T>) {
+  registerShape(key: string, Shape: Class<TDShape>, util: TLShapeUtil<TDShape>) {
     this.shapes[key] = Shape
     this.utils[key] = util
   }

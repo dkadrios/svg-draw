@@ -1,5 +1,6 @@
+// TODO: regularize text/font/size utils
 let melm: HTMLPreElement
-function getMeasurementDiv() {
+const getMeasurementDiv = () => {
   // A div used for measurement
   document.getElementById('__textMeasure')?.remove()
 
@@ -33,19 +34,22 @@ if (typeof window !== 'undefined') {
   melm = getMeasurementDiv()
 }
 
-const helper = {
-  getSize(text: string, font: string) {
-    if (!melm) return { width: 10, height: 10 }
+const getTextSize = (text: string, font: string) => {
+  if (!melm) return { width: 10, height: 10 }
 
-    melm.textContent = text || '&#8203;'
-    melm.style.font = font
+  melm.textContent = text || '&#8203;'
+  melm.style.font = font
 
-    // In tests, offsetWidth and offsetHeight will be 0
-    return {
-      width: melm.offsetWidth || 1,
-      height: melm.offsetHeight || 1,
-    }
-  },
+  // In tests, offsetWidth and offsetHeight will be 0
+  return {
+    width: melm.offsetWidth || 1,
+    height: melm.offsetHeight || 1,
+  }
 }
 
-export default helper
+const fontSize = 28
+const fontFace = '"Source Sans Pro", sans-serif'
+
+const getFontStyle = (scale = 1) => `${fontSize * scale}px/1 ${fontFace}`
+
+export { getFontStyle, getTextSize }

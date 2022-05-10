@@ -335,6 +335,13 @@ export const getPerfectDashProps = (
   }
 }
 
+export const getSvgLineProps = (start: number[], end: number[]) => ({
+  x1: start[0],
+  x2: end[0],
+  y1: start[1],
+  y2: end[1],
+})
+
 /* Find whether the current device is a Mac / iOS / iPadOS. */
 export const isDarwin = (): boolean => /Mac|iPod|iPhone|iPad/.test(window.navigator.platform)
 

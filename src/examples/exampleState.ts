@@ -1,4 +1,4 @@
-import { TDShape, TDShapeType, TLPage } from 'types'
+import { TDEntity, TDShapeType, TLPage } from 'types'
 
 const defaultPageData = {
   id: 'page',
@@ -80,6 +80,7 @@ const defaultPageData = {
         color: '#ff2133',
       },
     },
+    /*
     image1: {
       id: 'image1',
       type: 'image',
@@ -88,8 +89,21 @@ const defaultPageData = {
       rotation: 0,
       src: 'https://avatars.githubusercontent.com/u/128515?s=400&v=4',
       size: [300, 300],
+      styles: {},
+    }, */
+    measure2: {
+      id: 'measure2',
+      type: TDShapeType.MeasureLine,
+      childIndex: 6,
+      point: [150, 150],
+      rotation: 0,
+      handles: {
+        start: { id: 'start', index: 1, point: [0, 0] },
+        end: { id: 'end', index: 2, point: [50, 50] },
+      },
+      styles: {},
     },
   },
-} as TLPage<TDShape>
+} as TLPage<TDEntity>
 
 export default defaultPageData

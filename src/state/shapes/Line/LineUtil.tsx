@@ -7,8 +7,6 @@ type T = LineShape
 type E = SVGSVGElement
 
 class LineUtil extends TLShapeUtil<T, E> {
-  type = TDShapeType.Line as const
-
   hideBounds = true
 
   Component = TLShapeUtil.Component<T, E>(({ shape, events }, ref) => {

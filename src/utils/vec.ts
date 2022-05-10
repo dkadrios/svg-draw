@@ -230,8 +230,21 @@ export const vec = {
 
   /* Get the slope between two points */
   slope(A: number[], B: number[]) {
-    if (A[0] === B[0]) return NaN
     return (A[1] - B[1]) / (A[0] - B[0])
+  },
+
+  // Perpendicular slope
+  perpSlope(A: number[], B: number[]) {
+    const origSlope = this.slope(A, B)
+    return Number.isFinite(origSlope) ? -1 / origSlope : 0
+  },
+
+  diffForSlope(slope: number) {
+    if (!Number.isFinite(slope)) return { dx: 0, dy: 1 }
+    return {
+      dx: 1 / Math.sqrt(slope * slope + 1),
+      dy: slope / Math.sqrt(slope * slope + 1),
+    }
   },
 }
 

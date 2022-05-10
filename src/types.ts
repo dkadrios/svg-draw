@@ -4,6 +4,7 @@ import type { RectEntity, RectShape } from 'state/shapes/Rect'
 import type { FreeDrawEntity, FreeDrawShape } from 'state/shapes/FreeDraw'
 import type { TextEntity, TextShape } from './state/shapes/Text'
 import type { ImageEntity, ImageShape } from './state/shapes/Image'
+import type { MeasureLineEntity, MeasureLineShape } from './state/shapes/Measure'
 // Re-export core types
 export * from './core/types'
 
@@ -38,7 +39,8 @@ export enum TDShapeType {
   Line = 'line',
   FreeDraw = 'freedraw',
   Text = 'text',
-  Image = 'image'
+  Image = 'image',
+  MeasureLine = 'measure_line'
 }
 
 export enum TDToolType {
@@ -49,11 +51,11 @@ export enum TDToolType {
   Text = 'text'
 }
 
-export type TDShape = LineShape | RectShape | FreeDrawShape | TextShape | ImageShape
+export type TDShape = LineShape | RectShape | FreeDrawShape | TextShape | ImageShape | MeasureLineShape
 
 export type TDShapesList = Record<string, TDShape>
 
-export type TDEntity = LineEntity | RectEntity | FreeDrawEntity | TextEntity | ImageEntity
+export type TDEntity = LineEntity | RectEntity | FreeDrawEntity | TextEntity | ImageEntity | MeasureLineEntity
 
 export type TDEntitiesList = Record<string, TDEntity>
 
@@ -75,4 +77,4 @@ export type TDCallbacks = Partial<TLCallbacks>
 
 export type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
 
-export type Class<T> = new (...args: unknown[]) => T;
+export type Class<T> = new (...args: any[]) => T;
