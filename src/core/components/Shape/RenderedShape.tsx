@@ -3,21 +3,15 @@ import * as React from 'react'
 import type { TLComponentProps, TLShape } from '../../types'
 import type { TLShapeUtil } from '../../TLShapeUtil'
 
-interface RenderedShapeProps<T extends TLShape, E extends Element, M>
-  extends TLComponentProps<T, E, M> {
+interface RenderedShapeProps<T extends TLShape, M>
+  extends TLComponentProps<T, M> {
   shape: T
-  utils: TLShapeUtil<T, E, M>
+  utils: TLShapeUtil<T, M>
 }
 
-const memoShape = <T extends TLShape, E extends Element, M>(props: RenderedShapeProps<T, E, M>) => {
-  const ref = props.utils.getRef(props.shape)
-  return (
-    <props.utils.Component
-      ref={ref}
-      {...props}
-    />
-  )
-}
+const memoShape = <T extends TLShape, M>(props: RenderedShapeProps<T, M>) => (
+  <props.utils.Component {...props} />
+)
 
 const RenderedShape = React.memo(memoShape, (prev, next) => {
   // If these have changed, then definitely render

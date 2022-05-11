@@ -1,6 +1,6 @@
 import * as React from 'react'
 import styled from '@emotion/styled'
-import { HTMLContainer, TLShapeUtil } from 'core'
+import { HTMLContainer, TLComponentProps, TLIndicatorProps, TLShapeUtil } from 'core'
 import ImageShape from './ImageShape'
 
 const Wrapper = styled.div({
@@ -36,14 +36,13 @@ const ImageElement = styled.img({
 })
 
 type T = ImageShape
-type E = HTMLDivElement
 
-class ImageUtil extends TLShapeUtil<T, E> {
-  Component = TLShapeUtil.Component<T, E>(({ shape, events }, ref) => {
+class ImageUtil extends TLShapeUtil<T> {
+  Component({ shape, events }: TLComponentProps<T>) {
     const { size: [width, height] } = shape
 
     return (
-      <HTMLContainer ref={ref} {...events}>
+      <HTMLContainer {...events}>
         <Wrapper
           style={{
             width: `${width}px`,
@@ -59,9 +58,9 @@ class ImageUtil extends TLShapeUtil<T, E> {
         </Wrapper>
       </HTMLContainer>
     )
-  })
+  }
 
-  Indicator = TLShapeUtil.Indicator<T>(data => (
+  Indicator = (data: TLIndicatorProps<T>) => (
     <rect
       fill="none"
       height={data.shape.size[1]}
@@ -70,7 +69,7 @@ class ImageUtil extends TLShapeUtil<T, E> {
       strokeWidth={1}
       width={data.shape.size[0]}
     />
-  ))
+  )
 }
 
-export default ImageUtil
+export default new ImageUtil()

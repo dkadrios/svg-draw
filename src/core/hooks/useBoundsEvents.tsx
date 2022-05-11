@@ -1,14 +1,16 @@
+/* eslint-disable no-param-reassign */
 import * as React from 'react'
+import type { TLPointerEvent } from '../types'
 import { useTLContext } from './useTLContext'
 
 const useBoundsEvents = () => {
   const { callbacks, inputs } = useTLContext()
 
   return React.useMemo(() => ({
-    onPointerDown: (e: React.PointerEvent) => {
+    onPointerDown: (e: TLPointerEvent) => {
       // TODO: this code is too repetitious across all handlers; probably can move to a func
-      if ((e as any).dead) return
-      (e as any).dead = true
+      if (e.dead) return
+      e.dead = true
       if (!inputs.pointerIsValid(e)) return
       if (e.button === 2) {
         callbacks.onRightPointBounds?.(inputs.pointerDown(e, 'bounds'), e)
@@ -20,9 +22,9 @@ const useBoundsEvents = () => {
       callbacks.onPointBounds?.(info, e)
       callbacks.onPointerDown?.(info, e)
     },
-    onPointerUp: (e: React.PointerEvent) => {
-      if ((e as any).dead) return
-      (e as any).dead = true
+    onPointerUp: (e: TLPointerEvent) => {
+      if (e.dead) return
+      e.dead = true
       if (e.button !== 0) return
       inputs.activePointer = undefined
       if (!inputs.pointerIsValid(e)) return
@@ -37,9 +39,9 @@ const useBoundsEvents = () => {
       callbacks.onReleaseBounds?.(info, e)
       callbacks.onPointerUp?.(info, e)
     },
-    onPointerMove: (e: React.PointerEvent) => {
-      if ((e as any).dead) return
-      (e as any).dead = true
+    onPointerMove: (e: TLPointerEvent) => {
+      if (e.dead) return
+      e.dead = true
       if (!inputs.pointerIsValid(e)) return
       if (e.currentTarget.hasPointerCapture(e.pointerId)) {
         callbacks.onDragBounds?.(inputs.pointerMove(e, 'bounds'), e)

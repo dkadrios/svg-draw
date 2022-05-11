@@ -6,10 +6,11 @@ import TextField from '@mui/material/TextField'
 import Popover from '@mui/material/Popover'
 import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined'
 import { useStateManager } from 'state/useStateManager'
+import { ImageShape } from '../state/shapes/Image'
 
 const ImageUploadButton = () => {
-  const [url, setUrl] = React.useState('')
-  const [anchorEl, setAnchorEl] = React.useState(null)
+  const [url, setUrl] = useState('')
+  const [anchorEl, setAnchorEl] = useState(null)
   const stateManager = useStateManager()
   const open = Boolean(anchorEl)
 
@@ -20,8 +21,14 @@ const ImageUploadButton = () => {
   const handleClose = () => setAnchorEl(null)
   const handleChangeUrl = (e: React.BaseSyntheticEvent) => setUrl(e.currentTarget.value)
 
-  const handleAddImageByUrl = (e: React.BaseSyntheticEvent) => {
-    stateManager.addImageByUrl(url)
+  // TODO: move this to some kind of service
+  const handleAddImageByUrl = async () => {
+    try {
+      const shape = await ImageShape.createImageShapeFromUrl(url, stateManager.getCenterPoint())
+      stateManager.addShape(shape)
+    } catch (e) {
+      console.warn((e as Error).message)
+    }
     handleClose()
   }
 

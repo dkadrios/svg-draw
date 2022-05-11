@@ -1,14 +1,13 @@
 import * as React from 'react'
-import { strokeWidths } from 'types'
+import { TLComponentProps, TLIndicatorProps, strokeWidths } from 'types'
 import { SVGContainer, TLShapeUtil } from 'core'
 import type RectShape from './RectShape'
 
-class RectUtil extends TLShapeUtil<RectShape, SVGSVGElement> {
-  Component = TLShapeUtil.Component<RectShape, SVGSVGElement>(({ shape, events }, ref) => (
-    <SVGContainer
-      ref={ref}
-      {...events}
-    >
+type T = RectShape
+
+class RectUtil extends TLShapeUtil<RectShape> {
+  Component = ({ shape, events }: TLComponentProps<T>) => (
+    <SVGContainer {...events}>
       <rect
         fill={shape.styles.fill}
         height={shape.size[1]}
@@ -19,9 +18,9 @@ class RectUtil extends TLShapeUtil<RectShape, SVGSVGElement> {
         width={shape.size[0]}
       />
     </SVGContainer>
-  ))
+  )
 
-  Indicator = TLShapeUtil.Indicator<RectShape>(data => (
+  Indicator = (data: TLIndicatorProps<T>) => (
     <rect
       fill="none"
       height={data.shape.size[1]}
@@ -30,6 +29,6 @@ class RectUtil extends TLShapeUtil<RectShape, SVGSVGElement> {
       strokeWidth={1}
       width={data.shape.size[0]}
     />
-  ))
+  )
 }
-export default RectUtil
+export default new RectUtil()

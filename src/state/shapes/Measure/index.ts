@@ -4,7 +4,7 @@ import MeasureLineShape from './MeasureLineShape'
 import MeasureLineUtil from './MeasureLineUtil'
 
 const measureLineRegister = (sm: StateManager) => {
-  sm.registerShape(TDShapeType.MeasureLine, MeasureLineShape, new MeasureLineUtil())
+  sm.registerShape(TDShapeType.MeasureLine, MeasureLineShape, MeasureLineUtil)
 }
 
 export { MeasureLineShape, MeasureLineUtil, measureLineRegister }

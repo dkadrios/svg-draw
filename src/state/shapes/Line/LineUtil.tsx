@@ -1,22 +1,18 @@
 import * as React from 'react'
-import { TDShapeType, strokeWidths } from 'types'
+import { TLComponentProps, strokeWidths } from 'types'
 import { SVGContainer, TLShapeUtil } from 'core'
 import type LineShape from './LineShape'
 
 type T = LineShape
-type E = SVGSVGElement
 
-class LineUtil extends TLShapeUtil<T, E> {
+class LineUtil extends TLShapeUtil<T> {
   hideBounds = true
 
-  Component = TLShapeUtil.Component<T, E>(({ shape, events }, ref) => {
+  Component = ({ shape, events }: TLComponentProps<T>) => {
     const { handles: { start, end } } = shape
 
     return (
-      <SVGContainer
-        ref={ref}
-        {...events}
-      >
+      <SVGContainer {...events}>
         <line
           className="tl-stroke-hitarea"
           x1={start.point[0]}
@@ -35,8 +31,6 @@ class LineUtil extends TLShapeUtil<T, E> {
         />
       </SVGContainer>
     )
-  })
-
-  Indicator = TLShapeUtil.Indicator<LineShape>(() => null)
+  }
 }
-export default LineUtil
+export default new LineUtil()

@@ -5,7 +5,7 @@ import RectUtil from './RectUtil'
 import RectTool from './RectTool'
 
 const rectRegister = (sm: StateManager) => {
-  sm.registerShape(TDShapeType.Rectangle, RectShape, new RectUtil())
+  sm.registerShape(TDShapeType.Rectangle, RectShape, RectUtil)
   sm.registerTool(TDShapeType.Rectangle, new RectTool(sm))
 }
 

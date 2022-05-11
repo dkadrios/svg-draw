@@ -1,17 +1,14 @@
 import React from 'react'
-import { SVGContainer, TLShapeUtil } from 'core'
+import { SVGContainer, TLComponentProps, TLShapeUtil } from 'core'
+import { getSvgLineProps } from 'utils'
 import { TextLabel } from '../shared/TextLabel'
 import { getFontStyle, getTextSize } from '../shared/textUtils'
-import { getSvgLineProps } from '../../../utils'
 import type MeasureLineShape from './MeasureLineShape'
 
-type T = MeasureLineShape
-type E = SVGSVGElement
-
-class MeasureLineUtil extends TLShapeUtil<T, E> {
+class MeasureLineUtil extends TLShapeUtil<MeasureLineShape> {
   hideBounds = true
 
-  Component = TLShapeUtil.Component<T, E>(({ shape, events }, ref) => {
+  Component({ shape, events }: TLComponentProps<MeasureLineShape>) {
     const { handles: { start, end } } = shape
     const { endTip, startTip } = shape.getTips()
     const font = getFontStyle()
@@ -34,10 +31,7 @@ class MeasureLineUtil extends TLShapeUtil<T, E> {
           scale={scale}
           text={label}
         />
-        <SVGContainer
-          ref={ref}
-          {...events}
-        >
+        <SVGContainer {...events}>
           <defs>
             <mask id={`${shape.id}_clip`}>
               <rect
@@ -85,8 +79,6 @@ class MeasureLineUtil extends TLShapeUtil<T, E> {
         </SVGContainer>
       </>
     )
-  })
-
-  Indicator = TLShapeUtil.Indicator<MeasureLineShape>(() => null)
+  }
 }
-export default MeasureLineUtil
+export default new MeasureLineUtil()

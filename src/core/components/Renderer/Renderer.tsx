@@ -134,10 +134,7 @@ const Renderer = <T extends TLShape>({
   }))
 
   const onBoundsChange = React.useCallback((bounds: TLBounds) => {
-    setContext(context => ({
-      ...context,
-      bounds,
-    }))
+    setContext(ctx => ({ ...ctx, bounds }))
   }, [])
 
   return (

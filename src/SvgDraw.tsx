@@ -38,12 +38,11 @@ export const SvgDraw = ({ data = emptyPage }: SvgDrawProps) => {
   return (
     <StateManagerContext.Provider value={stateManager}>
       <Renderer
-        containerRef={undefined} // Required
-        grid={grid} // Required
+        grid={grid}
         hideBounds={false}
         hideGrid={hideGrid}
         hideHandles={false}
-        hideIndicators={false} // Required
+        hideIndicators={false}
         hideRotateHandles={false}
         id={undefined}
         onBoundsChange={handleBoundsChange}

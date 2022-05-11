@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { debounce } from '../../utils'
 import type { TLBounds } from '../types'
-import { useTLContext } from '.'
+import { useTLContext } from './useTLContext'
 
 const useResizeObserver = <T extends Element>(
   ref: React.RefObject<T>,

@@ -5,7 +5,7 @@ import FreeDrawUtil from './FreeDrawUtil'
 import FreeDrawTool from './FreeDrawTool'
 
 const freeDrawRegister = (sm: StateManager) => {
-  sm.registerShape(TDShapeType.FreeDraw, FreeDrawShape, new FreeDrawUtil())
+  sm.registerShape(TDShapeType.FreeDraw, FreeDrawShape, FreeDrawUtil)
   sm.registerTool(TDShapeType.FreeDraw, new FreeDrawTool(sm))
 }
 

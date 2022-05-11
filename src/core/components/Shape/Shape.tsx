@@ -5,11 +5,11 @@ import Container from '../Container'
 import type { TLShapeUtil } from '../../TLShapeUtil'
 import RenderedShape from './RenderedShape'
 
-interface ShapeProps<T extends TLShape, E extends Element, M> extends IShapeTreeNode<T, M> {
-  utils: TLShapeUtil<T, E, M>
+interface ShapeProps<T extends TLShape, M> extends IShapeTreeNode<T, M> {
+  utils: TLShapeUtil<T>
 }
 
-const Shape = <T extends TLShape, E extends Element, M>({ shape, utils, meta, ...rest }: ShapeProps<T, E, M>) => {
+const Shape = <T extends TLShape, M>({ shape, utils, meta, ...rest }: ShapeProps<T, M>) => {
   const { callbacks } = useTLContext()
   const bounds = shape.getBounds()
   const events = useShapeEvents(shape.id)
@@ -30,7 +30,7 @@ const Shape = <T extends TLShape, E extends Element, M>({ shape, utils, meta, ..
         onShapeBlur={callbacks.onShapeBlur}
         onShapeChange={callbacks.onShapeChange}
         shape={shape}
-        utils={utils as any}
+        utils={utils}
         {...rest}
       />
     </Container>

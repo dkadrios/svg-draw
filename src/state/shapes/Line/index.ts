@@ -5,7 +5,7 @@ import LineUtil from './LineUtil'
 import LineTool from './LineTool'
 
 const lineRegister = (sm: StateManager) => {
-  sm.registerShape(TDShapeType.Line, LineShape, new LineUtil())
+  sm.registerShape(TDShapeType.Line, LineShape, LineUtil)
   sm.registerTool(TDShapeType.Line, new LineTool(sm))
 }
 

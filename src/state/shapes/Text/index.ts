@@ -5,7 +5,7 @@ import TextUtil from './TextUtil'
 import TextTool from './TextTool'
 
 const textRegister = (sm: StateManager) => {
-  sm.registerShape(TDShapeType.Text, TextShape, new TextUtil())
+  sm.registerShape(TDShapeType.Text, TextShape, TextUtil)
   sm.registerTool(TDShapeType.Text, new TextTool(sm))
 }
 

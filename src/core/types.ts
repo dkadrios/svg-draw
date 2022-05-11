@@ -9,11 +9,6 @@ export enum TLPerformanceMode {
   TranslateAll = 'translate_all',
 }
 
-export type TLForwardedRef<T> =
-  | ((instance: T | null) => void)
-  | React.MutableRefObject<T | null>
-  | null
-
 export interface TLPage<T extends TLShape | TLEntity = TLShape> {
   id: string
   name?: string
@@ -54,7 +49,7 @@ export interface TLShape extends TLEntity {
   getBounds: () => TLBounds
 }
 
-export interface TLComponentProps<T extends TLShape, E = any, M = any> {
+export interface TLComponentProps<T extends TLShape, M = any> {
   shape: T
   isEditing: boolean
   isHovered: boolean
@@ -65,13 +60,20 @@ export interface TLComponentProps<T extends TLShape, E = any, M = any> {
   onShapeChange?: TLShapeChangeHandler
   onShapeBlur?: TLShapeBlurHandler
   events: {
-    onPointerDown: (e: React.PointerEvent<E>) => void
-    onPointerUp: (e: React.PointerEvent<E>) => void
-    onPointerEnter: (e: React.PointerEvent<E>) => void
-    onPointerMove: (e: React.PointerEvent<E>) => void
-    onPointerLeave: (e: React.PointerEvent<E>) => void
+    onPointerDown: (e: React.PointerEvent) => void
+    onPointerUp: (e: React.PointerEvent) => void
+    onPointerEnter: (e: React.PointerEvent) => void
+    onPointerMove: (e: React.PointerEvent) => void
+    onPointerLeave: (e: React.PointerEvent) => void
   }
-  ref?: React.Ref<E> | undefined
+}
+
+export interface TLIndicatorProps<T extends TLShape, M = any> {
+  shape: T
+  meta: M
+  bounds: TLBounds
+  isHovered: boolean
+  isSelected: boolean
 }
 
 export interface TLTheme {
@@ -107,6 +109,10 @@ export type TLShapeChangeHandler = (
   shape: any,
   info?: any,
 ) => void
+
+export interface TLPointerEvent extends React.PointerEvent {
+  dead?: boolean
+}
 
 export type TLShapeBlurHandler = (info?: any) => void
 
@@ -184,7 +190,6 @@ export interface TLCallbacks {
   // Misc
   onShapeChange: TLShapeChangeHandler
   onShapeBlur: TLShapeBlurHandler
-  onRenderCountChange: (ids: string[]) => void
   onError: (error: Error) => void
   onBoundsChange: (bounds: TLBounds) => void
 

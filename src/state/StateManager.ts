@@ -10,19 +10,18 @@ import type {
   TDShapeStyle,
   TDShapesList, TLBounds, TLCallbackNames, TLPageState,
 } from 'types'
-import { TDToolType } from 'types'
+import { TDShapeType, TDToolType } from 'types'
 import { getBoundsFromPoints, vec } from 'utils'
-import { TLShapeUtil } from '../core'
+import { TLShapeUtil, TLShapeUtilsMap } from '../core'
 import { Page, PageState, Toolbar } from './stores'
 import SelectTool from './SelectTool'
 import BaseShape from './shapes/BaseShape'
-import { ImageShape } from './shapes/Image'
 import registerShapes from './shapes'
 
 class StateManager {
   shapes: Record<string, Class<TDShape>> = {}
 
-  utils: Record<string, TLShapeUtil<TDShape>> = {}
+  utils = {} as TLShapeUtilsMap<TDShape>
 
   tools: Record<string, TDCallbacks> = {
     [TDToolType.Select]: new SelectTool(this),
@@ -57,7 +56,7 @@ class StateManager {
     this.toolbar = new Toolbar()
   }
 
-  registerShape(key: string, Shape: Class<TDShape>, util: TLShapeUtil<TDShape>) {
+  registerShape(key: TDShapeType, Shape: Class<TDShape>, util: TLShapeUtil<TDShape>) {
     this.shapes[key] = Shape
     this.utils[key] = util
   }
@@ -115,13 +114,13 @@ class StateManager {
     return this.pageState.getSettings()
   }
 
+  setSettings(settings: Partial<TDSettings>) {
+    this.pageState.setSettings(settings)
+  }
+
   getGridFactor() {
     const { grid, hideGrid } = this.getSettings()
     return hideGrid ? 1 : grid
-  }
-
-  setSettings(settings: Partial<TDSettings>) {
-    this.pageState.setSettings(settings)
   }
 
   getNextChildIndex() {
@@ -152,15 +151,6 @@ class StateManager {
   getCenterPoint() {
     const { height, width } = this.rendererBounds
     return vec.toFixed([width / 2, height / 2])
-  }
-
-  async addImageByUrl(url: string) {
-    try {
-      const shape = await ImageShape.createImageShapeFromUrl(url, this.getCenterPoint())
-      this.addShape(shape)
-    } catch (e) {
-      console.warn((e as Error).message)
-    }
   }
 
   // Screen coords -> canvas point

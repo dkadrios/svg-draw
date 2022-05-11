@@ -1,5 +1,7 @@
+/* eslint-disable no-param-reassign */
 import * as React from 'react'
 import { pointInBounds } from '../../utils'
+import type { TLPointerEvent } from '../types'
 import { TLContext } from './useTLContext'
 
 const useShapeEvents = (id: string) => {
@@ -7,9 +9,9 @@ const useShapeEvents = (id: string) => {
 
   return React.useMemo(
     () => ({
-      onPointerDown: (e: React.PointerEvent) => {
-        if ((e as any).dead) return
-        (e as any).dead = true
+      onPointerDown: (e: TLPointerEvent) => {
+        if (e.dead) return
+        e.dead = true
         if (!inputs.pointerIsValid(e)) return
         if (e.button === 2) {
           callbacks.onRightPointShape?.(inputs.pointerDown(e, id), e)
@@ -34,9 +36,9 @@ const useShapeEvents = (id: string) => {
         callbacks.onPointShape?.(info, e)
         callbacks.onPointerDown?.(info, e)
       },
-      onPointerUp: (e: React.PointerEvent) => {
-        if ((e as any).dead) return
-        (e as any).dead = true
+      onPointerUp: (e: TLPointerEvent) => {
+        if (e.dead) return
+        e.dead = true
         if (e.button !== 0) return
         inputs.activePointer = undefined
         if (!inputs.pointerIsValid(e)) return
@@ -51,9 +53,9 @@ const useShapeEvents = (id: string) => {
         callbacks.onReleaseShape?.(info, e)
         callbacks.onPointerUp?.(info, e)
       },
-      onPointerMove: (e: React.PointerEvent) => {
-        if ((e as any).dead) return
-        (e as any).dead = true
+      onPointerMove: (e: TLPointerEvent) => {
+        if (e.dead) return
+        e.dead = true
         if (!inputs.pointerIsValid(e)) return
         if (inputs.pointer && e.pointerId !== inputs.pointer.pointerId) return
         const info = inputs.pointerMove(e, id)

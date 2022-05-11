@@ -1,13 +1,15 @@
+/* eslint-disable no-param-reassign */
 import * as React from 'react'
+import type { TLPointerEvent } from '../types'
 import { useTLContext } from './useTLContext'
 
 const useHandleEvents = (id: string) => {
   const { callbacks, inputs } = useTLContext()
 
   return React.useMemo(() => ({
-    onPointerDown: (e: React.PointerEvent) => {
-      if ((e as any).dead) return
-      (e as any).dead = true
+    onPointerDown: (e: TLPointerEvent) => {
+      if (e.dead) return
+      e.dead = true
       if (!inputs.pointerIsValid(e)) return
       if (e.button !== 0) return
       if (!inputs.pointerIsValid(e)) return
@@ -16,9 +18,9 @@ const useHandleEvents = (id: string) => {
       callbacks.onPointHandle?.(info, e)
       callbacks.onPointerDown?.(info, e)
     },
-    onPointerUp: (e: React.PointerEvent) => {
-      if ((e as any).dead) return
-      (e as any).dead = true
+    onPointerUp: (e: TLPointerEvent) => {
+      if (e.dead) return
+      e.dead = true
       if (e.button !== 0) return
       if (!inputs.pointerIsValid(e)) return
       const isDoubleClick = inputs.isDoubleClick()
@@ -32,9 +34,9 @@ const useHandleEvents = (id: string) => {
       }
       callbacks.onPointerUp?.(info, e)
     },
-    onPointerMove: (e: React.PointerEvent) => {
-      if ((e as any).dead) return
-      (e as any).dead = true
+    onPointerMove: (e: TLPointerEvent) => {
+      if (e.dead) return
+      e.dead = true
       if (!inputs.pointerIsValid(e)) return
       const info = inputs.pointerMove(e, id)
       if (e.currentTarget.hasPointerCapture(e.pointerId)) {

@@ -1,21 +1,20 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import * as React from 'react'
 import styled from '@emotion/styled'
-import { HTMLContainer, TLShapeUtil } from 'core'
+import { HTMLContainer, TLComponentProps, TLIndicatorProps, TLShapeUtil } from 'core'
 import TextShape from './TextShape'
 
 type T = TextShape
-type E = HTMLDivElement
 
-class TextUtil extends TLShapeUtil<T, E> {
-  Component = TLShapeUtil.Component<T, E>(({
+class TextUtil extends TLShapeUtil<T> {
+  Component = ({
     shape,
     isGhost,
     isEditing,
     events,
     onShapeBlur,
     onShapeChange,
-  }, ref) => {
+  }: TLComponentProps<T>) => {
     const { text } = shape
     const rInput = React.useRef<HTMLTextAreaElement>(null)
 
@@ -35,7 +34,7 @@ class TextUtil extends TLShapeUtil<T, E> {
       })
     }, [isEditing, onShapeBlur])
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    const handleKeyDown = (e: React.KeyboardEvent) => {
       if (e.key === 'Escape') {
         onShapeChange?.({ reset: true })
       }
@@ -51,7 +50,7 @@ class TextUtil extends TLShapeUtil<T, E> {
     }
 
     return (
-      <HTMLContainer ref={ref} {...events}>
+      <HTMLContainer {...events}>
         <Wrapper isEditing={isEditing} isGhost={isGhost} onPointerDown={handlePointerDown}>
           <InnerWrapper
             isEditing={isEditing}
@@ -88,12 +87,12 @@ class TextUtil extends TLShapeUtil<T, E> {
         </Wrapper>
       </HTMLContainer>
     )
-  })
+  }
 
-  Indicator = TLShapeUtil.Indicator<T>(({ shape }) => {
+  Indicator = ({ shape }: TLIndicatorProps<T>) => {
     const { height, width } = shape.getBounds()
     return <rect height={height} width={width} x={0} y={0} />
-  })
+  }
 }
 
 type WrapperProps = {
@@ -165,4 +164,4 @@ const TextArea = styled.textarea`
   overflow-wrap: break-word
 `
 
-export default TextUtil
+export default new TextUtil()

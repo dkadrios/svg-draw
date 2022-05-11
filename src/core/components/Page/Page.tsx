@@ -22,7 +22,7 @@ interface PageProps<T extends TLShape> {
 /**
  * The Page component renders the current page.
  */
-const Page = <T extends TLShape, M extends Record<string, unknown>>({
+const Page = <T extends TLShape>({
   page,
   pageState,
   hideBounds,

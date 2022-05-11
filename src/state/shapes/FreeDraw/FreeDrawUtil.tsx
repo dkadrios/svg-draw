@@ -1,17 +1,16 @@
 import * as React from 'react'
-import { strokeWidths } from 'types'
+import { TLComponentProps, strokeWidths } from 'types'
 import { vec } from 'utils'
 import { SVGContainer, TLShapeUtil } from 'core'
 import type FreeDrawShape from './FreeDrawShape'
 
 type T = FreeDrawShape
-type E = SVGSVGElement
 
 // Regex to trim numbers to 2 decimal places
 export const TRIM_NUMBERS = /(\s?[A-Z]?,?-?[0-9]*\.[0-9]{0,2})(([0-9]|e|-)*)/g
 
-class FreeDrawUtil extends TLShapeUtil<T, E> {
-  Component = TLShapeUtil.Component<T, E>(({ shape, isSelected, isGhost, events }, ref) => {
+class FreeDrawUtil extends TLShapeUtil<T> {
+  Component = ({ shape, isSelected, isGhost, events }: TLComponentProps<T>) => {
     const { points, styles: { color, size } } = shape
 
     const pathTDSnapshot = React.useMemo(() => this.getSVGPathFromPoints(points), [points])
@@ -24,7 +23,6 @@ class FreeDrawUtil extends TLShapeUtil<T, E> {
     return (
       <SVGContainer
         id={`${shape.id }_svg`}
-        ref={ref}
         {...events}
       >
         <g opacity={isGhost ? 0.5 : 1}>
@@ -55,9 +53,7 @@ class FreeDrawUtil extends TLShapeUtil<T, E> {
         </g>
       </SVGContainer>
     )
-  })
-
-  Indicator = TLShapeUtil.Indicator<FreeDrawShape>(() => null)
+  }
 
   getSVGPathFromPoints(points: number[][]) {
     if (!points.length) return ''
@@ -73,4 +69,4 @@ class FreeDrawUtil extends TLShapeUtil<T, E> {
     ).join(' ').replaceAll(TRIM_NUMBERS, '$1')
   }
 }
-export default FreeDrawUtil
+export default new FreeDrawUtil()
