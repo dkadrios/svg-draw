@@ -10,11 +10,12 @@ import Crop54Icon from '@mui/icons-material/Crop54'
 import TouchAppOutlinedIcon from '@mui/icons-material/TouchAppOutlined'
 import ArrowRightAltSharpIcon from '@mui/icons-material/ArrowRightAltSharp'
 import TextFieldsIcon from '@mui/icons-material/TextFields'
+import StraightenIcon from '@mui/icons-material/Straighten'
 import BorderClearIcon from '@mui/icons-material/BorderClear'
 import { useStateManager } from 'state/useStateManager'
 import { TDToolType } from '../types'
 import StylesSelector from './StylesSelector'
-import ImageUploadButton from './ImageUploadButton'
+import BackgroundImage from './BackgroundImage/BackgroundImage'
 
 const Toolbar = () => {
   const stateManager = useStateManager()
@@ -55,13 +56,16 @@ const Toolbar = () => {
             <ToggleButton title="Text Tool" value={TDToolType.Text}>
               <TextFieldsIcon />
             </ToggleButton>
+            <ToggleButton title="Measure Tool" value={TDToolType.MeasureLine}>
+              <StraightenIcon />
+            </ToggleButton>
           </ToggleButtonGroup>
 
           <ToggleButton onChange={handleShowGridChange} selected={!hideGrid} title="Toggle Grid" value="check">
             <BorderClearIcon />
           </ToggleButton>
 
-          <ImageUploadButton />
+          <BackgroundImage />
 
           <StylesSelector />
         </Stack>

@@ -47,6 +47,10 @@ abstract class BaseShape implements TLShape, Moveable {
 
   abstract getBounds(): TLBounds
 
+  getStateManager() {
+    return BaseShape.sm
+  }
+
   produce(patch: Partial<TDShape>) {
     return produce(this, draft => Object.assign(draft, patch))
   }

@@ -16,7 +16,7 @@ class MeasureLineUtil extends TLShapeUtil<MeasureLineShape> {
     const label = shape.getDistanceLabel()
     const { height, width } = getTextSize(label, font)
     const bounds = shape.getBounds()
-    const scale = Math.max(
+    const labelScale = Math.max(
       0.5,
       Math.min(1, Math.max(dist / (height + 128), dist / (width + 128))),
     )
@@ -28,7 +28,7 @@ class MeasureLineUtil extends TLShapeUtil<MeasureLineShape> {
           font={font}
           offsetX={0}
           offsetY={0}
-          scale={scale}
+          scale={labelScale}
           text={label}
         />
         <SVGContainer {...events}>
@@ -43,12 +43,12 @@ class MeasureLineUtil extends TLShapeUtil<MeasureLineShape> {
               />
               <rect
                 fill="black"
-                height={height * scale}
-                rx={4 * scale}
-                ry={4 * scale}
-                width={width * scale}
-                x={bounds.width / 2 - (width / 2) * scale}
-                y={bounds.height / 2 - (height / 2) * scale}
+                height={height * labelScale}
+                rx={4 * labelScale}
+                ry={4 * labelScale}
+                width={width * labelScale}
+                x={bounds.width / 2 - (width / 2) * labelScale}
+                y={bounds.height / 2 - (height / 2) * labelScale}
               />
             </mask>
           </defs>

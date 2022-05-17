@@ -8,15 +8,19 @@ import type {
   TDSettings,
   TDShape,
   TDShapeStyle,
-  TDShapesList, TLBounds, TLCallbackNames, TLPageState,
+  TDShapesList,
+  TLBounds,
+  TLCallbackNames,
+  TLPageState,
 } from 'types'
-import { TDShapeType, TDToolType } from 'types'
+import { BASE_SCALE, TDShapeType, TDToolType } from 'types'
 import { getBoundsFromPoints, vec } from 'utils'
 import { TLShapeUtil, TLShapeUtilsMap } from '../core'
 import { Page, PageState, Toolbar } from './stores'
 import SelectTool from './SelectTool'
 import BaseShape from './shapes/BaseShape'
 import registerShapes from './shapes'
+import { ImageShape } from './shapes/Image'
 
 class StateManager {
   shapes: Record<string, Class<TDShape>> = {}
@@ -116,6 +120,16 @@ class StateManager {
 
   setSettings(settings: Partial<TDSettings>) {
     this.pageState.setSettings(settings)
+  }
+
+  getPage() {
+    return this.page
+  }
+
+  getScale() {
+    const bgImage = this.page.find({ type: TDShapeType.Image, isBackground: true }) as ImageShape
+    if (!bgImage || !bgImage.scale) return BASE_SCALE
+    return bgImage.getScale()
   }
 
   getGridFactor() {

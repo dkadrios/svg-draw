@@ -3,6 +3,7 @@ import produce from 'immer'
 
 type CBFunction = (...args: any[]) => void
 
+// TODO: react-redux-like solution for providing services between users and stores
 class Store {
   state: any = {}
 

@@ -1,17 +1,34 @@
-import { TDShapeType, Transformable, TransformedBounds } from 'types'
+import {
+  BASE_SCALE,
+  BgImageRatioScale,
+  TDShapeType,
+  Transformable,
+  TransformedBounds,
+  Unit,
+} from 'types'
 import { vec } from 'utils'
 import BaseShape, { BaseEntity, BaseShapeCreateProps } from '../BaseShape'
 import { fileToBase64, getImagePropsAtPoint, getImageSizeFromSrc } from './utils'
 
+export type BgImageScale = {
+  direction: 'horizontal' | 'vertical'
+  distance: number,
+  unit: Unit
+}
+
 export interface ImageEntity extends BaseEntity {
   type: TDShapeType.Image
   size: number[]
-  src: string
+  src: string,
+  isBackground: boolean,
+  scale?: BgImageScale
 }
 
-interface ImageShapeCreateProps extends BaseShapeCreateProps {
+export interface ImageShapeCreateProps extends BaseShapeCreateProps {
   size: number[],
-  src: string
+  src: string,
+  isBackground?: boolean,
+  scale?: BgImageScale
 }
 
 class ImageShape extends BaseShape implements ImageEntity, Transformable {
@@ -23,25 +40,31 @@ class ImageShape extends BaseShape implements ImageEntity, Transformable {
 
   src: string
 
-  static async createImageShapeFromFile(file: File, point: number[]) {
+  isBackground: boolean
+
+  scale?: BgImageScale
+
+  static async createImageShapeFromFile(file: File, point: number[], props: Partial<ImageEntity> = {}) {
     const src = await fileToBase64(file)
     if (!src) throw new Error('Failed to create src')
     const size = await getImageSizeFromSrc(src)
 
-    return new ImageShape(getImagePropsAtPoint(point, size, src))
+    return new ImageShape({ ...getImagePropsAtPoint(point, size, src), ...props })
   }
 
-  static async createImageShapeFromUrl(url: string, point: number[]) {
+  static async createImageShapeFromUrl(url: string, point: number[], props: Partial<ImageEntity> = {}) {
     if (!url) throw Error('no url')
     const size = await getImageSizeFromSrc(url)
 
-    return new ImageShape(getImagePropsAtPoint(point, size, url))
+    return new ImageShape({ ...getImagePropsAtPoint(point, size, url), ...props })
   }
 
   constructor(shape: ImageShapeCreateProps) {
     super(shape)
     this.size = shape.size || [1, 1]
     this.src = shape.src
+    this.isBackground = !!shape.isBackground
+    this.scale = shape.scale || undefined
   }
 
   getBounds() {
@@ -61,6 +84,15 @@ class ImageShape extends BaseShape implements ImageEntity, Transformable {
       size: vec.toFixed([newBounds.width, newBounds.height]),
       point: vec.toFixed([newBounds.minX, newBounds.minY]),
     })
+  }
+
+  getScale(): BgImageRatioScale {
+    if (!this.isBackground || !this.scale) return BASE_SCALE
+    const distPx = this.scale.direction === 'horizontal' ? this.size[0] : this.size[1]
+    return {
+      ratio: this.scale.distance / distPx,
+      unit: this.scale.unit,
+    }
   }
 }
 export default ImageShape

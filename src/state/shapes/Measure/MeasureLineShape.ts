@@ -21,9 +21,12 @@ class MeasureLineShape extends BaseLineShape implements HandlesMoveable {
   }
 
   getDistanceLabel() {
-    return `${this.getDistance()} px`
+    const scale = this.getStateManager().getScale()
+    const distance = (this.getDistance() * scale.ratio).toFixed(2)
+    return `${distance} ${scale.unit}`
   }
 
+  // TODO: use <marker> syntax for these?
   getTips(tipLength = TIP_LENGTH) {
     const { handles: { start: { point: start }, end: { point: end } } } = this
     const halfTip = tipLength / 2

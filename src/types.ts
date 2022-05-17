@@ -18,6 +18,18 @@ export type TDPageState = TLPageState & { settings: TDSettings }
 export type TDPage = TLPage<TDShape>
 export type TDSerializedPage = TLPage<TDEntity>
 
+export type Unit = 'px' | 'mi' | 'ft' | 'km' | 'm'
+
+export interface BgImageRatioScale {
+  ratio: number,
+  unit: Unit
+}
+
+export const BASE_SCALE: BgImageRatioScale = {
+  ratio: 1,
+  unit: 'px',
+}
+
 export type TDShapeStyle = {
   color?: string
   fill?: string,
@@ -48,7 +60,8 @@ export enum TDToolType {
   Rectangle = 'rectangle',
   Line = 'line',
   FreeDraw = 'freedraw',
-  Text = 'text'
+  Text = 'text',
+  MeasureLine = 'measure_line',
 }
 
 export type TDShape = LineShape | RectShape | FreeDrawShape | TextShape | ImageShape | MeasureLineShape

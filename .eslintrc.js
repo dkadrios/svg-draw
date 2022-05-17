@@ -170,6 +170,7 @@ module.exports = {
     'no-useless-concat': 'error',
     'no-use-before-define': 'off',
     '@typescript-eslint/no-use-before-define': ['error'],
+    'implicit-arrow-linebreak': 'off',
     'no-shadow': 'off',
     '@typescript-eslint/no-shadow': 'error',
     '@typescript-eslint/ban-ts-comment': 'off',
