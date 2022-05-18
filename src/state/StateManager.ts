@@ -21,6 +21,7 @@ import SelectTool from './SelectTool'
 import BaseShape from './shapes/BaseShape'
 import registerShapes from './shapes'
 import { ImageShape } from './shapes/Image'
+import { BgImageScale } from './shapes/Image/ImageShape'
 
 class StateManager {
   shapes: Record<string, Class<TDShape>> = {}
@@ -139,6 +140,22 @@ class StateManager {
 
   getNextChildIndex() {
     return this.page.getNextChildIndex()
+  }
+
+  createBackgroundImage = (image: ImageShape, scale?: BgImageScale) => {
+    const page = this.getPage()
+    const imageToAdd = image.produce({
+      childIndex: page.getMinChildIndex() - 1,
+      isBackground: true,
+      scale,
+    })
+
+    // Remove previous BG image if exists
+    const prevImage = page.find({ type: TDShapeType.Image, isBackground: true })
+    if (prevImage) page.removeShape(prevImage.id)
+
+    page.addShape(imageToAdd)
+    this.setSelected(imageToAdd.id)
   }
 
   getCurrentStyles() {

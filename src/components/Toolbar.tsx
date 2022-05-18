@@ -13,9 +13,9 @@ import TextFieldsIcon from '@mui/icons-material/TextFields'
 import StraightenIcon from '@mui/icons-material/Straighten'
 import BorderClearIcon from '@mui/icons-material/BorderClear'
 import { useStateManager } from 'state/useStateManager'
-import { TDToolType } from '../types'
+import { TDToolType } from 'types'
 import StylesSelector from './StylesSelector'
-import BackgroundImage from './BackgroundImage/BackgroundImage'
+import SettingsDialog from './SettingsDialog/SettingsDialog'
 
 const Toolbar = () => {
   const stateManager = useStateManager()
@@ -65,7 +65,7 @@ const Toolbar = () => {
             <BorderClearIcon />
           </ToggleButton>
 
-          <BackgroundImage />
+          <SettingsDialog />
 
           <StylesSelector />
         </Stack>

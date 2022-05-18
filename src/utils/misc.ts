@@ -347,3 +347,6 @@ export const isDarwin = (): boolean => /Mac|iPod|iPhone|iPad/.test(window.naviga
 
 /* Get whether an event is command (mac) or control (pc) */
 export const metaKey = (e: KeyboardEvent | React.KeyboardEvent): boolean => isDarwin() ? e.metaKey : e.ctrlKey
+
+// Check for empty JS object
+export const isEmpty = (obj: unknown) => obj && Object.keys(obj as object).length === 0

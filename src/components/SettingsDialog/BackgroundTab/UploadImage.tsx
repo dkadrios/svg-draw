@@ -7,41 +7,60 @@ import CloudDownloadIcon from '@mui/icons-material/CloudDownload'
 import CloseIcon from '@mui/icons-material/Close'
 import Button from '@mui/material/Button'
 import { useStateManager } from 'state/useStateManager'
-import { ImageShape } from '../../state/shapes/Image'
-
-interface BackgroundImageUploadProps {
-  image: null | ImageShape,
-  onChange: (shape: null | ImageShape) => void
-}
+import { ImageShape } from '../../../state/shapes/Image'
 
 const PreviewBox = styled(Box)`
-  border: 1px solid;
-  width: max-content;
-  max-width: 200px;
-  max-height: 200px;
   text-align: center;
-  height: auto;
+  width: 300px;
 `
 
 const PreviewImgWrapper = styled.div`
+  display: inline-block;
   position: relative;
-  line-height: 0;
+  width: auto;
+  margin: auto;
+`
+
+const PreviewImgWidth = styled.img`
+  display: block;
+  max-width: 300px;
+  height: auto;
+`
+
+const PreviewImgHeight = styled.img`
+  display: block;
+  max-height: 200px;
+  width: auto;
 `
 
 const PreviewTextWrapper = styled.div`
+  width: 300px;
+  height: 200px;
+  border: 1px solid;
   padding: 6px;
-`
-
-const PreviewImg = styled.img`
-  width: 100%;
 `
 
 const CloseBtn = styled(Button)`
   position: absolute;
+  top: 0;
   right: 0;
   padding: 0;
   min-width: auto;
 `
+
+const PreviewImg = ({ image }: {image: null | ImageShape }) => {
+  if (!image) return null
+
+  const Component = image.size[0] / image.size[1] >= 1.5 ? PreviewImgWidth : PreviewImgHeight
+  return (
+    <Component alt="" src={image.src} />
+  )
+}
+
+interface BackgroundImageUploadProps {
+  image?: ImageShape,
+  onChange: (shape?: ImageShape) => void
+}
 
 const BackgroundImage = ({ onChange, image }: BackgroundImageUploadProps) => {
   const [url, setUrl] = useState('')
@@ -49,7 +68,7 @@ const BackgroundImage = ({ onChange, image }: BackgroundImageUploadProps) => {
 
   const onChangeUrl = (e: React.BaseSyntheticEvent) => setUrl(e.currentTarget.value)
   const onDragOver = (e: React.BaseSyntheticEvent) => e.preventDefault()
-  const onImageClear = () => onChange(null)
+  const onImageClear = () => onChange()
 
   const onDrop = async (e: React.DragEvent) => {
     e.preventDefault()
@@ -70,11 +89,11 @@ const BackgroundImage = ({ onChange, image }: BackgroundImageUploadProps) => {
   }
 
   return (
-    <Stack alignItems="flex-start" direction="row" spacing={1}>
+    <Stack alignItems="flex-start" direction="row" spacing={3}>
       <PreviewBox onDragOver={onDragOver} onDrop={onDrop}>
         {image && (
           <PreviewImgWrapper>
-            <PreviewImg alt="" src={image.src} />
+            <PreviewImg image={image} />
             <CloseBtn color="info" onClick={onImageClear} size="small" variant="contained">
               <CloseIcon />
             </CloseBtn>
@@ -90,7 +109,7 @@ const BackgroundImage = ({ onChange, image }: BackgroundImageUploadProps) => {
       <Stack direction="column" spacing={1}>
         <TextField label="URL" onChange={onChangeUrl} placeholder="paste URL here" size="small" value={url} variant="outlined" />
         <Button onClick={handleAddImageByUrl} size="small" variant="outlined">
-          Add by URL
+          Or Add by URL
         </Button>
       </Stack>
     </Stack>
