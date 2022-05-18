@@ -1,7 +1,6 @@
 import type { TDPage, TDShape } from 'types'
 import { uniqueId } from 'utils'
 import { Unit } from 'types'
-import { ImageShape } from '../shapes/Image'
 import Store from './store'
 
 class Page extends Store {

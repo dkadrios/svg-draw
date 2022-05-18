@@ -9,7 +9,8 @@ import Dialog from '@mui/material/Dialog'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 import IconButton from '@mui/material/IconButton'
-import BackgroundTab from './BackgroundTab/BackgroundTab'
+import BackgroundTab from './BackgroundTab'
+import StudentsView from './StudentsViewTab/StudentsViewTab'
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -73,6 +74,9 @@ const SettingsDialog = () => {
           <Box sx={{ my: 3 }}>
             <TabPanel index={0} value={currentTab}>
               <BackgroundTab />
+            </TabPanel>
+            <TabPanel index={1} value={currentTab}>
+              <StudentsView />
             </TabPanel>
           </Box>
         </DialogContent>

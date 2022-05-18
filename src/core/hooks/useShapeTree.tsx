@@ -48,7 +48,7 @@ const useShapeTree = <T extends TLShape, M extends Record<string, unknown>>(
   // Populate the shape tree
   const tree: IShapeTreeNode<T, M>[] = shapes.map(shape => ({
     shape,
-    meta: meta as any,
+    meta,
     isGhost: !!shape.isGhost,
     isEditing: pageState.editingId === shape.id,
     isSelected: pageState.selectedId === shape.id,
