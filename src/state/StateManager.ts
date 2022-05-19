@@ -127,12 +127,6 @@ class StateManager {
     return this.page
   }
 
-  getScale() {
-    const bgImage = this.page.find({ type: TDShapeType.Image, isBackground: true }) as ImageShape
-    if (!bgImage || !bgImage.scale) return BASE_SCALE
-    return bgImage.getScale()
-  }
-
   getGridFactor() {
     const { grid, hideGrid } = this.getSettings()
     return hideGrid ? 1 : grid
@@ -140,6 +134,17 @@ class StateManager {
 
   getNextChildIndex() {
     return this.page.getNextChildIndex()
+  }
+
+  getBackgroundImage() {
+    const image = this.page.find({ type: TDShapeType.Image, isBackground: true })
+    return image ? image as ImageShape : undefined
+  }
+
+  getScale() {
+    const bgImage = this.getBackgroundImage()
+    if (!bgImage || !bgImage.scale) return BASE_SCALE
+    return bgImage.getScale()
   }
 
   createBackgroundImage = (image: ImageShape, scale?: BgImageScale) => {
@@ -151,7 +156,7 @@ class StateManager {
     })
 
     // Remove previous BG image if exists
-    const prevImage = page.find({ type: TDShapeType.Image, isBackground: true })
+    const prevImage = this.getBackgroundImage()
     if (prevImage) page.removeShape(prevImage.id)
 
     page.addShape(imageToAdd)

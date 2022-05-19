@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
@@ -8,6 +8,7 @@ import { useStateManager } from 'state/useStateManager'
 import { ImageShape } from 'state/shapes/Image'
 import { BgImageScale } from 'state/shapes/Image/ImageShape'
 import { isEmpty } from '../../../utils'
+import { TDShapeType } from '../../../types'
 import UploadImage from './UploadImage'
 import ScaleForm from './ScaleForm'
 
@@ -26,10 +27,6 @@ const BackgroundTab = () => {
   const [scale, setScale] = useState(defaultScale as BgImageScale)
 
   const stateManager = useStateManager()
-  const createImage = () => {
-    if (!image) return
-    stateManager.createBackgroundImage(image, scale)
-  }
 
   const getValidationMessages = () => {
     const newMessages: ValidationMessages = {}
@@ -42,12 +39,18 @@ const BackgroundTab = () => {
   const onImageChange = (shape?: ImageShape) => {
     setImage(shape)
     if (shape) {
-      setScale({ ...defaultScale, distance: shape.size[0] })
+      setScale(shape.scale || { ...defaultScale, distance: shape.size[0] })
     }
   }
-  const onScaleChange = (val: BgImageScale) => {
-    setScale(val)
+  const createImage = () => {
+    if (!image) return
+    stateManager.createBackgroundImage(image, scale)
   }
+
+  useEffect(() => {
+    const bgImage = stateManager.getBackgroundImage()
+    onImageChange(bgImage)
+  }, [stateManager])
 
   const messages = getValidationMessages()
   const isValid = isEmpty(messages)
@@ -59,7 +62,7 @@ const BackgroundTab = () => {
       <Typography component="h2" variant="h6">
         Background Image Scale
       </Typography>
-      <ScaleForm image={image} messages={messages} onChange={onScaleChange} scale={scale} />
+      <ScaleForm image={image} messages={messages} onChange={setScale} scale={scale} />
       <Box sx={{ display: 'flex', flexDirection: 'row-reverse' }}>
         <Button color="primary" disabled={!image || !isValid} onClick={createImage} variant="contained">Set Background Image</Button>
       </Box>
