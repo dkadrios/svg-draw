@@ -113,7 +113,7 @@ export const vec = {
     return Math.atan2(vec.cpr(A, B), vec.dpr(A, B))
   },
 
-  /* Angle between vector A and vector B in radians */
+  /* Angle between positive x-axis and vector A -> B in radians */
   angle(A: number[], B: number[]): number {
     return Math.atan2(B[1] - A[1], B[0] - A[0])
   },

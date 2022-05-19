@@ -40,9 +40,10 @@ abstract class BaseLineShape extends BaseShape implements HandlesMoveable {
       const handle = draft.handles[handleKey]
 
       const delta = snapToAngle
-        ? this.getHandleSnappedToAngle(handle, rawDelta)
+        ? draft.getHandleSnappedToAngle(handle, rawDelta)
         : rawDelta
-      handle.point = vec.snap(vec.add(handle.point, delta), grid)
+
+      handle.point = vec.toFixed(vec.snap(vec.add(handle.point, delta), grid))
 
       const topLeft = draft.point
       const nextBounds = draft.getBounds()
@@ -60,7 +61,7 @@ abstract class BaseLineShape extends BaseShape implements HandlesMoveable {
   // Move handle by delta and snap it to 15 degree angles
   private getHandleSnappedToAngle(handle: TLHandle, delta: number[]) {
     const { handles: { start, end } } = this
-    const A = (start === handle ? end : start).point
+    const A = (handle === start ? end : start).point
     const B = handle.point
     const C = vec.toFixed(vec.add(B, delta))
     const angle = vec.angle(A, C)

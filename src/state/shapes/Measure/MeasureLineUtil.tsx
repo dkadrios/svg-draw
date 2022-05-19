@@ -36,10 +36,10 @@ class MeasureLineUtil extends TLShapeUtil<MeasureLineShape> {
             <mask id={`${shape.id}_clip`}>
               <rect
                 fill="white"
-                height={bounds.height}
-                width={bounds.width}
-                x={0}
-                y={0}
+                height={bounds.height + 200}
+                width={bounds.width + 200}
+                x={-100}
+                y={-100}
               />
               <rect
                 fill="black"
@@ -52,30 +52,31 @@ class MeasureLineUtil extends TLShapeUtil<MeasureLineShape> {
               />
             </mask>
           </defs>
-          <line
-            className="tl-stroke-hitarea"
-            {...getSvgLineProps(start.point, end.point)}
-          />
-          <line
+          <g
             mask={`url(#${shape.id}_clip)`}
-            pointerEvents="stroke"
-            stroke="black"
-            strokeWidth="1"
-            {...getSvgLineProps(start.point, end.point)}
-          />
-          {/* Draw measure line tips */}
-          <line
-            pointerEvents="stroke"
-            stroke="black"
-            strokeWidth="1"
-            {...getSvgLineProps(startTip.start, startTip.end)}
-          />
-          <line
-            pointerEvents="stroke"
-            stroke="black"
-            strokeWidth="1"
-            {...getSvgLineProps(endTip.start, endTip.end)}
-          />
+            pointerEvents="none"
+          >
+            <line
+              className="tl-stroke-hitarea"
+              {...getSvgLineProps(start.point, end.point)}
+            />
+            <line
+              stroke="black"
+              strokeWidth="1"
+              {...getSvgLineProps(start.point, end.point)}
+            />
+            {/* Draw measure line tips */}
+            <line
+              stroke="black"
+              strokeWidth="1"
+              {...getSvgLineProps(startTip.start, startTip.end)}
+            />
+            <line
+              stroke="black"
+              strokeWidth="1"
+              {...getSvgLineProps(endTip.start, endTip.end)}
+            />
+          </g>
         </SVGContainer>
       </>
     )
