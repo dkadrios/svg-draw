@@ -47,6 +47,10 @@ class RectShape extends BaseShape implements RectEntity {
       point: vec.toFixed([newBounds.minX, newBounds.minY]),
     })
   }
+
+  getEntity() {
+    return { ...super.getEntity(), size: this.size } as RectShape
+  }
 }
 
 export default RectShape

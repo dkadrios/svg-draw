@@ -1,22 +1,24 @@
-import React, { useEffect, useState } from 'react'
-import { Renderer, TLBounds, TLCallbackNames, TLPage, TLPerformanceMode } from 'core'
-import { TDShape } from 'types'
+import React, { useEffect, useImperativeHandle, useState } from 'react'
+import { Renderer, TLBounds, TLCallbackNames, TLPerformanceMode } from 'core'
+import type { TDDocument } from 'types'
 import StateManager from 'state'
 import { StateManagerContext } from 'state/useStateManager'
 import Toolbar from './components/Toolbar'
 
-const emptyPage = { id: 'page', shapes: {} } as TLPage<TDShape>
-
+const emptyPage = { page: { id: 'page', shapes: {} } } as TDDocument
+type Ref = React.ForwardedRef<() => TDDocument>
 type SvgDrawProps = {
-  data: TLPage<TDShape>
+  data: TDDocument,
+  isAdminMode?: boolean,
 }
-export const SvgDraw = ({ data = emptyPage }: SvgDrawProps) => {
-  const [stateManager] = useState(() => new StateManager({
-    page: data,
-  }))
+
+export const SvgDraw = ({ data = emptyPage, isAdminMode = true }: SvgDrawProps, ref?: Ref) => {
+  const [stateManager] = useState(() => new StateManager(data, isAdminMode))
 
   const [page, setPage] = useState(stateManager.page.state)
   const [pageState, setPageState] = useState(stateManager.pageState.state)
+
+  useImperativeHandle(ref, () => () => stateManager.export())
 
   useEffect(() => {
     stateManager.page.subscribe(setPage)
@@ -26,6 +28,10 @@ export const SvgDraw = ({ data = emptyPage }: SvgDrawProps) => {
       stateManager.pageState.unsubscribe(setPageState)
     }
   }, [stateManager.page, stateManager.pageState])
+
+  useEffect(() => {
+    stateManager.init(data, isAdminMode)
+  }, [stateManager, data])
 
   const handleCallback = (eventName: TLCallbackNames) => (...rest: unknown[]) => {
     stateManager.handleCallback(eventName, ...rest)
@@ -75,4 +81,5 @@ export const SvgDraw = ({ data = emptyPage }: SvgDrawProps) => {
   )
 }
 
-export default SvgDraw
+const ForwardedSvgDraw = React.forwardRef(SvgDraw)
+export default ForwardedSvgDraw

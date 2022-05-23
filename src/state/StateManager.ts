@@ -2,20 +2,17 @@
 import type {
   Class,
   TDCallbacks,
+  TDDocument,
   TDEntitiesList,
   TDEntity,
-  TDSerializedPage,
   TDSettings,
   TDShape,
   TDShapeStyle,
-  TDShapesList,
-  TLBounds,
-  TLCallbackNames,
-  TLPageState,
+  TDShapesList, TLBounds, TLCallbackNames,
 } from 'types'
 import { BASE_SCALE, TDShapeType, TDToolType } from 'types'
 import { getBoundsFromPoints, vec } from 'utils'
-import { TLShapeUtil, TLShapeUtilsMap } from '../core'
+import { TLShapeUtil, TLShapeUtilsMap } from 'core'
 import { Page, PageState, Toolbar } from './stores'
 import SelectTool from './SelectTool'
 import BaseShape from './shapes/BaseShape'
@@ -49,16 +46,25 @@ class StateManager {
     [100, 100],
   ])
 
-  constructor(initState: { page?: TDSerializedPage, pageState?: TLPageState } = {}) {
+  constructor(document: TDDocument, isAdminMode = true) {
     registerShapes(this)
     BaseShape.init(this)
 
-    const shapes = (initState && initState.page)
-      ? this.loadShapes(initState.page.shapes)
-      : {} as TDShapesList
-    this.page = new Page({ ...initState.page, shapes })
-    this.pageState = new PageState(initState.pageState)
-    this.toolbar = new Toolbar()
+    const { page = { shapes: {} }, pageState, settings } = document
+
+    const shapes = this.loadShapes(page.shapes)
+    this.page = new Page({ ...page, shapes })
+    this.pageState = new PageState(pageState)
+    this.toolbar = new Toolbar(settings, isAdminMode)
+  }
+
+  init(document: TDDocument, isAdminMode = true) {
+    const { page = { shapes: {} }, pageState, settings } = document
+
+    const shapes = this.loadShapes(page.shapes)
+    this.page.init({ ...page, shapes })
+    this.pageState.init(pageState)
+    this.toolbar.init(settings, isAdminMode)
   }
 
   registerShape(key: TDShapeType, Shape: Class<TDShape>, util: TLShapeUtil<TDShape>) {
@@ -258,8 +264,11 @@ class StateManager {
     }
   }
 
-  exportData() {
-    return this.page.state
+  export(): TDDocument {
+    return {
+      page: this.page.export(),
+      settings: this.toolbar.getSettings(),
+    }
   }
 }
 export default StateManager

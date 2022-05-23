@@ -16,7 +16,6 @@ export type TDSettings = {
 export type TDPageState = TLPageState & { settings: TDSettings }
 
 export type TDPage = TLPage<TDShape>
-export type TDSerializedPage = TLPage<TDEntity>
 
 export type Unit = 'px' | 'mi' | 'ft' | 'km' | 'm'
 
@@ -91,3 +90,26 @@ export type TDCallbacks = Partial<TLCallbacks>
 export type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
 
 export type Class<T> = new (...args: any[]) => T;
+
+export interface TDDocumentViewSettings {
+  modifyLocked: boolean
+  styles: boolean,
+  grid: boolean,
+  tools: { [key in TDToolType]: boolean }
+}
+
+export interface TDDocument {
+  page: TLPage<TDEntity>,
+  pageState?: TDPageState
+  settings?: TDDocumentViewSettings
+}
+
+export type TDToolsSettings = TDDocumentViewSettings['tools']
+
+export const DEFAULT_VIEW_SETTINGS: TDDocumentViewSettings = {
+  modifyLocked: false,
+  styles: true,
+  grid: true,
+  tools: Object.values(TDToolType).reduce((acc, t) => (
+    { ...acc, [t]: true }), {} as TDToolsSettings),
+}

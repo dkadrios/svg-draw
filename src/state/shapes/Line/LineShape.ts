@@ -24,7 +24,10 @@ class LineShape extends BaseLineShape implements LineEntity, HandlesMoveable {
 
     this.initStyles(shape.styles)
   }
-  // getBounds and moveHandle come from BaseLineShape
+
+  getEntity() {
+    return { ...super.getEntity(), handles: this.handles } as LineEntity
+  }
 }
 
 export default LineShape

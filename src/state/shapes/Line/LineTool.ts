@@ -1,6 +1,6 @@
 import { TDCallbacks, TDToolType, TLPointerInfo } from 'types'
-import BaseTool from '../../BaseTool'
-import { MoveHandleSession } from '../../sessions'
+import BaseTool from 'state/BaseTool'
+import { MoveHandleSession } from 'state/sessions'
 import LineShape from './LineShape'
 
 class LineTool extends BaseTool implements TDCallbacks {

@@ -44,5 +44,9 @@ class MeasureLineShape extends BaseLineShape implements HandlesMoveable {
       },
     }
   }
+
+  getEntity() {
+    return { ...super.getEntity(), handles: this.handles } as MeasureLineEntity
+  }
 }
 export default MeasureLineShape

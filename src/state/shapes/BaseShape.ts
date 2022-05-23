@@ -91,6 +91,17 @@ abstract class BaseShape implements TLShape, Moveable {
     if (!this.handles || !(handleKey in this.handles)) return undefined
     return this.handles[handleKey]
   }
+
+  getEntity() {
+    return {
+      id: this.id,
+      type: this.type,
+      childIndex: this.childIndex,
+      point: this.point,
+      rotation: this.rotation,
+      styles: this.styles,
+    } as BaseEntity
+  }
 }
 
 export default BaseShape

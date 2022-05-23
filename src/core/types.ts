@@ -25,7 +25,6 @@ export interface TLPageState {
   selectedId: string | null
   hoveredId: string | null
   editingId: string | null
-  [key: string]: unknown
 }
 
 export interface TLHandle {

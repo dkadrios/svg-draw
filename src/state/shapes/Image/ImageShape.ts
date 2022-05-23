@@ -94,5 +94,15 @@ class ImageShape extends BaseShape implements ImageEntity, Transformable {
       unit: this.scale.unit,
     }
   }
+
+  getEntity() {
+    return {
+      ...super.getEntity(),
+      size: this.size,
+      src: this.src,
+      isBackground: this.isBackground,
+      scale: this.scale,
+    } as ImageEntity
+  }
 }
 export default ImageShape

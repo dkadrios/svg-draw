@@ -63,6 +63,10 @@ class TextShape extends BaseShape implements TextEntity {
   getFontStyle() {
     return getFontStyle(this.styles.scale)
   }
+
+  getEntity() {
+    return { ...super.getEntity(), text: this.text } as TextEntity
+  }
 }
 
 export default TextShape

@@ -34,7 +34,7 @@ const Page = <T extends TLShape>({
 }: PageProps<T>) => {
   const { bounds: rendererBounds, shapeUtils } = useTLContext()
 
-  const shapeTree = useShapeTree(page, pageState, { ...meta, ...page.meta })
+  const shapeTree = useShapeTree(page, pageState, meta)
 
   const { bounds, isLocked, rotation } = useSelection(page, pageState, shapeUtils)
 

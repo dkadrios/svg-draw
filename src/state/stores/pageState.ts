@@ -2,27 +2,32 @@ import type { TDPageState, TDSettings, TLPageState } from 'types'
 import { clamp, uniqueId, vec } from '../../utils'
 import Store from './store'
 
-class PageState extends Store {
-  state: TDPageState
+class PageState extends Store<TDPageState> {
+  state!: TDPageState
 
-  constructor(opts = {} as TLPageState) {
+  constructor(opts = {} as TDPageState) {
     super()
-    const {
-      camera = {
+    this.init(opts)
+  }
+
+  init(opts = {} as TDPageState) {
+    const defaultOpts: TDPageState = {
+      camera: {
         point: [0, 0],
         zoom: 1,
       },
-      editingId = null,
-      id = uniqueId(),
-      selectedId = null,
-    } = opts
-
-    const settings = {
-      hideGrid: true,
-      grid: 8,
+      editingId: null,
+      hoveredId: null,
+      id: uniqueId(),
+      selectedId: null,
+      settings: {
+        hideGrid: true,
+        grid: 8,
+      },
     }
 
-    this.state = { id, camera, selectedId, hoveredId: null, editingId, settings }
+    this.state = { ...defaultOpts, ...opts }
+    this.notify()
   }
 
   getSelectedId() {

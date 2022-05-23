@@ -32,14 +32,6 @@ class FreeDrawShape extends BaseShape implements FreeDrawEntity, Transformable {
 
   getBounds() {
     // TODO: use cache register
-    /*
-    let bounds = this.pointsBoundsCache.get(shape.points)
-    if (!bounds) {
-      bounds = getBoundsFromPoints(shape.points)
-      this.pointsBoundsCache.set(shape.points, bounds)
-    }
-    return translateBounds(bounds, shape.point)
-     */
     const bounds = getBoundsFromPoints(this.points)
     return translateBounds(bounds, this.point)
   }
@@ -80,6 +72,10 @@ class FreeDrawShape extends BaseShape implements FreeDrawEntity, Transformable {
 
       draft.points = draft.points.map(p => vec.toFixed(p))
     })
+  }
+
+  getEntity() {
+    return { ...super.getEntity(), points: this.points } as FreeDrawEntity
   }
 }
 export default FreeDrawShape
