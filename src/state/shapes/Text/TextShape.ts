@@ -3,11 +3,12 @@ import { translateBounds, vec } from 'utils'
 import BaseShape, { BaseEntity, BaseShapeCreateProps } from '../BaseShape'
 import { getFontStyle, getTextSize } from '../shared/textUtils'
 
-type TextShapeStyles = Pick<TDShapeStyle, 'color' | 'scale'>
+type TextShapeStyles = Pick<TDShapeStyle, 'color'>
 
 export interface TextEntity extends BaseEntity {
   type: TDShapeType.Text,
   text: string,
+  scale: number,
   styles: TextShapeStyles
 }
 
@@ -20,7 +21,9 @@ class TextShape extends BaseShape implements TextEntity {
 
   text: string
 
-  styleProps: TDShapeStyleKeys = ['color', 'scale']
+  scale = 1
+
+  styleProps: TDShapeStyleKeys = ['color']
 
   styles!: TextShapeStyles
 
@@ -44,15 +47,12 @@ class TextShape extends BaseShape implements TextEntity {
   }
 
   transform(newBounds: TransformedBounds) {
-    const { styles: { scale = 1 } } = this
+    const { scale = 1 } = this
     const bounds = this.getBounds()
 
     return this.produce({
       point: vec.toFixed([bounds.minX, bounds.minY]),
-      styles: {
-        ...this.styles,
-        scale: scale * Math.max(Math.abs(newBounds.scaleY), Math.abs(newBounds.scaleX)),
-      },
+      scale: scale * Math.max(Math.abs(newBounds.scaleY), Math.abs(newBounds.scaleX)),
     })
   }
 
@@ -61,11 +61,11 @@ class TextShape extends BaseShape implements TextEntity {
   }
 
   getFontStyle() {
-    return getFontStyle(this.styles.scale)
+    return getFontStyle(this.scale)
   }
 
   getEntity() {
-    return { ...super.getEntity(), text: this.text } as TextEntity
+    return { ...super.getEntity(), text: this.text, scale: this.scale } as TextEntity
   }
 }
 

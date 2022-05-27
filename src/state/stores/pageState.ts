@@ -5,13 +5,13 @@ import Store from './store'
 class PageState extends Store<TDPageState> {
   state!: TDPageState
 
-  constructor(opts = {} as TDPageState) {
+  constructor(opts?: Partial<TDPageState>) {
     super()
-    this.init(opts)
+    this.reset(opts)
   }
 
-  init(opts = {} as TDPageState) {
-    const defaultOpts: TDPageState = {
+  reset(opts: Partial<TDPageState> = {}) {
+    this.action(() => ({
       camera: {
         point: [0, 0],
         zoom: 1,
@@ -24,10 +24,8 @@ class PageState extends Store<TDPageState> {
         hideGrid: true,
         grid: 8,
       },
-    }
-
-    this.state = { ...defaultOpts, ...opts }
-    this.notify()
+      ...opts,
+    }))
   }
 
   getSelectedId() {
@@ -48,7 +46,6 @@ class PageState extends Store<TDPageState> {
     })
   }
 
-  // TODO: consider removing hovered state / indicators as 'selected' state could be good enough
   setHovered(id: string | null = null) {
     this.action((draft) => {
       draft.hoveredId = id

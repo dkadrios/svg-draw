@@ -1,3 +1,4 @@
+import './wdyr'
 import React, { useRef, useState } from 'react'
 import ReactDOM from 'react-dom'
 import type { TDDocument } from 'types'
@@ -16,11 +17,7 @@ const SvgDrawExample = () => {
   }
 
   return (
-    <>
-      <SvgDraw data={doc} ref={exportRef} />
-      <button onClick={onTransmit} type="button">transmit document</button>
-      <SvgDraw data={doc} isAdminMode={false} />
-    </>
+    <SvgDraw data={doc} ref={exportRef} />
   )
 }
 

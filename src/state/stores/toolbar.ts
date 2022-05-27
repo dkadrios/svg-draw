@@ -1,9 +1,11 @@
 import {
+  DEFAULT_STYLES,
   DEFAULT_VIEW_SETTINGS,
   TDDocumentViewSettings,
   TDShapeStyle,
   TDToolType,
 } from 'types'
+import { isContained } from 'utils'
 import Store from './store'
 
 interface ToolbarState {
@@ -14,26 +16,20 @@ interface ToolbarState {
 }
 
 class Toolbar extends Store<ToolbarState> {
-  state = {
-    tool: TDToolType.Select,
-    styles: {
-      color: '#000000',
-      fill: 'transparent',
-    },
-  } as ToolbarState
+  state!: ToolbarState
 
-  constructor(settings = DEFAULT_VIEW_SETTINGS, isAdminMode = true) {
+  constructor(settings?: TDDocumentViewSettings, isAdminMode?: boolean) {
     super()
-    this.init(settings, isAdminMode)
+    this.reset(settings, isAdminMode)
   }
 
-  init(settings = DEFAULT_VIEW_SETTINGS, isAdminMode = true) {
-    this.state = {
-      ...this.state,
+  reset(settings: TDDocumentViewSettings = DEFAULT_VIEW_SETTINGS, isAdminMode = true) {
+    this.action(() => ({
+      tool: TDToolType.Select,
+      styles: DEFAULT_STYLES,
       settings,
       isAdminMode,
-    }
-    this.notify()
+    }))
   }
 
   getTool() {
@@ -55,6 +51,8 @@ class Toolbar extends Store<ToolbarState> {
   }
 
   setStyles(styles: Partial<TDShapeStyle>) {
+    // small optimization; we don't want to update state if there is no actual changes;
+    if (isContained(styles, this.state.styles)) return
     this.action((draft) => {
       draft.styles = { ...draft.styles, ...styles }
     })

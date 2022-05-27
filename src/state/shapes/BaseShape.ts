@@ -1,8 +1,8 @@
 import { immerable, produce } from 'immer'
 import { getBoundsCenter, normalizedAngle, snapAngleToSegments, uniqueId, vec } from 'utils'
 import type { TLBounds, TLEntity, TLHandle, TLShape } from 'core'
-import type { Moveable, Optional, TDShape, TDShapeStyle, TDShapeStyleKeys } from '../../types'
-import type StateManager from '../StateManager'
+import type { Moveable, Optional, TDShape, TDShapeStyle, TDShapeStyleKeys } from 'types'
+import { DEFAULT_STYLES } from 'types'
 
 export interface BaseEntity extends TLEntity {
   styles: Partial<TDShapeStyle>
@@ -11,14 +11,8 @@ export interface BaseEntity extends TLEntity {
 export type BaseShapeCreateProps =
   Optional<BaseEntity, 'id' | 'type' | 'childIndex' | 'rotation' | 'styles'>
 
-abstract class BaseShape implements TLShape, Moveable {
+abstract class BaseShape implements TLShape, Moveable, BaseEntity {
   [immerable] = true
-
-  static sm: StateManager
-
-  static init(sm: StateManager) {
-    BaseShape.sm = sm
-  }
 
   id: string
 
@@ -38,31 +32,28 @@ abstract class BaseShape implements TLShape, Moveable {
   styles: Partial<TDShapeStyle> = {}
 
   protected constructor(shape: BaseShapeCreateProps) {
-    const { sm } = BaseShape
     this.id = shape.id || uniqueId()
-    this.childIndex = shape.childIndex || sm.getNextChildIndex()
+    this.childIndex = shape.childIndex || 0
     this.point = shape.point
     this.rotation = shape.rotation ? shape.rotation : 0
   }
 
   abstract getBounds(): TLBounds
 
-  getStateManager() {
-    return BaseShape.sm
-  }
-
   produce(patch: Partial<TDShape>) {
     return produce(this, draft => Object.assign(draft, patch))
   }
 
-  initStyles(styles: Partial<TDShapeStyle> = BaseShape.sm.getCurrentStyles()) {
+  initStyles(styles: Partial<TDShapeStyle> = DEFAULT_STYLES) {
+    if (!this.styleProps) return
     this.styleProps.forEach((prop) => {
       // @ts-ignore
       this.styles[prop] = styles[prop]
     })
   }
 
-  setStyles(styles: Partial<TDShapeStyle>) {
+  setStyles(styles: Partial<TDShapeStyle>): this {
+    if (!this.styleProps) return this
     return produce(this, (draft: BaseShape) => {
       draft.styleProps.forEach((prop) => {
         // @ts-ignore

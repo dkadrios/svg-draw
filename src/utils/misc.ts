@@ -1,8 +1,6 @@
 import type React from 'react'
 import { vec } from './vec'
 
-// TODO: move intersect code here
-
 const TAU = Math.PI * 2
 
 /* -------------------------------------------------- */
@@ -77,31 +75,19 @@ export const longAngleDist = (a0: number, a1: number): number => Math.PI * 2 - s
 /* Interpolate an angle between two angles */
 export const lerpAngles = (a0: number, a1: number, t: number): number => (a0 + shortAngleDist(a0, a1) * t)
 
-/**
-   * Get the short distance between two angles.
-   * @param a0
-   * @param a1
-   */
+/* Get the short distance between two angles */
 export const angleDelta = (a0: number, a1: number): number => shortAngleDist(a0, a1)
 
-/**
- * Get the "sweep" or short distance between two points on a circle's perimeter.
- * @param C
- * @param A
- * @param B
- */
+/* Get the "sweep" or short distance between two points on a circle's perimeter */
 export const getSweep = (C: number[], A: number[], B: number[]): number => angleDelta(vec.angle(C, A), vec.angle(C, B))
 
 /**
  * Clamp radians within 0 and 2PI
- * @param r
  */
 export const clampRadians = (r: number): number => (Math.PI * 2 + r) % (Math.PI * 2)
 
 /**
  * Clamp rotation to even segments.
- * @param r
- * @param segments
  */
 export const snapAngleToSegments = (r: number, segments: number): number => {
   const seg = (Math.PI * 2) / segments
@@ -122,16 +108,8 @@ export const isAngleBetween = (a: number, b: number, c: number): boolean => {
   return (AB <= Math.PI) !== (AC > AB)
 }
 
-/**
- * Convert degrees to radians.
- * @param d
- */
 export const degreesToRadians = (d: number): number => (d * Math.PI) / 180
 
-/**
- * Convert radians to degrees.
- * @param r
- */
 export const radiansToDegrees = (r: number): number => (r * 180) / Math.PI
 
 /**
@@ -223,9 +201,8 @@ export const pointInPolyline = (A: number[], points: number[][], distance = 3): 
   return false
 }
 
-export const translatePoints = (points: number[][], delta: number[]) => (
+export const translatePoints = (points: number[][], delta: number[]) =>
   points.map(point => ([point[0] + delta[0], point[1] + delta[1]]))
-)
 
 /* -------------------------------------------------- */
 /*                Lists and Collections               */
@@ -350,3 +327,7 @@ export const metaKey = (e: KeyboardEvent | React.KeyboardEvent): boolean => isDa
 
 // Check for empty JS object
 export const isEmpty = (obj: unknown) => obj && Object.keys(obj as object).length === 0
+
+// Check if first obj is a subset of second
+export const isContained = (obj1: Record<string, unknown>, obj2: Record<string, unknown>) =>
+  Object.keys(obj1).every(k => obj1[k] === obj2[k])

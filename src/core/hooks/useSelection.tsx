@@ -17,7 +17,6 @@ const useSelection = <T extends TLShape>(
   const { rSelectionBounds } = useTLContext()
   const { selectedId } = pageState
   const rPrevBounds = React.useRef<TLBounds>()
-  // TODO: refactor knowing that there' will be not more than 1 selected item
 
   let bounds: TLBounds | undefined
   let rotation = 0

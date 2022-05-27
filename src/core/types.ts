@@ -12,7 +12,6 @@ export enum TLPerformanceMode {
 export interface TLPage<T extends TLShape | TLEntity = TLShape> {
   id: string
   name?: string
-  childIndex?: number
   shapes: Record<string, T>
 }
 

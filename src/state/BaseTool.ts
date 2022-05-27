@@ -10,7 +10,6 @@ class BaseTool implements TDCallbacks {
     this.sm = stateManager
   }
 
-  // TODO: nudge, childIndex management
   onKeyDown(key: string) {
     if (key !== 'Backspace' && key !== 'Delete') return
     const shape = this.sm.getSelectedShape()

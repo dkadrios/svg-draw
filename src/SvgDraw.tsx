@@ -1,4 +1,5 @@
 import React, { useEffect, useImperativeHandle, useState } from 'react'
+import { useSyncExternalStore } from 'use-sync-external-store/shim'
 import { Renderer, TLBounds, TLCallbackNames, TLPerformanceMode } from 'core'
 import type { TDDocument } from 'types'
 import StateManager from 'state'
@@ -15,29 +16,22 @@ type SvgDrawProps = {
 export const SvgDraw = ({ data = emptyPage, isAdminMode = true }: SvgDrawProps, ref?: Ref) => {
   const [stateManager] = useState(() => new StateManager(data, isAdminMode))
 
-  const [page, setPage] = useState(stateManager.page.state)
-  const [pageState, setPageState] = useState(stateManager.pageState.state)
+  useEffect(() => {
+    stateManager.setData(data, isAdminMode)
+  }, [stateManager, data, isAdminMode])
+
+  const page = stateManager.page.state
+  // Need this for correct updates of page when page shapes are changed
+  useSyncExternalStore(stateManager.page.subscribe, () => stateManager.page.state.shapes)
+  const pageState = useSyncExternalStore(stateManager.pageState.subscribe, () => stateManager.pageState.state)
 
   useImperativeHandle(ref, () => () => stateManager.export())
 
-  useEffect(() => {
-    stateManager.page.subscribe(setPage)
-    stateManager.pageState.subscribe(setPageState)
-    return () => {
-      stateManager.page.unsubscribe(setPage)
-      stateManager.pageState.unsubscribe(setPageState)
-    }
-  }, [stateManager.page, stateManager.pageState])
-
-  useEffect(() => {
-    stateManager.init(data, isAdminMode)
-  }, [stateManager, data])
-
-  const handleCallback = (eventName: TLCallbackNames) => (...rest: unknown[]) => {
+  const handleCallback = (eventName: TLCallbackNames) => (...rest: unknown[]) =>
     stateManager.handleCallback(eventName, ...rest)
-  }
 
-  const handleBoundsChange = (bounds: TLBounds) => stateManager.updateBounds(bounds)
+  const handleBoundsChange = (bounds: TLBounds) =>
+    stateManager.updateBounds(bounds)
 
   const { settings: { grid, hideGrid } } = pageState
 

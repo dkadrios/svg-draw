@@ -5,17 +5,18 @@ import Store from './store'
 class Page extends Store<TDPage> {
   state!: TDPage
 
-  constructor(opts: Partial<TDPage> = {}) {
+  constructor(opts?: Partial<TDPage>) {
     super()
-    this.init(opts)
+    this.reset(opts)
   }
 
-  init(opts: Partial<TDPage> = {}) {
-    const { id = uniqueId(), name = 'page', shapes = {} } = opts
-    this.state = {
-      id, name, shapes,
-    }
-    this.notify()
+  reset(opts: Partial<TDPage> = {}) {
+    this.action(() => ({
+      id: uniqueId(),
+      name: 'page',
+      shapes: {},
+      ...opts,
+    }))
   }
 
   getShape(id: string): TDShape {

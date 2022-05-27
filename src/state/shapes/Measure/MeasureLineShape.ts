@@ -1,7 +1,8 @@
 import { HandlesMoveable, TDShapeType } from 'types'
 import { vec } from 'utils'
 import { BaseEntity } from '../BaseShape'
-import BaseLineShape, { LineShapeHandles } from '../BaseLineShape'
+import BaseLineShape, { BaseLineShapeCreateProps, LineShapeHandles } from '../BaseLineShape'
+import type StateManager from '../../StateManager'
 
 const TIP_LENGTH = 16
 
@@ -13,7 +14,17 @@ export interface MeasureLineEntity extends BaseEntity {
 class MeasureLineShape extends BaseLineShape implements HandlesMoveable {
   type = TDShapeType.MeasureLine as const
 
+  // We need state manager to get global canvas scale;
+  // not a fan of it, but better then passing sm around through meta
+  // into util and calling it there
+  sm: StateManager
+
   handles!: LineShapeHandles
+
+  constructor(shape: BaseLineShapeCreateProps, sm: StateManager) {
+    super(shape)
+    this.sm = sm
+  }
 
   getDistance() {
     const { handles: { start, end } } = this
@@ -21,7 +32,7 @@ class MeasureLineShape extends BaseLineShape implements HandlesMoveable {
   }
 
   getDistanceLabel() {
-    const scale = this.getStateManager().getScale()
+    const scale = this.sm.getScale()
     const distance = (this.getDistance() * scale.ratio).toFixed(2)
     return `${distance} ${scale.unit}`
   }

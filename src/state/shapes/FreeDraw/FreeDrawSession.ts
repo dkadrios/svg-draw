@@ -1,6 +1,6 @@
 import type { TDCallbacks, TLPointerInfo } from 'types'
-import type StateManager from '../../StateManager'
-import BaseSession from '../../BaseSession'
+import type StateManager from 'state/StateManager'
+import BaseSession from 'state/BaseSession'
 import type FreeDrawShape from './FreeDrawShape'
 
 class FreeDrawSession extends BaseSession implements TDCallbacks {

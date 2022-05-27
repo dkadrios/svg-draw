@@ -8,14 +8,15 @@ import type {
   TDSettings,
   TDShape,
   TDShapeStyle,
-  TDShapesList, TLBounds, TLCallbackNames,
+  TDShapesList,
+  TLBounds,
+  TLCallbackNames,
 } from 'types'
 import { BASE_SCALE, TDShapeType, TDToolType } from 'types'
 import { getBoundsFromPoints, vec } from 'utils'
 import { TLShapeUtil, TLShapeUtilsMap } from 'core'
 import { Page, PageState, Toolbar } from './stores'
 import SelectTool from './SelectTool'
-import BaseShape from './shapes/BaseShape'
 import registerShapes from './shapes'
 import { ImageShape } from './shapes/Image'
 import { BgImageScale } from './shapes/Image/ImageShape'
@@ -48,7 +49,6 @@ class StateManager {
 
   constructor(document: TDDocument, isAdminMode = true) {
     registerShapes(this)
-    BaseShape.init(this)
 
     const { page = { shapes: {} }, pageState, settings } = document
 
@@ -58,13 +58,13 @@ class StateManager {
     this.toolbar = new Toolbar(settings, isAdminMode)
   }
 
-  init(document: TDDocument, isAdminMode = true) {
+  setData(document: TDDocument, isAdminMode = true) {
     const { page = { shapes: {} }, pageState, settings } = document
 
     const shapes = this.loadShapes(page.shapes)
-    this.page.init({ ...page, shapes })
-    this.pageState.init(pageState)
-    this.toolbar.init(settings, isAdminMode)
+    this.page.reset({ ...page, shapes })
+    this.pageState.reset(pageState)
+    this.toolbar.reset(settings, isAdminMode)
   }
 
   registerShape(key: TDShapeType, Shape: Class<TDShape>, util: TLShapeUtil<TDShape>) {
@@ -87,7 +87,7 @@ class StateManager {
     if (!this.shapes[type]) {
       throw new Error(`Unknown shape type: ${type}`)
     }
-    return new this.shapes[type](shape)
+    return new this.shapes[type](shape, this)
   }
 
   getShape(id: string) {
@@ -104,7 +104,7 @@ class StateManager {
 
     // Refresh styles in styles selector to conform with currently selected shape
     const shape = this.getSelectedShape()
-    if (shape) this.setStyles(shape.styles)
+    if (shape && shape.styles) this.setStyles(shape.styles)
   }
 
   setHovered(id: string | null = null) {
@@ -173,9 +173,12 @@ class StateManager {
     return this.toolbar.getStyles()
   }
 
-  // type checking is too hard here; need tests coverage
   addShape(shape: TDShape) {
-    return this.page.addShape(shape)
+    const newShape = shape
+      .produce({ childIndex: this.getNextChildIndex() })
+      .setStyles(this.getCurrentStyles())
+
+    return this.page.addShape(newShape)
   }
 
   updateShape(shape: TDShape) {

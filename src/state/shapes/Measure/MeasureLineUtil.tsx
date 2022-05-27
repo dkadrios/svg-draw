@@ -5,10 +5,14 @@ import { TextLabel } from '../shared/TextLabel'
 import { getFontStyle, getTextSize } from '../shared/textUtils'
 import type MeasureLineShape from './MeasureLineShape'
 
-class MeasureLineUtil extends TLShapeUtil<MeasureLineShape> {
+type T = MeasureLineShape
+
+class MeasureLineUtil extends TLShapeUtil<T> {
+  static labels = new WeakMap<T, string>([])
+
   hideBounds = true
 
-  Component({ shape, events }: TLComponentProps<MeasureLineShape>) {
+  Component({ shape, events }: TLComponentProps<T>) {
     const { handles: { start, end } } = shape
     const { endTip, startTip } = shape.getTips()
     const font = getFontStyle()

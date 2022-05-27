@@ -1,20 +1,19 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import produce from 'immer'
 
 type CBFunction<T> = (state: T) => void
 
-// TODO: react-redux-like solution for providing services between users and stores
 class Store<T extends object> {
   state: T = {} as T
 
-  listeners: Array<CBFunction<T>> = []
+  listeners: Set<CBFunction<T>> = new Set()
 
-  subscribe(fn: CBFunction<T>) {
-    this.listeners.push(fn)
+  subscribe = (fn: CBFunction<T>) => {
+    this.listeners.add(fn)
+    return () => this.listeners.delete(fn)
   }
 
-  unsubscribe(fn: CBFunction<T>) {
-    this.listeners = this.listeners.filter(item => item !== fn)
+  unsubscribe = (fn: CBFunction<T>) => {
+    this.listeners.delete(fn)
   }
 
   notify() {

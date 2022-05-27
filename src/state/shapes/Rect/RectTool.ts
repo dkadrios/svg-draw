@@ -5,9 +5,7 @@ import RectShape from './RectShape'
 
 class RectTool extends BaseTool implements TDCallbacks {
   onPointerDown(info: TLPointerInfo) {
-    const shape = new RectShape({
-      point: info.point,
-    })
+    const shape = new RectShape({ point: info.point })
 
     this.sm.addShape(shape)
     this.sm.setSelected(shape.id)

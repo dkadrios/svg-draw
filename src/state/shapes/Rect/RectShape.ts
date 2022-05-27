@@ -1,4 +1,4 @@
-import { TDShapeStyle, TDShapeStyleKeys, TDShapeType, TransformedBounds } from 'types'
+import { TDShapeStyle, TDShapeStyleKeys, TDShapeType, Transformable, TransformedBounds } from 'types'
 import { vec } from 'utils'
 import BaseShape, { BaseEntity, BaseShapeCreateProps } from '../BaseShape'
 
@@ -14,7 +14,7 @@ interface RectShapeCreateProps extends BaseShapeCreateProps {
   size?: number[]
 }
 
-class RectShape extends BaseShape implements RectEntity {
+class RectShape extends BaseShape implements RectEntity, Transformable {
   type = TDShapeType.Rectangle as const
 
   size: number[]

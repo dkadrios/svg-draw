@@ -1,11 +1,12 @@
 // eslint-disable-next-line no-use-before-define
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import Box from '@mui/material/Box'
 import AppBar from '@mui/material/AppBar'
 import Stack from '@mui/material/Stack'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import ToggleButton from '@mui/material/ToggleButton'
 import BorderClearIcon from '@mui/icons-material/BorderClear'
+import { useSyncExternalStore } from 'use-sync-external-store/shim'
 import { useStateManager } from 'state/useStateManager'
 import { TDToolType } from 'types'
 import StylesSelector from './StylesSelector'
@@ -25,15 +26,10 @@ const toolbarButton = ({ title, type, Icon, isVisible }: ToolbarBtnProps) => {
   )
 }
 
-const Toolbar = () => {
+const Toolbar = React.memo(() => {
   const stateManager = useStateManager()
   const { toolbar } = stateManager
-  const [toolbarState, setToolbarState] = useState(stateManager.toolbar.state)
-
-  useEffect(() => {
-    stateManager.toolbar.subscribe(setToolbarState)
-    return () => stateManager.toolbar.unsubscribe(setToolbarState)
-  }, [stateManager.toolbar])
+  const toolbarState = useSyncExternalStore(toolbar.subscribe, () => toolbar.state)
 
   const { hideGrid } = stateManager.getSettings()
 
@@ -67,5 +63,6 @@ const Toolbar = () => {
       </AppBar>
     </Box>
   )
-}
+})
+
 export default Toolbar

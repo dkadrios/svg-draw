@@ -15,80 +15,59 @@ import { TLContext, TLContextType, useTLTheme } from '../../hooks'
 import type { TLShapeUtilsMap } from '../../TLShapeUtil'
 
 export interface RendererProps<T extends TLShape> extends Partial<TLCallbacks> {
-  /**
-   * An object containing instances of your shape classes.
-   */
+  // An object containing instances of your shape classes
   shapeUtils: TLShapeUtilsMap<T>
-  /**
-   * The current page, containing shapes.
-   */
+
+  // Current page, containing shapes
   page: TLPage<T>
-  /**
-   * The current page state.
-   */
+
+  // Current page state
   pageState: TLPageState
-  /**
-   * (optional) A unique id to be applied to the renderer element, used to scope styles.
-   */
+
+  // (optional) Unique id to be applied to the renderer element, used to scope styles
   id?: string
-  /**
-   * (optional) An object of custom options that should be passed to rendered shapes.
-   */
+
+  // (optional) An object of custom options that should be passed to rendered shapes
   meta?: Record<string, unknown>
-  /**
-   * (optional) An object of custom theme colors.
-   */
+
+  // (optional) An object of custom theme colors
   theme?: Partial<TLTheme>
-  /**
-   * (optional) When true, the renderer will not show the bounds for selected objects.
-   */
+
+  // (optional) When true, the renderer will not show the bounds for selected objects
   hideBounds?: boolean
-  /**
-   * (optional) When true, the renderer will not show the handles of shapes with handles.
-   */
+
+  // (optional) When true, the renderer will not show the handles of shapes with handles
   hideHandles?: boolean
-  /**
-   * (optional) When true, the renderer will not show resize handles for selected objects.
-   */
+
+  // (optional) When true, the renderer will not show resize handles for selected objects
   hideResizeHandles?: boolean
-  /**
-   * (optional) When true, the renderer will not show rotate handles for selected objects.
-   */
+
+  // (optional) When true, the renderer will not show rotate handles for selected objects
   hideRotateHandles?: boolean
-  /**
-   * (optional) When true, the renderer will not show indicators for selected or
-   * hovered objects,
-   */
+
+  // (optional) When true, the renderer will not show indicators for selected or hovered shapes
   hideIndicators?: boolean
-  /**
-   * (optional) When true, the renderer will not show the grid.
-   */
+
+  // (optional) When true, the renderer will not show the grid
   hideGrid?: boolean
-  /**
-   * (optional) The size of the grid step.
-   */
+
+  // (optional) The size of the grid step
   grid?: number
-  /**
-   * (optional) Use a performance mode.
-   */
+
+  // (optional) Use a performance mode
   performanceMode?: TLPerformanceMode
-  /**
-   * (optional) A callback that receives the renderer's inputs manager.
-   */
+
+  // (optional) A callback that receives the renderer's inputs manager
   onMount?: (inputs: Inputs) => void
-  /**
-   * (optional) A callback that is fired when the editor's client bounding box changes.
-   */
+
+  // (optional) A callback that is fired when the editor's client bounding box changes
   onBoundsChange?: (bounds: TLBounds) => void
 }
 
 /**
  * The Renderer component is the main component of the library. It
  * accepts the current `page`, the `shapeUtils` needed to interpret
- * and render the shapeson the `page`, and the current
- * `pageState`.
- * @param props
- * @returns
+ * and render the shapes on the `page`, and the current pageState.
  */
 const Renderer = <T extends TLShape>({
   id = 'tl',
@@ -157,4 +136,5 @@ const Renderer = <T extends TLShape>({
     </TLContext.Provider>
   )
 }
+
 export default Renderer
