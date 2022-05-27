@@ -1,8 +1,7 @@
-import { HandlesMoveable, TDShapeType } from 'types'
+import { BgImageRatioScale, HandlesMoveable, TDShapeType } from 'types'
 import { vec } from 'utils'
 import { BaseEntity } from '../BaseShape'
-import BaseLineShape, { BaseLineShapeCreateProps, LineShapeHandles } from '../BaseLineShape'
-import type StateManager from '../../StateManager'
+import BaseLineShape, { LineShapeHandles } from '../BaseLineShape'
 
 const TIP_LENGTH = 16
 
@@ -14,25 +13,14 @@ export interface MeasureLineEntity extends BaseEntity {
 class MeasureLineShape extends BaseLineShape implements HandlesMoveable {
   type = TDShapeType.MeasureLine as const
 
-  // We need state manager to get global canvas scale;
-  // not a fan of it, but better then passing sm around through meta
-  // into util and calling it there
-  sm: StateManager
-
   handles!: LineShapeHandles
-
-  constructor(shape: BaseLineShapeCreateProps, sm: StateManager) {
-    super(shape)
-    this.sm = sm
-  }
 
   getDistance() {
     const { handles: { start, end } } = this
     return Math.round(vec.dist(start.point, end.point))
   }
 
-  getDistanceLabel() {
-    const scale = this.sm.getScale()
+  getDistanceLabel(scale: BgImageRatioScale) {
     const distance = (this.getDistance() * scale.ratio).toFixed(2)
     return `${distance} ${scale.unit}`
   }

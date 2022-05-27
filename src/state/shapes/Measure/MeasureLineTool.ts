@@ -5,7 +5,7 @@ import MeasureLineShape from './MeasureLineShape'
 
 class MeasureLineTool extends BaseTool implements TDCallbacks {
   onPointerDown(info: TLPointerInfo) {
-    const shape = new MeasureLineShape({ point: info.point }, this.sm)
+    const shape = new MeasureLineShape({ point: info.point })
 
     this.sm.addShape(shape)
     this.sm.setSelected(shape.id)

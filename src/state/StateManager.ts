@@ -87,7 +87,7 @@ class StateManager {
     if (!this.shapes[type]) {
       throw new Error(`Unknown shape type: ${type}`)
     }
-    return new this.shapes[type](shape, this)
+    return new this.shapes[type](shape)
   }
 
   getShape(id: string) {

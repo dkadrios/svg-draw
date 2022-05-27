@@ -1,4 +1,4 @@
-import React, { useEffect, useImperativeHandle, useState } from 'react'
+import React, { useEffect, useImperativeHandle, useMemo, useState } from 'react'
 import { useSyncExternalStore } from 'use-sync-external-store/shim'
 import { Renderer, TLBounds, TLCallbackNames, TLPerformanceMode } from 'core'
 import type { TDDocument } from 'types'
@@ -35,6 +35,11 @@ export const SvgDraw = ({ data = emptyPage, isAdminMode = true }: SvgDrawProps, 
 
   const { settings: { grid, hideGrid } } = pageState
 
+  const scale = stateManager.getScale()
+  const meta = useMemo(() => ({
+    scale,
+  }), [scale])
+
   return (
     <StateManagerContext.Provider value={stateManager}>
       <Renderer
@@ -45,6 +50,7 @@ export const SvgDraw = ({ data = emptyPage, isAdminMode = true }: SvgDrawProps, 
         hideIndicators={false}
         hideRotateHandles={false}
         id={undefined}
+        meta={meta}
         onBoundsChange={handleBoundsChange}
         onDoubleClickShape={handleCallback('onDoubleClickShape')}
         onDragBoundsHandle={handleCallback('onDragBoundsHandle')}

@@ -8,16 +8,14 @@ import type MeasureLineShape from './MeasureLineShape'
 type T = MeasureLineShape
 
 class MeasureLineUtil extends TLShapeUtil<T> {
-  static labels = new WeakMap<T, string>([])
-
   hideBounds = true
 
-  Component({ shape, events }: TLComponentProps<T>) {
+  Component({ shape, events, meta }: TLComponentProps<T>) {
     const { handles: { start, end } } = shape
     const { endTip, startTip } = shape.getTips()
     const font = getFontStyle()
     const dist = shape.getDistance()
-    const label = shape.getDistanceLabel()
+    const label = shape.getDistanceLabel(meta.scale)
     const { height, width } = getTextSize(label, font)
     const bounds = shape.getBounds()
     const labelScale = Math.max(
