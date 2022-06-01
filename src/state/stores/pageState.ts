@@ -1,5 +1,6 @@
-import type { TDPageState, TDSettings, TLPageState } from 'types'
-import { clamp, vec } from 'utils'
+import type { TDPageState, TDSettings } from 'types'
+import { clamp } from 'utils'
+import { add, div, sub } from 'utils/vec'
 import Store from './store'
 
 class PageState extends Store<TDPageState> {
@@ -67,10 +68,10 @@ class PageState extends Store<TDPageState> {
     this.action((draft) => {
       const { point, zoom } = draft.camera
       const newZoom = clamp(zoom - delta * zoom, 0.5, 2)
-      const p0 = vec.sub(vec.div(center, zoom), point)
-      const p1 = vec.sub(vec.div(center, newZoom), point)
+      const p0 = sub(div(center, zoom), point)
+      const p1 = sub(div(center, newZoom), point)
       draft.camera = {
-        point: vec.add(point, vec.sub(p1, p0)),
+        point: add(point, sub(p1, p0)),
         zoom: newZoom,
       }
     })
@@ -78,7 +79,7 @@ class PageState extends Store<TDPageState> {
 
   pan(delta: number[]) {
     this.action((draft) => {
-      draft.camera.point = vec.add(draft.camera.point, delta)
+      draft.camera.point = add(draft.camera.point, delta)
     })
   }
 }

@@ -1,6 +1,6 @@
 import type { TLBounds, TLBoundsWithCenter, TransformedBounds } from 'core/types'
 import { TLBoundsCorner, TLBoundsEdge } from 'core/types'
-import { vec } from './vec'
+import { div, med, rot, rotWith, sub } from './vec'
 import { getRectangleSides } from './misc'
 
 /* --------------------- Bounds --------------------- */
@@ -95,7 +95,7 @@ export const getBoundsFromPoints = (points: number[][], rotation = 0): TLBounds 
   }
 
   if (rotation !== 0) {
-    return getBoundsFromPoints(points.map(pt => vec.rotWith(pt, [(minX + maxX) / 2, (minY + maxY) / 2], rotation)))
+    return getBoundsFromPoints(points.map(pt => rotWith(pt, [(minX + maxX) / 2, (minY + maxY) / 2], rotation)))
   }
 
   return {
@@ -120,8 +120,8 @@ export const translateBounds = (bounds: TLBounds, delta: number[]): TLBounds => 
 
 /* Rotate a bounding box */
 export const rotateBounds = (bounds: TLBounds, center: number[], rotation: number): TLBounds => {
-  const [minX, minY] = vec.rotWith([bounds.minX, bounds.minY], center, rotation)
-  const [maxX, maxY] = vec.rotWith([bounds.maxX, bounds.maxY], center, rotation)
+  const [minX, minY] = rotWith([bounds.minX, bounds.minY], center, rotation)
+  const [maxX, maxY] = rotWith([bounds.maxX, bounds.maxY], center, rotation)
 
   return {
     minX,
@@ -183,14 +183,14 @@ export const getRotatedCorners = (b: TLBounds, rotation = 0): number[][] => {
     [b.maxX, b.minY],
     [b.maxX, b.maxY],
     [b.minX, b.maxY],
-  ].map(point => vec.rotWith(point, center, rotation))
+  ].map(point => rotWith(point, center, rotation))
 }
 
 /* Get the size of a rotated box */
 export const getRotatedSize = (size: number[], rotation: number): number[] => {
-  const center = vec.div(size, 2)
+  const center = div(size, 2)
 
-  const points = [[0, 0], [size[0], 0], size, [0, size[1]]].map(point => vec.rotWith(point, center, rotation))
+  const points = [[0, 0], [size[0], 0], size, [0, size[1]]].map(point => rotWith(point, center, rotation))
 
   const bounds = getBoundsFromPoints(points)
 
@@ -228,7 +228,7 @@ export const getTransformedBoundingBox = (
 
   // Counter rotate the delta. This lets us make changes as if
   // the (possibly rotated) boxes were axis aligned.
-  const [dx, dy] = vec.rot(delta, -rotation)
+  const [dx, dy] = rot(delta, -rotation)
 
   /*
     1. Delta
@@ -344,59 +344,59 @@ export const getTransformedBoundingBox = (
   if (rotation % (Math.PI * 2) !== 0) {
     let cv = [0, 0]
 
-    const c0 = vec.med([ax0, ay0], [ax1, ay1])
-    const c1 = vec.med([bx0, by0], [bx1, by1])
+    const c0 = med([ax0, ay0], [ax1, ay1])
+    const c1 = med([bx0, by0], [bx1, by1])
 
     switch (handle) {
       case TLBoundsCorner.TopLeft: {
-        cv = vec.sub(vec.rotWith([bx1, by1], c1, rotation), vec.rotWith([ax1, ay1], c0, rotation))
+        cv = sub(rotWith([bx1, by1], c1, rotation), rotWith([ax1, ay1], c0, rotation))
         break
       }
       case TLBoundsCorner.TopRight: {
-        cv = vec.sub(vec.rotWith([bx0, by1], c1, rotation), vec.rotWith([ax0, ay1], c0, rotation))
+        cv = sub(rotWith([bx0, by1], c1, rotation), rotWith([ax0, ay1], c0, rotation))
         break
       }
       case TLBoundsCorner.BottomRight: {
-        cv = vec.sub(vec.rotWith([bx0, by0], c1, rotation), vec.rotWith([ax0, ay0], c0, rotation))
+        cv = sub(rotWith([bx0, by0], c1, rotation), rotWith([ax0, ay0], c0, rotation))
         break
       }
       case TLBoundsCorner.BottomLeft: {
-        cv = vec.sub(vec.rotWith([bx1, by0], c1, rotation), vec.rotWith([ax1, ay0], c0, rotation))
+        cv = sub(rotWith([bx1, by0], c1, rotation), rotWith([ax1, ay0], c0, rotation))
         break
       }
       case TLBoundsEdge.Top: {
-        cv = vec.sub(
-          vec.rotWith(vec.med([bx0, by1], [bx1, by1]), c1, rotation),
-          vec.rotWith(vec.med([ax0, ay1], [ax1, ay1]), c0, rotation),
+        cv = sub(
+          rotWith(med([bx0, by1], [bx1, by1]), c1, rotation),
+          rotWith(med([ax0, ay1], [ax1, ay1]), c0, rotation),
         )
         break
       }
       case TLBoundsEdge.Left: {
-        cv = vec.sub(
-          vec.rotWith(vec.med([bx1, by0], [bx1, by1]), c1, rotation),
-          vec.rotWith(vec.med([ax1, ay0], [ax1, ay1]), c0, rotation),
+        cv = sub(
+          rotWith(med([bx1, by0], [bx1, by1]), c1, rotation),
+          rotWith(med([ax1, ay0], [ax1, ay1]), c0, rotation),
         )
         break
       }
       case TLBoundsEdge.Bottom: {
-        cv = vec.sub(
-          vec.rotWith(vec.med([bx0, by0], [bx1, by0]), c1, rotation),
-          vec.rotWith(vec.med([ax0, ay0], [ax1, ay0]), c0, rotation),
+        cv = sub(
+          rotWith(med([bx0, by0], [bx1, by0]), c1, rotation),
+          rotWith(med([ax0, ay0], [ax1, ay0]), c0, rotation),
         )
         break
       }
       case TLBoundsEdge.Right: {
-        cv = vec.sub(
-          vec.rotWith(vec.med([bx0, by0], [bx0, by1]), c1, rotation),
-          vec.rotWith(vec.med([ax0, ay0], [ax0, ay1]), c0, rotation),
+        cv = sub(
+          rotWith(med([bx0, by0], [bx0, by1]), c1, rotation),
+          rotWith(med([ax0, ay0], [ax0, ay1]), c0, rotation),
         )
         break
       }
       default:
     }
 
-    [bx0, by0] = vec.sub([bx0, by0], cv);
-    [bx1, by1] = vec.sub([bx1, by1], cv)
+    [bx0, by0] = sub([bx0, by0], cv);
+    [bx1, by1] = sub([bx1, by1], cv)
   }
 
   /*

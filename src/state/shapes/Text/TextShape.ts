@@ -1,5 +1,6 @@
 import { TDShapeStyle, TDShapeStyleKeys, TDShapeType, TransformedBounds } from 'types'
-import { translateBounds, vec } from 'utils'
+import { translateBounds } from 'utils'
+import { toFixed } from 'utils/vec'
 import BaseShape, { BaseEntity, BaseShapeCreateProps } from '../BaseShape'
 import { getFontStyle, getTextSize } from '../shared/textUtils'
 
@@ -51,7 +52,7 @@ class TextShape extends BaseShape implements TextEntity {
     const bounds = this.getBounds()
 
     return this.produce({
-      point: vec.toFixed([bounds.minX, bounds.minY]),
+      point: toFixed([bounds.minX, bounds.minY]),
       scale: scale * Math.max(Math.abs(newBounds.scaleY), Math.abs(newBounds.scaleX)),
     })
   }

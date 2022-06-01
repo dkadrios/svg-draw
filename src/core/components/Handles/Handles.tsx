@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { vec } from '../../../utils'
+import { add, dist } from 'utils/vec'
 import type { TLHandle, TLShape } from '../../types'
 import Handle from './Handle'
 
@@ -16,9 +16,9 @@ const Handles = ({ shape, zoom }: HandlesProps) => {
   let prev: number[] | null = null
 
   const handlesToShow = Object.values(shape.handles).reduce((acc, cur) => {
-    const point = vec.add(cur.point, shape.point)
+    const point = add(cur.point, shape.point)
 
-    if (!prev || vec.dist(point, prev) * zoom >= 32) {
+    if (!prev || dist(point, prev) * zoom >= 32) {
       acc.push(cur)
       prev = point
     }
@@ -34,7 +34,7 @@ const Handles = ({ shape, zoom }: HandlesProps) => {
         <Handle
           id={handle.id}
           key={`${shape.id }_${ handle.id}`}
-          point={vec.add(handle.point, shape.point)}
+          point={add(handle.point, shape.point)}
         />
       ))}
     </>

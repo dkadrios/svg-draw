@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { TLComponentProps, strokeWidths } from 'types'
-import { vec } from 'utils'
+import { med } from 'utils/vec'
 import { SVGContainer, TLShapeUtil } from 'core'
 import type FreeDrawShape from './FreeDrawShape'
 
@@ -62,7 +62,7 @@ class FreeDrawUtil extends TLShapeUtil<T> {
     const max = points.length - 1
     return points.reduce(
       (acc, point, i, arr) => {
-        if (i !== max) acc.push(point, vec.med(point, arr[i + 1]))
+        if (i !== max) acc.push(point, med(point, arr[i + 1]))
         return acc
       },
       ['M', points[0], 'Q'],

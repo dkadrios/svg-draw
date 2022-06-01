@@ -1,7 +1,8 @@
 import { produce } from 'immer'
 import type { TLHandle } from 'core'
 import { HandlesMoveable } from 'types'
-import { getBoundsFromPoints, snapAngleToSegments, translateBounds, vec } from 'utils'
+import { getBoundsFromPoints, snapAngleToSegments, translateBounds } from 'utils'
+import { add, angle, isEqual, rotWith, snap, sub, toFixed } from 'utils/vec'
 import BaseShape, { BaseShapeCreateProps } from './BaseShape'
 
 export type LineShapeHandles = {
@@ -43,17 +44,17 @@ abstract class BaseLineShape extends BaseShape implements HandlesMoveable {
         ? draft.getHandleSnappedToAngle(handle, rawDelta)
         : rawDelta
 
-      handle.point = vec.toFixed(vec.snap(vec.add(handle.point, delta), grid))
+      handle.point = toFixed(snap(add(handle.point, delta), grid))
 
       const topLeft = draft.point
       const nextBounds = draft.getBounds()
-      const offset = vec.sub([nextBounds.minX, nextBounds.minY], topLeft)
+      const offset = sub([nextBounds.minX, nextBounds.minY], topLeft)
 
       // Move shape point to exclude situation with negative handle coords
-      if (!vec.isEqual(offset, [0, 0])) {
-        draft.handles.start.point = vec.toFixed(vec.sub(draft.handles.start.point, offset))
-        draft.handles.end.point = vec.toFixed(vec.sub(draft.handles.end.point, offset))
-        draft.point = vec.toFixed(vec.add(draft.point, offset))
+      if (!isEqual(offset, [0, 0])) {
+        draft.handles.start.point = toFixed(sub(draft.handles.start.point, offset))
+        draft.handles.end.point = toFixed(sub(draft.handles.end.point, offset))
+        draft.point = toFixed(add(draft.point, offset))
       }
     })
   }
@@ -63,10 +64,10 @@ abstract class BaseLineShape extends BaseShape implements HandlesMoveable {
     const { handles: { start, end } } = this
     const A = (handle === start ? end : start).point
     const B = handle.point
-    const C = vec.toFixed(vec.add(B, delta))
-    const angle = vec.angle(A, C)
-    const adjusted = vec.rotWith(C, A, snapAngleToSegments(angle, 24) - angle)
-    return vec.add(delta, vec.sub(adjusted, C))
+    const C = toFixed(add(B, delta))
+    const an = angle(A, C)
+    const adjusted = rotWith(C, A, snapAngleToSegments(an, 24) - an)
+    return add(delta, sub(adjusted, C))
   }
 }
 

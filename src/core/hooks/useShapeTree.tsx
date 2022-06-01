@@ -1,3 +1,5 @@
+import { boundsCollide, boundsContain } from 'utils'
+import { div, sub } from 'utils/vec'
 import type {
   IShapeTreeNode,
   TLBounds,
@@ -5,7 +7,6 @@ import type {
   TLPageState,
   TLShape,
 } from '../types'
-import { boundsCollide, boundsContain, vec } from '../../utils'
 import { useTLContext } from './useTLContext'
 
 function shapeIsInViewport(bounds: TLBounds, viewport: TLBounds) {
@@ -25,8 +26,8 @@ const useShapeTree = <T extends TLShape, M extends Record<string, unknown>>(
     return util && util.isStateful
   }
 
-  const [minX, minY] = vec.sub([0, 0], camera.point)
-  const [maxX, maxY] = vec.sub(vec.div([bounds.width, bounds.height], camera.zoom), camera.point)
+  const [minX, minY] = sub([0, 0], camera.point)
+  const [maxX, maxY] = sub(div([bounds.width, bounds.height], camera.zoom), camera.point)
   const viewport = {
     minX,
     minY,

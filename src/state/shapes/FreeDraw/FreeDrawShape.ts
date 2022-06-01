@@ -1,7 +1,8 @@
 import produce from 'immer'
 import { TDShapeStyle, TDShapeStyleKeys, TDShapeType, Transformable, TransformedBounds } from 'types'
 import BaseShape, { BaseEntity, BaseShapeCreateProps } from 'state/shapes/BaseShape'
-import { getBoundsFromPoints, translateBounds, translatePoints, vec } from 'utils'
+import { getBoundsFromPoints, translateBounds, translatePoints } from 'utils'
+import { isEqual, sub, toFixed } from 'utils/vec'
 
 type FreeDrawShapeStyles = Pick<TDShapeStyle, 'color' | 'size'>
 
@@ -51,7 +52,7 @@ class FreeDrawShape extends BaseShape implements FreeDrawEntity, Transformable {
     ])
 
     const newBounds = getBoundsFromPoints(points)
-    const point = vec.sub([bounds.minX, bounds.minY], [newBounds.minX, newBounds.minY])
+    const point = sub([bounds.minX, bounds.minY], [newBounds.minX, newBounds.minY])
 
     return this.produce({ points, point })
   }
@@ -63,14 +64,14 @@ class FreeDrawShape extends BaseShape implements FreeDrawEntity, Transformable {
     ]
 
     return produce(this, (draft) => {
-      draft.points.push(vec.sub(newPoint, draft.point))
+      draft.points.push(sub(newPoint, draft.point))
 
-      if (!vec.isEqual(draft.point, topLeft)) {
-        draft.points = translatePoints(draft.points, vec.sub(draft.point, topLeft))
+      if (!isEqual(draft.point, topLeft)) {
+        draft.points = translatePoints(draft.points, sub(draft.point, topLeft))
         draft.point = topLeft
       }
 
-      draft.points = draft.points.map(p => vec.toFixed(p))
+      draft.points = draft.points.map(p => toFixed(p))
     })
   }
 

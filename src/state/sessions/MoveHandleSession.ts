@@ -1,6 +1,6 @@
 import type { HandlesMoveable, TDCallbacks, TDShape, TLPointerInfo } from 'types'
 import type StateManager from 'state/StateManager'
-import { vec } from 'utils'
+import { sub } from 'utils/vec'
 import BaseSession from '../BaseSession'
 
 class MoveHandleSession extends BaseSession implements TDCallbacks {
@@ -25,7 +25,7 @@ class MoveHandleSession extends BaseSession implements TDCallbacks {
 
     const newShape = shape.moveHandle(
       this.target,
-      vec.sub(info.point, this.originalPoint),
+      sub(info.point, this.originalPoint),
       info.shiftKey, // snap to angle
       this.sm.getGridFactor(), // snap to grid
     )

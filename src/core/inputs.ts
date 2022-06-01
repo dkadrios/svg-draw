@@ -1,5 +1,6 @@
 import type React from 'react'
-import { isDarwin, vec } from '../utils'
+import { isDarwin } from 'utils'
+import { dist, sub } from 'utils/vec'
 import type { TLBounds, TLKeyboardInfo, TLPointerInfo, WebKitGestureEvent } from './types'
 
 const DOUBLE_CLICK_DURATION = 250
@@ -103,7 +104,7 @@ export class Inputs {
 
     const point = Inputs.getPoint(e, this.bounds)
 
-    const delta = prev?.point ? vec.sub(point, prev.point) : [0, 0]
+    const delta = prev?.point ? sub(point, prev.point) : [0, 0]
 
     const info: TLPointerInfo<T> = {
       origin: point,
@@ -132,7 +133,7 @@ export class Inputs {
 
     const point = Inputs.getPoint(e, this.bounds)
 
-    const delta = prev?.point ? vec.sub(point, prev.point) : [0, 0]
+    const delta = prev?.point ? sub(point, prev.point) : [0, 0]
 
     this.activePointer = undefined
 
@@ -184,7 +185,7 @@ export class Inputs {
     if (!this.pointer) return false
     const { origin, point } = this.pointer
 
-    const isDoubleClick = performance.now() - this.pointerUpTime < DOUBLE_CLICK_DURATION && vec.dist(origin, point) < 4
+    const isDoubleClick = performance.now() - this.pointerUpTime < DOUBLE_CLICK_DURATION && dist(origin, point) < 4
 
     // Reset the active pointer, in case it got stuck
     if (isDoubleClick) this.activePointer = undefined

@@ -1,5 +1,5 @@
 import { TDCallbacks, TLPointerInfo, TLWheelEventHandler } from 'types'
-import { vec } from '../utils/vec'
+import { div, isEqual, sub } from 'utils/vec'
 import type StateManager from './StateManager'
 
 /* Base operations inherent to each tool: drop file, delete shape, zoom etc */
@@ -18,12 +18,12 @@ class BaseTool implements TDCallbacks {
     this.sm.removeShape(shape.id)
   }
 
-  onPan: TLWheelEventHandler = (info, e) => {
+  onPan: TLWheelEventHandler = (info) => {
     const { point, zoom } = this.sm.pageState.state.camera
-    const delta = vec.div(info.delta, zoom)
-    const next = vec.sub(point, delta)
+    const delta = div(info.delta, zoom)
+    const next = sub(point, delta)
 
-    if (vec.isEqual(next, point)) return
+    if (isEqual(next, point)) return
     this.sm.pageState.pan(delta)
   }
 

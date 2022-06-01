@@ -13,7 +13,8 @@ import type {
   TLCallbackNames,
 } from 'types'
 import { BASE_SCALE, TDShapeType, TDToolType } from 'types'
-import { getBoundsFromPoints, vec } from 'utils'
+import { getBoundsFromPoints } from 'utils'
+import { add, div, mul, sub, toFixed } from 'utils/vec'
 import { TLShapeUtil, TLShapeUtilsMap } from 'core'
 import { Page, PageState, Toolbar } from './stores'
 import SelectTool from './SelectTool'
@@ -195,19 +196,19 @@ class StateManager {
 
   getCenterPoint() {
     const { height, width } = this.rendererBounds
-    return vec.toFixed([width / 2, height / 2])
+    return toFixed([width / 2, height / 2])
   }
 
   // Screen coords -> canvas point
   screenToCanvas(point: number[]) {
     const camera = this.pageState.getCamera()
-    return vec.sub(vec.div(point, camera.zoom), camera.point)
+    return sub(div(point, camera.zoom), camera.point)
   }
 
   // Canvas point -> screen coords
   canvasToScreen(point: number[]) {
     const camera = this.pageState.getCamera()
-    return vec.mul(vec.add(point, camera.point), camera.zoom)
+    return mul(add(point, camera.point), camera.zoom)
   }
 
   handleCallback(callbackName: TLCallbackNames, ...rest: unknown[]) {

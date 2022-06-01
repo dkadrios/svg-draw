@@ -1,4 +1,4 @@
-import { vec } from 'utils/vec'
+import { toFixed } from 'utils/vec'
 
 export const fileToBase64 = (file: Blob): Promise<string | null> => (
   new Promise((resolve, reject) => {
@@ -23,7 +23,7 @@ export const getImagePropsAtPoint = (point: number[], size: number[], src: strin
   const [width, height] = size
 
   return {
-    point: vec.toFixed([point[0] - width / 2, point[1] - height / 2]),
+    point: toFixed([point[0] - width / 2, point[1] - height / 2]),
     size,
     src,
   }

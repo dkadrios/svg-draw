@@ -6,7 +6,8 @@ import {
   TLPointerInfo,
   Transformable, isTLBoundsCorner, isTLBoundsEdge,
 } from 'types'
-import { getTransformedBoundingBox, snapBoundsToGrid, vec } from 'utils'
+import { getTransformedBoundingBox, snapBoundsToGrid } from 'utils'
+import { sub } from 'utils/vec'
 import type StateManager from '../StateManager'
 import BaseSession from '../BaseSession'
 
@@ -29,7 +30,7 @@ class TransformSession extends BaseSession implements TDCallbacks {
 
   onPointerMove(info: TLPointerInfo) {
     const grid = this.sm.getGridFactor()
-    const delta = vec.sub(info.point, this.originalPoint)
+    const delta = sub(info.point, this.originalPoint)
     const shape = this.getCapturedShape() as TDShape & Transformable
 
     const newBounds = getTransformedBoundingBox(

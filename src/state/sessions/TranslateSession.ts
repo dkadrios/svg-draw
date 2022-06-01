@@ -1,5 +1,5 @@
 import type { TDCallbacks, TLPointerInfo } from 'types'
-import { vec } from 'utils'
+import { sub } from 'utils/vec'
 import type StateManager from '../StateManager'
 import BaseSession from '../BaseSession'
 
@@ -10,12 +10,12 @@ class TranslateSession extends BaseSession implements TDCallbacks {
     super(stateManager)
     const shape = this.captureShape()
 
-    this.dragStartPoint = vec.sub(info.point, shape.point)
+    this.dragStartPoint = sub(info.point, shape.point)
   }
 
   onDragShape(info: TLPointerInfo) {
     const shape = this.getCapturedShape()
-    const newPoint = vec.sub(info.point, this.dragStartPoint)
+    const newPoint = sub(info.point, this.dragStartPoint)
 
     this.sm.updateShape(shape.translate(newPoint, this.sm.getGridFactor()))
   }

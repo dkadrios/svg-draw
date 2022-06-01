@@ -1,5 +1,6 @@
 import { immerable, produce } from 'immer'
-import { getBoundsCenter, normalizedAngle, snapAngleToSegments, uniqueId, vec } from 'utils'
+import { getBoundsCenter, normalizedAngle, snapAngleToSegments, uniqueId } from 'utils'
+import { snap } from 'utils/vec'
 import type { TLBounds, TLEntity, TLHandle, TLShape } from 'core'
 import type { Moveable, Optional, TDShape, TDShapeStyle, TDShapeStyleKeys } from 'types'
 import { DEFAULT_STYLES } from 'types'
@@ -64,7 +65,7 @@ abstract class BaseShape implements TLShape, Moveable, BaseEntity {
 
   translate(newPoint: number[], grid = 1) {
     return this.produce({
-      point: grid === 1 ? newPoint : vec.snap(newPoint, grid),
+      point: grid === 1 ? newPoint : snap(newPoint, grid),
     })
   }
 

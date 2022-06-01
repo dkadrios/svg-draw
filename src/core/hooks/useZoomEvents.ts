@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import * as React from 'react'
-import { vec } from 'utils/vec'
+import { isEqual, len } from 'utils/vec'
 import { clamp } from 'utils'
 import type { WebKitGestureEvent } from '../types'
 import { useTLContext } from './useTLContext'
@@ -21,7 +21,7 @@ const midpoint = (touches: TouchList) => {
 
 const distance = (touches: TouchList) => {
   const [t1, t2] = Array.from(touches)
-  return vec.len([t2.clientX - t1.clientX, t2.clientY - t1.clientY])
+  return len([t2.clientX - t1.clientX, t2.clientY - t1.clientY])
 }
 
 const normalizeWheel = (e: WheelEvent) => {
@@ -58,7 +58,7 @@ const useWheel = <T extends HTMLElement>(ref: React.RefObject<T>) => {
     }
 
     // otherwise pan
-    if (vec.isEqual(delta, [0, 0])) return
+    if (isEqual(delta, [0, 0])) return
     const info = inputs.panzoom(delta, e)
     callbacks.onPan?.(info, e)
   }, [callbacks, inputs])

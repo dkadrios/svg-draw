@@ -1,5 +1,5 @@
 import type React from 'react'
-import { vec } from './vec'
+import { add, angle, rotWith } from './vec'
 
 const TAU = Math.PI * 2
 
@@ -39,10 +39,10 @@ export const pointsToLineSegments = (points: number[][], closed = false) => {
 
 export const getRectangleSides = (point: number[], size: number[], rotation = 0): [string, number[][]][] => {
   const center = [point[0] + size[0] / 2, point[1] + size[1] / 2]
-  const tl = vec.rotWith(point, center, rotation)
-  const tr = vec.rotWith(vec.add(point, [size[0], 0]), center, rotation)
-  const br = vec.rotWith(vec.add(point, size), center, rotation)
-  const bl = vec.rotWith(vec.add(point, [0, size[1]]), center, rotation)
+  const tl = rotWith(point, center, rotation)
+  const tr = rotWith(add(point, [size[0], 0]), center, rotation)
+  const br = rotWith(add(point, size), center, rotation)
+  const bl = rotWith(add(point, [0, size[1]]), center, rotation)
 
   return [
     ['top', [tl, tr]],
@@ -73,7 +73,7 @@ export const lerpAngles = (a0: number, a1: number, t: number): number => (a0 + s
 export const angleDelta = (a0: number, a1: number): number => shortAngleDist(a0, a1)
 
 /* Get the "sweep" or short distance between two points on a circle's perimeter */
-export const getSweep = (C: number[], A: number[], B: number[]): number => angleDelta(vec.angle(C, A), vec.angle(C, B))
+export const getSweep = (C: number[], A: number[], B: number[]): number => angleDelta(angle(C, A), angle(C, B))
 
 /* Clamp radians within 0 and 2PI */
 export const clampRadians = (r: number): number => (Math.PI * 2 + r) % (Math.PI * 2)

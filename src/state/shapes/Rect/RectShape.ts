@@ -1,5 +1,5 @@
 import { TDShapeStyle, TDShapeStyleKeys, TDShapeType, Transformable, TransformedBounds } from 'types'
-import { vec } from 'utils'
+import { toFixed } from 'utils/vec'
 import BaseShape, { BaseEntity, BaseShapeCreateProps } from '../BaseShape'
 
 type RectShapeStyles = Pick<TDShapeStyle, 'color' | 'fill' | 'size'>
@@ -43,8 +43,8 @@ class RectShape extends BaseShape implements RectEntity, Transformable {
 
   transform(newBounds: TransformedBounds) {
     return this.produce({
-      size: vec.toFixed([newBounds.width, newBounds.height]),
-      point: vec.toFixed([newBounds.minX, newBounds.minY]),
+      size: toFixed([newBounds.width, newBounds.height]),
+      point: toFixed([newBounds.minX, newBounds.minY]),
     })
   }
 
