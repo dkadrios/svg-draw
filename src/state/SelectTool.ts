@@ -1,4 +1,10 @@
-import { TDCallbacks, TDShapeType, TLPointerInfo, isTLBoundsCorner, isTLBoundsEdge } from 'types'
+import {
+  TDCallbacks,
+  TDShapeType,
+  TLPointerInfo,
+  isTLBoundsCorner,
+  isTLBoundsEdge,
+} from 'types'
 import BaseTool from './BaseTool'
 import { MoveHandleSession, RotateSession, TransformSession, TranslateSession } from './sessions'
 import TextSession from './shapes/Text/TextSession'
@@ -47,20 +53,5 @@ class SelectTool extends BaseTool implements TDCallbacks {
   onDragHandle(info: TLPointerInfo) {
     this.sm.startSession(new MoveHandleSession(this.sm, info))
   }
-
-  /*
-  onZoom(stateManager: StateManager, info: TLPointerInfo, e: React.WheelEvent<Element>) {
-    // Denormalize event point for correct zoom calculations
-    const point = stateManager.canvasToScreen(info.point)
-
-    const delta = e.deltaMode === WheelEvent.DOM_DELTA_PIXEL
-      ? info.delta[2] / 500
-      : e.deltaMode === WheelEvent.DOM_DELTA_LINE
-        ? info.delta[2] / 100
-        : info.delta[2] / 2
-
-    stateManager.pageState.zoom(delta, point)
-  }
-   */
 }
 export default SelectTool

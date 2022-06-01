@@ -1,6 +1,6 @@
 import type React from 'react'
 import { isDarwin, vec } from '../utils'
-import type { TLBounds, TLKeyboardInfo, TLPointerInfo } from './types'
+import type { TLBounds, TLKeyboardInfo, TLPointerInfo, WebKitGestureEvent } from './types'
 
 const DOUBLE_CLICK_DURATION = 250
 
@@ -10,8 +10,6 @@ export class Inputs {
   keyboard?: TLKeyboardInfo
 
   keys: Record<string, boolean> = {}
-
-  isPinching = false
 
   bounds: TLBounds = {
     minX: 0,
@@ -160,44 +158,16 @@ export class Inputs {
     return info
   }
 
-  panStart = (e: WheelEvent): TLPointerInfo<'wheel'> => {
-    const { altKey, ctrlKey, metaKey, shiftKey } = e
+  panzoom = (delta: number[], e: WheelEvent | TouchEvent | WebKitGestureEvent): TLPointerInfo<'panzoom'> => {
+    const { altKey, ctrlKey, metaKey, shiftKey } = this.keys
 
-    const info: TLPointerInfo<'wheel'> = {
-      target: 'wheel',
+    const info: TLPointerInfo<'panzoom'> = {
+      target: 'panzoom',
       pointerId: this.pointer?.pointerId || 0,
       origin: this.pointer?.origin || [0, 0],
-      delta: [0, 0],
       pressure: 0.5,
-      point: Inputs.getPoint(e, this.bounds),
-      shiftKey,
-      ctrlKey,
-      metaKey,
-      altKey,
-      spaceKey: this.keys[' '],
-    }
-
-    this.pointer = info
-
-    return info
-  }
-
-  pan = (delta: number[], e: WheelEvent): TLPointerInfo<'wheel'> => {
-    if (!this.pointer || this.pointer.target !== 'wheel') {
-      return this.panStart(e)
-    }
-
-    const { altKey, ctrlKey, metaKey, shiftKey } = e
-
-    const prev = this.pointer
-
-    const point = Inputs.getPoint(e, this.bounds)
-
-    const info: TLPointerInfo<'wheel'> = {
-      ...prev,
-      target: 'wheel',
       delta,
-      point,
+      point: Inputs.getPoint(('touches' in e) ? e.touches[0] : e, this.bounds),
       shiftKey,
       ctrlKey,
       metaKey,
@@ -212,14 +182,12 @@ export class Inputs {
 
   isDoubleClick() {
     if (!this.pointer) return false
-
     const { origin, point } = this.pointer
 
     const isDoubleClick = performance.now() - this.pointerUpTime < DOUBLE_CLICK_DURATION && vec.dist(origin, point) < 4
 
     // Reset the active pointer, in case it got stuck
     if (isDoubleClick) this.activePointer = undefined
-
     return isDoubleClick
   }
 
@@ -259,30 +227,6 @@ export class Inputs {
       metaKey: isDarwin() ? metaKey : ctrlKey,
       altKey,
     }
-  }
-
-  pinch(point: number[], origin: number[]) {
-    const { altKey, ctrlKey, metaKey, shiftKey } = this.keys
-
-    const delta = vec.sub(origin, point)
-
-    const info: TLPointerInfo<'pinch'> = {
-      pointerId: 0,
-      target: 'pinch',
-      origin,
-      delta,
-      point: vec.sub(vec.toFixed(point), [this.bounds.minX, this.bounds.minY]),
-      pressure: 0.5,
-      shiftKey,
-      ctrlKey,
-      metaKey: isDarwin() ? metaKey : ctrlKey,
-      altKey,
-      spaceKey: this.keys[' '],
-    }
-
-    this.pointer = info
-
-    return info
   }
 
   reset() {

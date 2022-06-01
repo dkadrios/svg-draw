@@ -51,10 +51,6 @@ const useResizeObserver = <T extends Element>(
 
   React.useEffect(() => {
     const resizeObserver = new ResizeObserver((entries) => {
-      if (inputs.isPinching) {
-        return
-      }
-
       if (entries[0].contentRect) {
         updateBounds()
       }

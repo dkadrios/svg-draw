@@ -1,6 +1,6 @@
-import { TDCallbacks, TLDropEventHandler } from 'types'
+import { TDCallbacks, TLPointerInfo, TLWheelEventHandler } from 'types'
+import { vec } from '../utils/vec'
 import type StateManager from './StateManager'
-import { ImageShape } from './shapes/Image'
 
 /* Base operations inherent to each tool: drop file, delete shape, zoom etc */
 class BaseTool implements TDCallbacks {
@@ -18,17 +18,23 @@ class BaseTool implements TDCallbacks {
     this.sm.removeShape(shape.id)
   }
 
-  onDrop: TLDropEventHandler = async (e) => {
-    e.preventDefault()
-    if (!e.dataTransfer.files?.length) return
+  onPan: TLWheelEventHandler = (info, e) => {
+    const { point, zoom } = this.sm.pageState.state.camera
+    const delta = vec.div(info.delta, zoom)
+    const next = vec.sub(point, delta)
 
-    const shape = await ImageShape.createImageShapeFromFile(
-      e.dataTransfer.files[0],
-      // Better to use canvas point file has been dropped at,
-      // but currently onDrop handler doesn't calculate it correctly
-      this.sm.getCenterPoint(),
-    )
-    this.sm.addShape(shape)
+    if (vec.isEqual(next, point)) return
+    this.sm.pageState.pan(delta)
+  }
+
+  onZoom(info: TLPointerInfo) {
+    const point = this.sm.canvasToScreen(info.point)
+    this.sm.pageState.zoom(info.delta[2], point)
+  }
+
+  onDragCanvas(info: TLPointerInfo) {
+    const { delta } = info
+    this.sm.pageState.pan(delta)
   }
 }
 

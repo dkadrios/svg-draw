@@ -69,6 +69,7 @@ class Page extends Store<TDPage> {
     return {
       id: this.state.id,
       name: this.state.name,
+      canvas: this.state.canvas,
       shapes: Object.entries(this.state.shapes).reduce((acc, [id, shape]) =>
         ({ ...acc, [id]: shape.getEntity() }), {}),
     }

@@ -54,12 +54,14 @@ export const SvgDraw = ({ data = emptyPage, isAdminMode = true }: SvgDrawProps, 
         onBoundsChange={handleBoundsChange}
         onDoubleClickShape={handleCallback('onDoubleClickShape')}
         onDragBoundsHandle={handleCallback('onDragBoundsHandle')}
+        onDragCanvas={handleCallback('onDragCanvas')}
         onDragHandle={handleCallback('onDragHandle')}
         onDragOver={e => e.preventDefault()}
         onDragShape={handleCallback('onDragShape')}
         onDrop={handleCallback('onDrop')}
         onHoverShape={handleCallback('onHoverShape')}
         onKeyDown={handleCallback('onKeyDown')}
+        onPan={handleCallback('onPan')}
         onPointCanvas={handleCallback('onPointCanvas')}
         onPointerDown={handleCallback('onPointerDown')}
         onPointerMove={handleCallback('onPointerMove')}

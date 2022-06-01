@@ -70,6 +70,7 @@ const defaultTheme: TLTheme = {
   brushStroke: 'rgba(0,0,0,.25)',
   selectStroke: 'rgb(66, 133, 244)',
   selectFill: 'rgba(65, 132, 244, 0.05)',
+  containerBackground: 'rgb(68, 68, 80)',
   background: 'rgb(248, 249, 250)',
   foreground: 'rgb(51, 51, 51)',
   grid: 'rgba(144, 144, 144, 1)',
@@ -96,7 +97,8 @@ const tlcss = css`
     overflow: hidden;
     touch-action: none;
     overscroll-behavior: none;
-    background-color: var(--tl-background);
+    background-color: var(--tl-containerBackground);
+    box-shadow: inset 1px 1px 10px -1px #000000
   }
 
   .tl-container * {
@@ -120,23 +122,15 @@ const tlcss = css`
     user-select: none;
   }
 
-  .tl-snap-line {
-    stroke: var(--tl-accent);
-    stroke-width: calc(1px * var(--tl-scale));
-  }
-
-  .tl-snap-point {
-    stroke: var(--tl-accent);
-    stroke-width: calc(1px * var(--tl-scale));
-  }
-
   .tl-canvas {
     position: absolute;
-    width: 100%;
-    height: 100%;
+    width: 700px;
+    height: 300px;
     touch-action: none;
     pointer-events: all;
-    overflow: clip;
+    background-color: var(--tl-background);
+    box-shadow: 5px 5px 6px -1px #000000;
+    overflow: hidden;
   }
 
   .tl-layer {
@@ -277,31 +271,6 @@ const tlcss = css`
     will-change: transform, contents;
   }
 
-  .tl-clone-target {
-    pointer-events: all;
-  }
-
-  .tl-clone-target:hover .tl-clone-button {
-    opacity: 1;
-  }
-
-  .tl-clone-button-target {
-    cursor: pointer;
-    pointer-events: all;
-  }
-
-  .tl-clone-button-target:hover .tl-clone-button {
-    fill: var(--tl-selectStroke);
-  }
-
-  .tl-clone-button {
-    opacity: 0;
-    r: calc(8px * var(--tl-scale));
-    stroke-width: calc(1.5px * var(--tl-scale));
-    stroke: var(--tl-selectStroke);
-    fill: var(--tl-background);
-  }
-
   .tl-bounds {
     pointer-events: none;
     contain: layout style size;
@@ -318,12 +287,6 @@ const tlcss = css`
     fill: transparent;
     stroke: var(--tl-selectStroke);
     stroke-width: calc(1.5px * var(--tl-scale));
-  }
-
-  .tl-dot {
-    fill: var(--tl-background);
-    stroke: var(--tl-foreground);
-    stroke-width: 2px;
   }
 
   .tl-handle {

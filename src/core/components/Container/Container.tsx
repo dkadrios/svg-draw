@@ -29,7 +29,6 @@ const Container = ({
       className={`tl-positioned${isGhost ? ' tl-ghost' : ''}${
         isSelected ? ' tl-positioned-selected' : ''
       }`}
-      data-testid="container"
       id={id}
       ref={rPositioned}
       {...props}

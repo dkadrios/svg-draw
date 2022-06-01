@@ -25,7 +25,7 @@ const useShapeTree = <T extends TLShape, M extends Record<string, unknown>>(
     return util && util.isStateful
   }
 
-  const [minX, minY] = vec.sub(vec.div([0, 0], camera.zoom), camera.point)
+  const [minX, minY] = vec.sub([0, 0], camera.point)
   const [maxX, maxY] = vec.sub(vec.div([bounds.width, bounds.height], camera.zoom), camera.point)
   const viewport = {
     minX,

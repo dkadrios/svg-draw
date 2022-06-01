@@ -1,5 +1,5 @@
 import type { TDPageState, TDSettings, TLPageState } from 'types'
-import { clamp, uniqueId, vec } from '../../utils'
+import { clamp, vec } from 'utils'
 import Store from './store'
 
 class PageState extends Store<TDPageState> {
@@ -18,7 +18,6 @@ class PageState extends Store<TDPageState> {
       },
       editingId: null,
       hoveredId: null,
-      id: uniqueId(),
       selectedId: null,
       settings: {
         hideGrid: true,
@@ -77,9 +76,9 @@ class PageState extends Store<TDPageState> {
     })
   }
 
-  pan(point: number[]) {
+  pan(delta: number[]) {
     this.action((draft) => {
-      draft.camera.point = vec.add(draft.camera.point, point)
+      draft.camera.point = vec.add(draft.camera.point, delta)
     })
   }
 }

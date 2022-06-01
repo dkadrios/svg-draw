@@ -2,6 +2,9 @@ import { TDEntity, TDShapeType, TLPage } from 'types'
 
 const defaultPageData = {
   id: 'page',
+  canvas: {
+    size: [700, 300],
+  },
   shapes: {
     rect1: {
       id: 'rect1',
@@ -13,7 +16,7 @@ const defaultPageData = {
         fill: '#d2e4f4',
         size: 'M',
       },
-      point: [100, 100],
+      point: [0, 0],
       size: [100, 100],
     },
     line1: {

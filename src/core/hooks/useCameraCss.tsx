@@ -25,10 +25,8 @@ const useCameraCss = (
         const container = containerRef.current
 
         // If we zoomed, set the CSS variable for the zoom
-        if (didZoom) {
-          if (container) {
-            container.style.setProperty('--tl-zoom', zoom.toString())
-          }
+        if (didZoom && container) {
+          container.style.setProperty('--tl-zoom', zoom.toString())
         }
 
         // Either way, position the layer

@@ -4,8 +4,8 @@ import {
   useCanvasEvents,
   useKeyEvents,
   usePerformanceCss,
-  usePreventNavigationCss,
   useResizeObserver,
+  useZoomEvents,
 } from '../../hooks'
 import type {
   TLBounds,
@@ -54,11 +54,15 @@ const Canvas = <T extends TLShape, M extends Record<string, unknown>>({
   const rContainer = React.useRef<HTMLDivElement>(null)
   const rLayer = React.useRef<HTMLDivElement>(null)
 
+  const rZoomRef = React.useRef(pageState.camera.zoom)
+
+  rZoomRef.current = pageState.camera.zoom
+
   inputs.zoom = pageState.camera.zoom
 
-  useResizeObserver(rCanvas, onBoundsChange)
+  useResizeObserver(rContainer, onBoundsChange)
 
-  usePreventNavigationCss(rCanvas)
+  useZoomEvents(rContainer)
 
   useCameraCss(rLayer, rContainer, pageState)
 
@@ -74,22 +78,26 @@ const Canvas = <T extends TLShape, M extends Record<string, unknown>>({
       id={id}
       ref={rContainer}
     >
+      {!hideGrid && grid && (
+        <Grid
+          camera={pageState.camera}
+          grid={grid}
+        />
+      )}
       <div
-        className="tl-absolute tl-canvas"
-        id="canvas"
-        ref={rCanvas}
-        {...events}
+        className="tl-absolute tl-layer"
+        ref={rLayer}
       >
-        {!hideGrid && grid && (
-          <Grid
-            camera={pageState.camera}
-            grid={grid}
-          />
-        )}
         <div
-          className="tl-absolute tl-layer"
-          data-testid="layer"
-          ref={rLayer}
+          className="tl-positioned tl-absolute tl-canvas"
+          id="canvas"
+          ref={rCanvas}
+          style={{
+            width: page.canvas.size[0],
+            height: page.canvas.size[1],
+            pointerEvents: 'all',
+          }}
+          {...events}
         >
           <Page
             hideBounds={hideBounds}
@@ -102,8 +110,8 @@ const Canvas = <T extends TLShape, M extends Record<string, unknown>>({
             pageState={pageState}
           />
         </div>
-        <Overlay camera={pageState.camera} />
       </div>
+      <Overlay camera={pageState.camera} />
     </div>
   )
 }

@@ -12,11 +12,13 @@ export enum TLPerformanceMode {
 export interface TLPage<T extends TLShape | TLEntity = TLShape> {
   id: string
   name?: string
+  canvas: {
+    size: number[]
+  }
   shapes: Record<string, T>
 }
 
 export interface TLPageState {
-  id: string
   camera: {
     point: number[]
     zoom: number
@@ -80,28 +82,20 @@ export interface TLTheme {
   brushStroke?: string
   selectFill?: string
   selectStroke?: string
+  containerBackground?: string
   background?: string
   foreground?: string
   grid?: string
 }
 
+export type WebKitGestureEvent = PointerEvent & { scale: number; rotation: number }
+
 export type TLWheelEventHandler = (
   info: TLPointerInfo,
-  e: React.WheelEvent | WheelEvent
+  e: React.WheelEvent | WheelEvent | TouchEvent | WebKitGestureEvent
 ) => void
 
 export type TLDropEventHandler = (e: React.DragEvent) => void
-
-export type TLPinchEventHandler = (
-  info: TLPointerInfo,
-  e:
-    | React.WheelEvent
-    | WheelEvent
-    | React.TouchEvent
-    | TouchEvent
-    | React.PointerEvent
-    | PointerEventInit
-) => void
 
 export type TLShapeChangeHandler = (
   shape: any,
@@ -131,9 +125,6 @@ export interface TLCallbacks {
   // Camera events
   onPan: TLWheelEventHandler
   onZoom: TLWheelEventHandler
-  onPinchStart: TLPinchEventHandler
-  onPinch: TLPinchEventHandler
-  onPinchEnd: TLPinchEventHandler
 
   // Pointer Events
   onPointerMove: TLPointerEventHandler
