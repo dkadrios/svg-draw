@@ -6,32 +6,33 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import Radio from '@mui/material/Radio'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
-import Box from '@mui/material/Box'
-import { ImageShape } from 'state/shapes/Image'
-import { BgImageScale } from 'state/shapes/Image/ImageShape'
-import { Unit } from 'types'
-import type { ValidationMessages } from './BackgroundTab'
+import Typography from '@mui/material/Typography'
+import { BgImageScale, Unit } from 'types'
+import type { BgTabMessages, BgTabState } from './BackgroundTab'
 
 type Direction = 'horizontal' | 'vertical'
 
 type ScaleFormProps = {
-  image?: ImageShape,
+  src: string,
   scale: BgImageScale,
-  messages: ValidationMessages
-  onChange: (scale: BgImageScale) => void
+  messages: BgTabMessages
+  updateState: (props: Partial<BgTabState>) => void
 }
 
-const ScaleForm = ({ image, scale, onChange, messages }: ScaleFormProps) => {
+const ScaleForm = ({ src, scale, updateState, messages }: ScaleFormProps) => {
   const onDirectionChange = (e: ChangeEvent<HTMLInputElement>) =>
-    onChange({ ...scale, direction: e.target.value as Direction })
+    updateState({ scale: { ...scale, direction: e.target.value as Direction } })
   const onUnitsChange = (e: ChangeEvent<HTMLInputElement>) =>
-    onChange({ ...scale, unit: e.target.value as Unit })
+    updateState({ scale: { ...scale, unit: e.target.value as Unit } })
   const onDistanceChange = (e: ChangeEvent<HTMLInputElement>) =>
-    onChange({ ...scale, distance: Number(e.target.value) })
+    updateState({ scale: { ...scale, distance: Number(e.target.value) } })
 
   return (
-    <Box sx={{ w: 300 }}>
-      <FormControl disabled={!image} sx={{ mb: 3 }}>
+    <Stack direction="column" spacing={3}>
+      <Typography component="h2" variant="h6">
+        Background Image Scale
+      </Typography>
+      <FormControl disabled={!src} sx={{ mb: 3 }}>
         <FormLabel>Direction</FormLabel>
         <RadioGroup onChange={onDirectionChange} row value={scale.direction}>
           <FormControlLabel control={<Radio />} label="Horizontal" value="horizontal" />
@@ -41,7 +42,7 @@ const ScaleForm = ({ image, scale, onChange, messages }: ScaleFormProps) => {
 
       <Stack alignItems="start" direction="row" spacing={3}>
         <TextField
-          disabled={!image}
+          disabled={!src}
           error={!!messages.distance}
           helperText={messages.distance}
           inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
@@ -53,7 +54,7 @@ const ScaleForm = ({ image, scale, onChange, messages }: ScaleFormProps) => {
           variant="standard"
         />
         <TextField
-          disabled={!image}
+          disabled={!src}
           label="Units"
           onChange={onUnitsChange}
           select
@@ -70,7 +71,7 @@ const ScaleForm = ({ image, scale, onChange, messages }: ScaleFormProps) => {
           <option key="m" value="m">Meters</option>
         </TextField>
       </Stack>
-    </Box>
+    </Stack>
   )
 }
 

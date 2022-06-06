@@ -6,6 +6,33 @@ export * from './core/types'
 // Re-export shape types
 export { TDEntity, TDShape }
 
+/* Scale for measure tool */
+export type Unit = 'px' | 'mi' | 'ft' | 'km' | 'm'
+
+export type BgImageScale = {
+  direction: 'horizontal' | 'vertical'
+  distance: number,
+  unit: Unit
+}
+
+export interface CanvasRatioScale {
+  ratio: number,
+  unit: Unit
+}
+
+export const BASE_SCALE: CanvasRatioScale = {
+  ratio: 1,
+  unit: 'px',
+}
+
+export const CANVAS = {
+  widthMin: 500,
+  heightMin: 500,
+  widthDefault: 1080,
+  heightDefault: 720,
+}
+
+/* Page State */
 export type TDSettings = {
   hideGrid: boolean
   grid: number
@@ -13,18 +40,10 @@ export type TDSettings = {
 
 export type TDPageState = TLPageState & { settings: TDSettings }
 
-export type TDPage = TLPage<TDShape>
-
-export type Unit = 'px' | 'mi' | 'ft' | 'km' | 'm'
-
-export interface BgImageRatioScale {
-  ratio: number,
-  unit: Unit
-}
-
-export const BASE_SCALE: BgImageRatioScale = {
-  ratio: 1,
-  unit: 'px',
+export type TDPage = TLPage<TDShape> & {
+  canvas: {
+    scale?: CanvasRatioScale
+  }
 }
 
 export type TDShapeStyle = {

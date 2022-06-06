@@ -73,7 +73,7 @@ const SettingsDialog = () => {
           </Box>
           <Box sx={{ my: 3 }}>
             <TabPanel index={0} value={currentTab}>
-              <BackgroundTab />
+              <BackgroundTab onClose={onClose} />
             </TabPanel>
             <TabPanel index={1} value={currentTab}>
               <StudentsView />

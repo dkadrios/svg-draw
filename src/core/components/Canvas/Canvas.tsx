@@ -95,6 +95,7 @@ const Canvas = <T extends TLShape, M extends Record<string, unknown>>({
           style={{
             width: page.canvas.size[0],
             height: page.canvas.size[1],
+            backgroundImage: `url(${page.canvas.src})` || 'none',
             pointerEvents: 'all',
           }}
           {...events}

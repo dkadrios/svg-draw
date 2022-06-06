@@ -1,34 +1,21 @@
 import {
-  BASE_SCALE,
-  BgImageRatioScale,
   TDShapeType,
   Transformable,
   TransformedBounds,
-  Unit,
 } from 'types'
 import { toFixed } from 'utils/vec'
 import BaseShape, { BaseEntity, BaseShapeCreateProps } from '../BaseShape'
 import { fileToBase64, getImagePropsAtPoint, getImageSizeFromSrc } from './utils'
 
-export type BgImageScale = {
-  direction: 'horizontal' | 'vertical'
-  distance: number,
-  unit: Unit
-}
-
 export interface ImageEntity extends BaseEntity {
   type: TDShapeType.Image
   size: number[]
   src: string,
-  isBackground: boolean,
-  scale?: BgImageScale
 }
 
 export interface ImageShapeCreateProps extends BaseShapeCreateProps {
   size: number[],
   src: string,
-  isBackground?: boolean,
-  scale?: BgImageScale
 }
 
 class ImageShape extends BaseShape implements ImageEntity, Transformable {
@@ -36,13 +23,11 @@ class ImageShape extends BaseShape implements ImageEntity, Transformable {
 
   isAspectRatioLocked = true
 
+  originalSize: number[]
+
   size: number[]
 
   src: string
-
-  isBackground: boolean
-
-  scale?: BgImageScale
 
   static async createImageShapeFromFile(file: File, point: number[], props: Partial<ImageEntity> = {}) {
     const src = await fileToBase64(file)
@@ -62,9 +47,8 @@ class ImageShape extends BaseShape implements ImageEntity, Transformable {
   constructor(shape: ImageShapeCreateProps) {
     super(shape)
     this.size = shape.size || [1, 1]
+    this.originalSize = this.size
     this.src = shape.src
-    this.isBackground = !!shape.isBackground
-    this.scale = shape.scale || undefined
   }
 
   getBounds() {
@@ -86,13 +70,16 @@ class ImageShape extends BaseShape implements ImageEntity, Transformable {
     })
   }
 
-  getScale(): BgImageRatioScale {
-    if (!this.isBackground || !this.scale) return BASE_SCALE
-    const distPx = this.scale.direction === 'horizontal' ? this.size[0] : this.size[1]
-    return {
-      ratio: this.scale.distance / distPx,
-      unit: this.scale.unit,
+  /* Set one of dimensions, keeping aspect ratio */
+  setDimension(dim: { width: number } | { height: number }) {
+    const os = this.originalSize
+    if ('width' in dim) {
+      return this.produce({ size: [dim.width, Math.round(os[1] * (dim.width / os[0]))] })
     }
+    if ('height' in dim) {
+      return this.produce({ size: [Math.round(os[0] * (dim.height / os[1])), dim.height] })
+    }
+    return this
   }
 
   getEntity() {
@@ -100,8 +87,6 @@ class ImageShape extends BaseShape implements ImageEntity, Transformable {
       ...super.getEntity(),
       size: this.size,
       src: this.src,
-      isBackground: this.isBackground,
-      scale: this.scale,
     } as ImageEntity
   }
 }

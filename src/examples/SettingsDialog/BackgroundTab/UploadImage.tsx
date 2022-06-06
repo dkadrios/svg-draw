@@ -6,8 +6,8 @@ import TextField from '@mui/material/TextField'
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload'
 import CloseIcon from '@mui/icons-material/Close'
 import Button from '@mui/material/Button'
-import { useStateManager } from 'state/useStateManager'
-import { ImageShape } from '../../../state/shapes/Image'
+import { fileToBase64, getImageSizeFromSrc } from 'state/shapes/Image/utils'
+import type { BgTabState } from './BackgroundTab'
 
 const PreviewBox = styled(Box)`
   text-align: center;
@@ -48,58 +48,58 @@ const CloseBtn = styled(Button)`
   min-width: auto;
 `
 
-const PreviewImg = ({ image }: {image: null | ImageShape }) => {
-  if (!image) return null
-
-  const Component = image.size[0] / image.size[1] >= 1.5 ? PreviewImgWidth : PreviewImgHeight
+const PreviewImg = ({ src, size }: {src: string, size: number[] }) => {
+  const Component = size[0] / size[1] >= 1.5 ? PreviewImgWidth : PreviewImgHeight
   return (
-    <Component alt="" src={image.src} />
+    <Component alt="" src={src} />
   )
 }
 
 interface BackgroundImageUploadProps {
-  image?: ImageShape,
-  onChange: (shape?: ImageShape) => void
+  src: string,
+  size: number[],
+  onClear: () => void,
+  updateState: (props: Partial<BgTabState>) => void
 }
 
-const BackgroundImage = ({ onChange, image }: BackgroundImageUploadProps) => {
+const BackgroundImage = ({ updateState, src, size, onClear }: BackgroundImageUploadProps) => {
   const [url, setUrl] = useState('')
-  const stateManager = useStateManager()
 
   const onChangeUrl = (e: React.BaseSyntheticEvent) => setUrl(e.currentTarget.value)
   const onDragOver = (e: React.BaseSyntheticEvent) => e.preventDefault()
-  const onImageClear = () => onChange()
+
+  const onAddImageByUrl = async (urlToAdd: string) => {
+    if (!urlToAdd) return
+    const nSize = await getImageSizeFromSrc(urlToAdd)
+    setUrl('')
+    updateState({
+      src,
+      size: nSize,
+      originalSize: nSize,
+      keepRatio: true,
+    })
+  }
 
   const onDrop = async (e: React.DragEvent) => {
     e.preventDefault()
     if (!e.dataTransfer.files?.length) return
 
-    const shape = await ImageShape.createImageShapeFromFile(
-      e.dataTransfer.files[0],
-      stateManager.getCenterPoint(),
-      { isBackground: true },
-    )
-    onChange(shape)
-  }
-
-  const handleAddImageByUrl = async () => {
-    const shape = await ImageShape.createImageShapeFromUrl(url, stateManager.getCenterPoint())
-    setUrl('')
-    onChange(shape)
+    const nSrc = await fileToBase64(e.dataTransfer.files[0])
+    await onAddImageByUrl(nSrc || '')
   }
 
   return (
     <Stack alignItems="flex-start" direction="row" spacing={3}>
       <PreviewBox onDragOver={onDragOver} onDrop={onDrop}>
-        {image && (
+        {src && (
           <PreviewImgWrapper>
-            <PreviewImg image={image} />
-            <CloseBtn color="info" onClick={onImageClear} size="small" variant="contained">
+            <PreviewImg size={size} src={src} />
+            <CloseBtn color="info" onClick={onClear} size="small" variant="contained">
               <CloseIcon />
             </CloseBtn>
           </PreviewImgWrapper>
         )}
-        {!image && (
+        {!src && (
           <PreviewTextWrapper>
             <p>D'n'D a background picture here...</p>
             <CloudDownloadIcon />
@@ -108,7 +108,7 @@ const BackgroundImage = ({ onChange, image }: BackgroundImageUploadProps) => {
       </PreviewBox>
       <Stack direction="column" spacing={1}>
         <TextField label="URL" onChange={onChangeUrl} placeholder="paste URL here" size="small" value={url} variant="outlined" />
-        <Button onClick={handleAddImageByUrl} size="small" variant="outlined">
+        <Button onClick={() => onAddImageByUrl(url)} size="small" variant="outlined">
           Or Add by URL
         </Button>
       </Stack>

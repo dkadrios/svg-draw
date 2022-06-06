@@ -33,7 +33,8 @@ class BaseTool implements TDCallbacks {
   }
 
   onDragCanvas(info: TLPointerInfo) {
-    const { delta } = info
+    const { zoom } = this.sm.pageState.state.camera
+    const delta = div(info.delta, zoom)
     this.sm.pageState.pan(delta)
   }
 }

@@ -22,7 +22,7 @@ export const SvgDraw = ({ data = emptyPage, isAdminMode = true }: SvgDrawProps, 
 
   const page = stateManager.page.state
   // Need this for correct updates of page when page shapes are changed
-  useSyncExternalStore(stateManager.page.subscribe, () => stateManager.page.state.shapes)
+  useSyncExternalStore(stateManager.page.subscribe, () => stateManager.page.state)
   const pageState = useSyncExternalStore(stateManager.pageState.subscribe, () => stateManager.pageState.state)
 
   useImperativeHandle(ref, () => () => stateManager.export())

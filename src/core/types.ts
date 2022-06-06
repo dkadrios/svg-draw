@@ -14,6 +14,7 @@ export interface TLPage<T extends TLShape | TLEntity = TLShape> {
   name?: string
   canvas: {
     size: number[]
+    src?: string
   }
   shapes: Record<string, T>
 }

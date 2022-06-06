@@ -3,7 +3,12 @@ import { TDEntity, TDShapeType, TLPage } from 'types'
 const defaultPageData = {
   id: 'page',
   canvas: {
-    size: [700, 300],
+    size: [759, 439],
+    src: 'https://geoawesomeness.com/wp-content/uploads/2022/03/New-York-Shadow-Map-Geoawesomeness.png',
+    scale: {
+      unit: 'km',
+      ratio: 0.5,
+    },
   },
   shapes: {
     rect1: {

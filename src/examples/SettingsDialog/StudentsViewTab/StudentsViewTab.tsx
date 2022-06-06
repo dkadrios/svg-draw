@@ -11,7 +11,7 @@ import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import { TDToolType } from 'types'
 import { useStateManager } from 'state/useStateManager'
-import toolsList from '../../toolbarButtons'
+import toolsList from '../../../components/toolbarButtons'
 
 const StudentsViewTab = () => {
   const stateManager = useStateManager()

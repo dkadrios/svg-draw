@@ -10,7 +10,6 @@ import { useSyncExternalStore } from 'use-sync-external-store/shim'
 import { useStateManager } from 'state/useStateManager'
 import { TDToolType } from 'types'
 import StylesSelector from './StylesSelector'
-import SettingsDialog from './SettingsDialog/SettingsDialog'
 import toolsList, { ToolRecord } from './toolbarButtons'
 
 interface ToolbarBtnProps extends ToolRecord {
@@ -55,8 +54,6 @@ const Toolbar = React.memo(() => {
           <ToggleButton onChange={handleShowGridChange} selected={!hideGrid} title="Toggle Grid" value="check">
             <BorderClearIcon />
           </ToggleButton>
-
-          <SettingsDialog />
 
           <StylesSelector />
         </Stack>

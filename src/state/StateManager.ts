@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import type {
+  CanvasRatioScale,
   Class,
   TDCallbacks,
   TDDocument,
@@ -8,9 +9,7 @@ import type {
   TDSettings,
   TDShape,
   TDShapeStyle,
-  TDShapesList,
-  TLBounds,
-  TLCallbackNames,
+  TDShapesList, TLBounds, TLCallbackNames,
 } from 'types'
 import { BASE_SCALE, TDShapeType, TDToolType } from 'types'
 import { getBoundsFromPoints } from 'utils'
@@ -19,8 +18,6 @@ import { TLShapeUtil, TLShapeUtilsMap } from 'core'
 import { Page, PageState, Toolbar } from './stores'
 import SelectTool from './SelectTool'
 import registerShapes from './shapes'
-import { ImageShape } from './shapes/Image'
-import { BgImageScale } from './shapes/Image/ImageShape'
 
 class StateManager {
   shapes: Record<string, Class<TDShape>> = {}
@@ -143,31 +140,9 @@ class StateManager {
     return this.page.getNextChildIndex()
   }
 
-  getBackgroundImage() {
-    const image = this.page.find({ type: TDShapeType.Image, isBackground: true })
-    return image ? image as ImageShape : undefined
-  }
-
-  getScale() {
-    const bgImage = this.getBackgroundImage()
-    if (!bgImage || !bgImage.scale) return BASE_SCALE
-    return bgImage.getScale()
-  }
-
-  createBackgroundImage = (image: ImageShape, scale?: BgImageScale) => {
-    const page = this.getPage()
-    const imageToAdd = image.produce({
-      childIndex: page.getMinChildIndex() - 1,
-      isBackground: true,
-      scale,
-    })
-
-    // Remove previous BG image if exists
-    const prevImage = this.getBackgroundImage()
-    if (prevImage) page.removeShape(prevImage.id)
-
-    page.addShape(imageToAdd)
-    this.setSelected(imageToAdd.id)
+  getScale(): CanvasRatioScale {
+    const { scale = BASE_SCALE } = this.page.state.canvas
+    return scale
   }
 
   getCurrentStyles() {

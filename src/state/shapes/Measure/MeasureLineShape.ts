@@ -1,4 +1,4 @@
-import { BgImageRatioScale, HandlesMoveable, TDShapeType } from 'types'
+import { CanvasRatioScale, HandlesMoveable, TDShapeType } from 'types'
 import { diffForSlope, dist, perpSlope } from 'utils/vec'
 import { BaseEntity } from '../BaseShape'
 import BaseLineShape, { LineShapeHandles } from '../BaseLineShape'
@@ -20,7 +20,7 @@ class MeasureLineShape extends BaseLineShape implements HandlesMoveable {
     return Math.round(dist(start.point, end.point))
   }
 
-  getDistanceLabel(scale: BgImageRatioScale) {
+  getDistanceLabel(scale: CanvasRatioScale) {
     const distance = (this.getDistance() * scale.ratio).toFixed(2)
     return `${distance} ${scale.unit}`
   }
