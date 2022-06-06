@@ -1,5 +1,4 @@
-import React, { useEffect, useImperativeHandle, useMemo, useState } from 'react'
-import { useSyncExternalStore } from 'use-sync-external-store/shim'
+import React, { useEffect, useImperativeHandle, useMemo, useState, useSyncExternalStore } from 'react'
 import { Renderer, TLBounds, TLCallbackNames, TLPerformanceMode } from 'core'
 import type { TDDocument } from 'types'
 import StateManager from 'state'

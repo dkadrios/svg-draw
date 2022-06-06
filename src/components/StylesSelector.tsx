@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useSyncExternalStore } from 'react'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Switch from '@mui/material/Switch'
@@ -24,14 +24,9 @@ const sizes = [
 
 const StylesSelector = () => {
   const stateManager = useStateManager()
-  const [toolbarState, setToolbarState] = useState(stateManager.toolbar.state)
+  const { toolbar } = stateManager
+  const { styles: { color, fill, size } } = useSyncExternalStore(toolbar.subscribe, () => toolbar.state)
 
-  useEffect(() => {
-    stateManager.toolbar.subscribe(setToolbarState)
-    return () => stateManager.toolbar.unsubscribe(setToolbarState)
-  }, [stateManager.toolbar])
-
-  const { styles: { color, fill, size } } = toolbarState
   const getCurrentVariant = () => variants.find(item => item.color === color) || null
   const isFill = !(fill === 'transparent')
   const variant = getCurrentVariant()

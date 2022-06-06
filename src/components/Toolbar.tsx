@@ -1,12 +1,10 @@
-// eslint-disable-next-line no-use-before-define
-import React from 'react'
+import React, { useSyncExternalStore } from 'react'
 import Box from '@mui/material/Box'
 import AppBar from '@mui/material/AppBar'
 import Stack from '@mui/material/Stack'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import ToggleButton from '@mui/material/ToggleButton'
 import BorderClearIcon from '@mui/icons-material/BorderClear'
-import { useSyncExternalStore } from 'use-sync-external-store/shim'
 import { useStateManager } from 'state/useStateManager'
 import { TDToolType } from 'types'
 import StylesSelector from './StylesSelector'
