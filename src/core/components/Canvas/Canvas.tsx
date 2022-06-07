@@ -1,21 +1,19 @@
-import * as React from 'react'
-import {
-  useCameraCss,
-  useCanvasEvents,
-  useKeyEvents,
-  usePerformanceCss,
-  useResizeObserver,
-  useZoomEvents,
-} from '../../hooks'
+import React from 'react'
 import type {
   TLBounds,
   TLPage,
   TLPageState,
-  TLPerformanceMode,
   TLShape,
-} from '../../types'
+} from 'core/types'
+import { inputs } from 'core/inputs'
+import {
+  useCameraCss,
+  useCanvasEvents,
+  useKeyEvents,
+  useResizeObserver,
+  useZoomEvents,
+} from 'core/hooks'
 import Page from '../Page'
-import { inputs } from '../../inputs'
 import Grid from '../Grid'
 import Overlay from '../Overlay'
 
@@ -29,7 +27,6 @@ interface CanvasProps<T extends TLShape, M extends Record<string, unknown>> {
   hideResizeHandles: boolean
   hideRotateHandle: boolean
   hideGrid: boolean
-  performanceMode?: TLPerformanceMode
   meta?: M
   id?: string
   onBoundsChange: (bounds: TLBounds) => void
@@ -41,7 +38,6 @@ const Canvas = <T extends TLShape, M extends Record<string, unknown>>({
   pageState,
   grid,
   meta,
-  performanceMode,
   hideHandles,
   hideBounds,
   hideIndicators,
@@ -50,24 +46,14 @@ const Canvas = <T extends TLShape, M extends Record<string, unknown>>({
   hideGrid,
   onBoundsChange,
 }: CanvasProps<T, M>) => {
-  const rCanvas = React.useRef<HTMLDivElement>(null)
   const rContainer = React.useRef<HTMLDivElement>(null)
   const rLayer = React.useRef<HTMLDivElement>(null)
-
-  const rZoomRef = React.useRef(pageState.camera.zoom)
-
-  rZoomRef.current = pageState.camera.zoom
 
   inputs.zoom = pageState.camera.zoom
 
   useResizeObserver(rContainer, onBoundsChange)
-
   useZoomEvents(rContainer)
-
   useCameraCss(rLayer, rContainer, pageState)
-
-  usePerformanceCss(performanceMode, rContainer)
-
   useKeyEvents()
 
   const events = useCanvasEvents()
@@ -91,7 +77,6 @@ const Canvas = <T extends TLShape, M extends Record<string, unknown>>({
         <div
           className="tl-positioned tl-absolute tl-canvas"
           id="canvas"
-          ref={rCanvas}
           style={{
             width: page.canvas.size[0],
             height: page.canvas.size[1],

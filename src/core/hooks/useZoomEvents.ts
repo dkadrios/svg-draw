@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-import * as React from 'react'
+import { RefObject, useCallback, useEffect, useRef } from 'react'
 import { isEqual, len } from 'utils/vec'
 import { clamp } from 'utils'
 import type { WebKitGestureEvent } from '../types'
@@ -43,10 +42,10 @@ const normalizeWheel = (e: WheelEvent) => {
   ]
 }
 
-const useWheel = <T extends HTMLElement>(ref: React.RefObject<T>) => {
+const useWheel = <T extends HTMLElement>(ref: RefObject<T>) => {
   const { callbacks, inputs } = useTLContext()
 
-  const handleWheel = React.useCallback((e: WheelEvent) => {
+  const handleWheel = useCallback((e: WheelEvent) => {
     e.preventDefault()
     const delta = normalizeWheel(e)
 
@@ -63,7 +62,7 @@ const useWheel = <T extends HTMLElement>(ref: React.RefObject<T>) => {
     callbacks.onPan?.(info, e)
   }, [callbacks, inputs])
 
-  React.useEffect(() => {
+  useEffect(() => {
     const el = ref.current
     if (!el) return noop
     el.addEventListener('wheel', handleWheel, { passive: false })
@@ -74,17 +73,17 @@ const useWheel = <T extends HTMLElement>(ref: React.RefObject<T>) => {
   }, [ref, handleWheel])
 }
 
-const useTouch = <T extends HTMLElement>(ref: React.RefObject<T>) => {
+const useTouch = <T extends HTMLElement>(ref: RefObject<T>) => {
   const { callbacks, inputs } = useTLContext()
 
-  const initialTouches = React.useRef<TouchList | null>(null)
+  const initialTouches = useRef<TouchList | null>(null)
   const touchStart = (e: TouchEvent) => {
     if (e.touches.length !== 2) return
     initialTouches.current = e.touches
     e.preventDefault()
   }
 
-  const touchMove = React.useCallback((e: TouchEvent) => {
+  const touchMove = useCallback((e: TouchEvent) => {
     if (e.touches.length !== 2 || !initialTouches.current) return
 
     const mpInit = midpoint(initialTouches.current)
@@ -107,7 +106,7 @@ const useTouch = <T extends HTMLElement>(ref: React.RefObject<T>) => {
     e.preventDefault()
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     const el = ref.current
     if (!el) return noop
     el.addEventListener('touchstart', touchStart, { passive: false })
@@ -124,11 +123,11 @@ const useTouch = <T extends HTMLElement>(ref: React.RefObject<T>) => {
   }, [ref, touchMove])
 }
 
-const useGesture = (ref: React.RefObject<HTMLElement>) => {
+const useGesture = (ref: RefObject<HTMLElement>) => {
   const { callbacks, inputs } = useTLContext()
-  const prevScale = React.useRef(1)
+  const prevScale = useRef(1)
 
-  const handleGesture = React.useCallback((e: WebKitGestureEvent) => {
+  const handleGesture = useCallback((e: WebKitGestureEvent) => {
     const scale = -(e.scale / prevScale.current - 1) / 2
 
     const info = inputs.panzoom([0, 0, scale], e)
@@ -137,12 +136,12 @@ const useGesture = (ref: React.RefObject<HTMLElement>) => {
     e.preventDefault()
   }, [callbacks, inputs])
 
-  const endGesture = React.useCallback((e: WebKitGestureEvent) => {
+  const endGesture = useCallback((e: WebKitGestureEvent) => {
     handleGesture(e)
     prevScale.current = 1
   }, [handleGesture])
 
-  React.useEffect(() => {
+  useEffect(() => {
     const el = ref.current
     if (!el) return noop
     // Only allow gestures on desktop Safari
@@ -166,7 +165,7 @@ const useGesture = (ref: React.RefObject<HTMLElement>) => {
   }, [ref, handleGesture, endGesture])
 }
 
-export default function useZoomEvents(ref: React.RefObject<HTMLElement>) {
+export default function useZoomEvents(ref: RefObject<HTMLElement>) {
   useWheel(ref)
   useTouch(ref)
   useGesture(ref)

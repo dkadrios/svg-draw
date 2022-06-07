@@ -1,6 +1,6 @@
-import * as React from 'react'
+import React from 'react'
 import { add, dist } from 'utils/vec'
-import type { TLHandle, TLShape } from '../../types'
+import type { TLHandle, TLShape } from 'core/types'
 import Handle from './Handle'
 
 interface HandlesProps {

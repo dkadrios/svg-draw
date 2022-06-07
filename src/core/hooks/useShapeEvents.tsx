@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
-import * as React from 'react'
-import { pointInBounds } from '../../utils'
-import type { TLPointerEvent } from '../types'
+import React from 'react'
+import { pointInBounds } from 'utils'
+import type { TLPointerEvent } from 'core/types'
 import { TLContext } from './useTLContext'
 
 const useShapeEvents = (id: string) => {

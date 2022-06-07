@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, { useMemo } from 'react'
 import { TLComponentProps, strokeWidths } from 'types'
 import { med } from 'utils/vec'
 import { SVGContainer, TLShapeUtil } from 'core'
@@ -13,7 +13,7 @@ class FreeDrawUtil extends TLShapeUtil<T> {
   Component = ({ shape, isSelected, isGhost, events }: TLComponentProps<T>) => {
     const { points, styles: { color, size } } = shape
 
-    const pathTDSnapshot = React.useMemo(() => this.getSVGPathFromPoints(points), [points])
+    const pathTDSnapshot = useMemo(() => this.getSVGPathFromPoints(points), [points])
 
     // No stroke styles for now
     const strokeDasharray = 'none'

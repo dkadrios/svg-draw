@@ -6,7 +6,7 @@ import type {
   TLPage,
   TLPageState,
   TLShape,
-} from '../types'
+} from 'core/types'
 import { useTLContext } from './useTLContext'
 
 function shapeIsInViewport(bounds: TLBounds, viewport: TLBounds) {

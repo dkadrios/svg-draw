@@ -1,5 +1,5 @@
-import * as React from 'react'
-import { TLBounds, TLBoundsCorner, TLBoundsEdge } from '../../types'
+import React from 'react'
+import { TLBounds, TLBoundsCorner, TLBoundsEdge } from 'core/types'
 import Container from '../Container'
 import SVGContainer from '../SVGContainer'
 import CenterHandle from './CenterHandle'

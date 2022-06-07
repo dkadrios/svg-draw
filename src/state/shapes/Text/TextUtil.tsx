@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, { useCallback, useEffect, useRef } from 'react'
 import styled from '@emotion/styled'
 import { HTMLContainer, TLComponentProps, TLIndicatorProps, TLPointerEvent, TLShapeUtil } from 'core'
 import TextShape from './TextShape'
@@ -84,14 +84,14 @@ class TextUtil extends TLShapeUtil<T> {
     onShapeChange,
   }: TLComponentProps<T>) => {
     const { text } = shape
-    const rInput = React.useRef<HTMLTextAreaElement>(null)
+    const rInput = useRef<HTMLTextAreaElement>(null)
 
-    const handlePointerDown = React.useCallback(
+    const handlePointerDown = useCallback(
       (e: TLPointerEvent) => { if (isEditing) e.stopPropagation() },
       [isEditing],
     )
 
-    React.useEffect(() => {
+    useEffect(() => {
       if (!isEditing) onShapeBlur?.()
       requestAnimationFrame(() => {
         const elm = rInput.current

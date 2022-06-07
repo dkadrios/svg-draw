@@ -2,13 +2,6 @@
 
 import type React from 'react'
 
-export enum TLPerformanceMode {
-  TransformSelected = 'transform_selected',
-  TranslateSelected = 'translate_selected',
-  TransformAll = 'transform_all',
-  TranslateAll = 'translate_all',
-}
-
 export interface TLPage<T extends TLShape | TLEntity = TLShape> {
   id: string
   name?: string

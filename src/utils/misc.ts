@@ -144,8 +144,7 @@ export const uniqueId = (a = ''): string => {
 
 /* Debounce a function. */
 export const debounce = <T extends (...args: unknown[]) => void>(fn: T, ms = 0) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let timeoutId: number | any
+  let timeoutId: ReturnType<typeof setTimeout>
   return (...args: Parameters<T>) => {
     clearTimeout(timeoutId)
     timeoutId = setTimeout(() => fn.apply(args), ms)

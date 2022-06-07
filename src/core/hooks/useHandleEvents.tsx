@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import * as React from 'react'
+import React from 'react'
 import type { TLPointerEvent } from '../types'
 import { useTLContext } from './useTLContext'
 

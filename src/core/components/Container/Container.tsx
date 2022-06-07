@@ -1,7 +1,6 @@
-import type { HTMLProps } from 'react'
-import * as React from 'react'
-import type { TLBounds } from '../../types'
-import { usePosition } from '../../hooks'
+import React, { HTMLProps } from 'react'
+import type { TLBounds } from 'core/types'
+import { usePosition } from 'core/hooks'
 
 interface ContainerProps extends HTMLProps<HTMLDivElement> {
   id?: string

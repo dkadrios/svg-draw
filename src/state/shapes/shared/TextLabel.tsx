@@ -1,4 +1,4 @@
-import * as React from 'react'
+import { useLayoutEffect, useRef } from 'react'
 import styled from '@emotion/styled'
 import { getTextSize } from './textUtils'
 
@@ -53,9 +53,9 @@ export const TextLabel = ({
 }: TextLabelProps) => {
   const { height, width } = getTextSize(text, font)
 
-  const rInnerWrapper = React.useRef<HTMLDivElement>(null)
+  const rInnerWrapper = useRef<HTMLDivElement>(null)
 
-  React.useLayoutEffect(() => {
+  useLayoutEffect(() => {
     const elm = rInnerWrapper.current
     if (!elm) return
     elm.style.transform = `scale(${scale}, ${scale}) translate(${offsetX}px, ${offsetY}px)`

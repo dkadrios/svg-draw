@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import type { Inputs } from '../inputs'
 import type { TLBounds, TLCallbacks, TLPageState, TLShape } from '../types'
 import type { TLShapeUtilsMap } from '../TLShapeUtil'

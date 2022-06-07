@@ -1,8 +1,8 @@
-import * as React from 'react'
-import { useShapeEvents, useTLContext } from '../../hooks'
-import type { IShapeTreeNode, TLShape } from '../../types'
+import React from 'react'
+import { useShapeEvents, useTLContext } from 'core/hooks'
+import type { IShapeTreeNode, TLShape } from 'core/types'
+import type { TLShapeUtil } from 'core/TLShapeUtil'
 import Container from '../Container'
-import type { TLShapeUtil } from '../../TLShapeUtil'
 
 interface ShapeProps<T extends TLShape, M> extends IShapeTreeNode<T, M> {
   utils: TLShapeUtil<T>

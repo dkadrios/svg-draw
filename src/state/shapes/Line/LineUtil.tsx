@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import { TLComponentProps, strokeWidths } from 'types'
 import { SVGContainer, TLShapeUtil } from 'core'
 import type LineShape from './LineShape'

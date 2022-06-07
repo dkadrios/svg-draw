@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import * as React from 'react'
+import React from 'react'
 import type { TLPointerEvent } from '../types'
 import { useTLContext } from './useTLContext'
 
@@ -8,7 +8,6 @@ const useBoundsEvents = () => {
 
   return React.useMemo(() => ({
     onPointerDown: (e: TLPointerEvent) => {
-      // TODO: this code is too repetitious across all handlers; probably can move to a func
       if (e.dead) return
       e.dead = true
       if (!inputs.pointerIsValid(e)) return

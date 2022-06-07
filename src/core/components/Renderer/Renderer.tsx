@@ -1,18 +1,16 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import * as React from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import type {
   TLBounds,
   TLCallbacks,
   TLPage,
   TLPageState,
-  TLPerformanceMode,
   TLShape,
   TLTheme,
-} from '../../types'
+} from 'core/types'
+import Inputs from 'core/inputs'
+import { TLContext, TLContextType, useTLTheme } from 'core/hooks'
+import type { TLShapeUtilsMap } from 'core/TLShapeUtil'
 import Canvas from '../Canvas'
-import Inputs from '../../inputs'
-import { TLContext, TLContextType, useTLTheme } from '../../hooks'
-import type { TLShapeUtilsMap } from '../../TLShapeUtil'
 
 export interface RendererProps<T extends TLShape> extends Partial<TLCallbacks> {
   // An object containing instances of your shape classes
@@ -54,12 +52,6 @@ export interface RendererProps<T extends TLShape> extends Partial<TLCallbacks> {
   // (optional) The size of the grid step
   grid?: number
 
-  // (optional) Use a performance mode
-  performanceMode?: TLPerformanceMode
-
-  // (optional) A callback that receives the renderer's inputs manager
-  onMount?: (inputs: Inputs) => void
-
   // (optional) A callback that is fired when the editor's client bounding box changes
   onBoundsChange?: (bounds: TLBounds) => void
 }
@@ -77,7 +69,6 @@ const Renderer = <T extends TLShape>({
   theme,
   meta,
   grid,
-  performanceMode,
   hideHandles = false,
   hideIndicators = false,
   hideResizeHandles = false,
@@ -88,15 +79,15 @@ const Renderer = <T extends TLShape>({
 }: RendererProps<T>) => {
   useTLTheme(theme, `#${ id}`)
 
-  const rSelectionBounds = React.useRef<TLBounds>(null)
+  const rSelectionBounds = useRef<TLBounds>(null)
 
-  const rPageState = React.useRef<TLPageState>(pageState)
+  const rPageState = useRef<TLPageState>(pageState)
 
-  React.useEffect(() => {
+  useEffect(() => {
     rPageState.current = pageState
   }, [pageState])
 
-  const [context, setContext] = React.useState<TLContextType<T>>(() => ({
+  const [context, setContext] = useState<TLContextType<TLShape>>(() => ({
     callbacks: rest,
     shapeUtils,
     rSelectionBounds,
@@ -112,12 +103,12 @@ const Renderer = <T extends TLShape>({
     inputs: new Inputs(),
   }))
 
-  const onBoundsChange = React.useCallback((bounds: TLBounds) => {
+  const onBoundsChange = useCallback((bounds: TLBounds) => {
     setContext(ctx => ({ ...ctx, bounds }))
   }, [])
 
   return (
-    <TLContext.Provider value={context as unknown as TLContextType<TLShape>}>
+    <TLContext.Provider value={context}>
       <Canvas
         grid={grid}
         hideBounds={hideBounds}
@@ -131,7 +122,6 @@ const Renderer = <T extends TLShape>({
         onBoundsChange={onBoundsChange}
         page={page}
         pageState={pageState}
-        performanceMode={performanceMode}
       />
     </TLContext.Provider>
   )

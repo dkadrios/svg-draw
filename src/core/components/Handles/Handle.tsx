@@ -1,6 +1,6 @@
-import * as React from 'react'
+import React from 'react'
 import { translateBounds } from 'utils'
-import { useHandleEvents } from '../../hooks'
+import { useHandleEvents } from 'core/hooks'
 import Container from '../Container'
 import SVGContainer from '../SVGContainer'
 

@@ -1,10 +1,10 @@
-import * as React from 'react'
-import type { TLShape } from '../../types'
-import { usePosition, useTLContext } from '../../hooks'
+import React from 'react'
+import type { TLShape } from 'core/types'
+import { usePosition, useTLContext } from 'core/hooks'
 
 interface IndicatorProps {
   shape: TLShape
-  meta: Record<string, unknown>
+  meta?: Record<string, unknown>
   isSelected?: boolean
   isHovered?: boolean
   isEditing?: boolean

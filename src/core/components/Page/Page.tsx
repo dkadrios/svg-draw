@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import * as React from 'react'
+import React from 'react'
 import type { TLPage, TLPageState, TLShape } from 'core/types'
 import { useSelection, useShapeTree, useTLContext } from 'core/hooks'
 import Bounds from '../Bounds'
@@ -77,7 +76,7 @@ const Page = <T extends TLShape>({
           isEditing={isEditing}
           isSelected
           key={`selected_${ selectedId}`}
-          meta={meta as any}
+          meta={meta}
           shape={selectedShape}
         />
       )}
@@ -85,7 +84,7 @@ const Page = <T extends TLShape>({
         <ShapeIndicator
           isHovered
           key={`hovered_${ hoveredId}`}
-          meta={meta as any}
+          meta={meta}
           shape={page.shapes[hoveredId]}
         />
       )}

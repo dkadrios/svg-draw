@@ -1,4 +1,4 @@
-import * as React from 'react'
+import { useLayoutEffect, useMemo } from 'react'
 import type { TLTheme } from '../types'
 
 const styles = new Map<string, HTMLStyleElement>()
@@ -16,7 +16,7 @@ function makeCssTheme<T = AnyTheme>(prefix: string, theme: T) {
 }
 
 function useTheme<T = AnyTheme>(prefix: string, theme: T, selector = ':root') {
-  React.useLayoutEffect(() => {
+  useLayoutEffect(() => {
     const style = document.createElement('style')
     const cssTheme = makeCssTheme(prefix, theme)
 
@@ -39,7 +39,7 @@ function useTheme<T = AnyTheme>(prefix: string, theme: T, selector = ':root') {
 }
 
 function useStyle(uid: string, rules: string) {
-  React.useLayoutEffect(() => {
+  useLayoutEffect(() => {
     if (styles.get(uid)) {
       return () => null
     }
@@ -82,7 +82,7 @@ const tlcss = css`
     --tl-scale: calc(1 / var(--tl-zoom));
     --tl-padding: calc(64px * max(1, var(--tl-scale)));
     --tl-performance-all: auto;
-    --tl-performance-selected: auto;
+    --tl-performance-selected: 'transform, contents';
     position: relative;
     top: 0;
     left: 0;
@@ -338,7 +338,7 @@ const tlcss = css`
 `
 
 const useTLTheme = (theme?: Partial<TLTheme>, selector?: string) => {
-  const tltheme = React.useMemo<TLTheme>(
+  const tltheme = useMemo<TLTheme>(
     () => ({
       ...defaultTheme,
       ...theme,

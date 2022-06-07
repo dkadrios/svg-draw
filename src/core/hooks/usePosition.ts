@@ -1,13 +1,13 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-import * as React from 'react'
-import type { TLBounds } from '../types'
+import { useLayoutEffect, useRef } from 'react'
+import type { TLBounds } from 'core/types'
 
 const usePosition = (bounds: TLBounds, rotation = 0) => {
-  const rBounds = React.useRef<HTMLDivElement>(null)
+  const rBounds = useRef<HTMLDivElement>(null)
 
   // Update the transform
-  React.useLayoutEffect(() => {
-    const elm = rBounds.current!
+  useLayoutEffect(() => {
+    if (!rBounds.current) return
+    const elm = rBounds.current
     const transform = `
       translate(
         calc(${bounds.minX}px - var(--tl-padding)),

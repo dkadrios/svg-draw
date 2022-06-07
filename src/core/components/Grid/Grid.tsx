@@ -1,6 +1,6 @@
-import * as React from 'react'
-import type { TLPageState } from '../../types'
-import { modulate } from '../../../utils'
+import React from 'react'
+import type { TLPageState } from 'core/types'
+import { modulate } from 'utils'
 
 const STEPS = [
   [-1, 0.15, 64],

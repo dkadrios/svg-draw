@@ -1,6 +1,6 @@
-import * as React from 'react'
-import { useBoundsHandleEvents } from '../../hooks'
-import type { TLBounds } from '../../types'
+import React from 'react'
+import { useBoundsHandleEvents } from 'core/hooks'
+import type { TLBounds } from 'core/types'
 
 interface RotateHandleProps {
   bounds: TLBounds

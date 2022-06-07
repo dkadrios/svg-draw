@@ -1,6 +1,6 @@
-import * as React from 'react'
-import type { TLBounds, TLPage, TLPageState, TLShape } from '../types'
-import type { TLShapeUtil, TLShapeUtilsMap } from '../TLShapeUtil'
+import { useRef } from 'react'
+import type { TLBounds, TLPage, TLPageState, TLShape } from 'core/types'
+import type { TLShapeUtil, TLShapeUtilsMap } from 'core/TLShapeUtil'
 import { useTLContext } from './useTLContext'
 
 const canvasToScreen = (point: number[], camera: TLPageState['camera']): number[] => (
@@ -16,7 +16,7 @@ const useSelection = <T extends TLShape>(
 ) => {
   const { rSelectionBounds } = useTLContext()
   const { selectedId } = pageState
-  const rPrevBounds = React.useRef<TLBounds>()
+  const rPrevBounds = useRef<TLBounds>()
 
   let bounds: TLBounds | undefined
   let rotation = 0

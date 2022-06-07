@@ -1,6 +1,6 @@
-import * as React from 'react'
-import { useBoundsHandleEvents } from '../../hooks'
-import { TLBounds, TLBoundsCorner } from '../../types'
+import React from 'react'
+import { useBoundsHandleEvents } from 'core/hooks'
+import { TLBounds, TLBoundsCorner } from 'core/types'
 
 const cornerBgClassnames = {
   [TLBoundsCorner.TopLeft]: 'tl-cursor-nwse',

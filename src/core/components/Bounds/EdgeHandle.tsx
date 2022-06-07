@@ -1,6 +1,6 @@
-import * as React from 'react'
-import { useBoundsHandleEvents } from '../../hooks'
-import { TLBounds, TLBoundsEdge } from '../../types'
+import React from 'react'
+import { useBoundsHandleEvents } from 'core/hooks'
+import { TLBounds, TLBoundsEdge } from 'core/types'
 
 const edgeClassnames = {
   [TLBoundsEdge.Top]: 'tl-cursor-ns',

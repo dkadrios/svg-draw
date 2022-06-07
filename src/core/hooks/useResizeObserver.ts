@@ -1,55 +1,49 @@
-import * as React from 'react'
-import { debounce } from '../../utils'
-import type { TLBounds } from '../types'
+import React, { useCallback, useEffect } from 'react'
+import { boundsAreEqual, debounce } from 'utils'
+import type { TLBounds } from 'core/types'
 import { useTLContext } from './useTLContext'
 
 const useResizeObserver = <T extends Element>(
   ref: React.RefObject<T>,
   onBoundsChange: (bounds: TLBounds) => void,
 ) => {
-  const { callbacks, inputs } = useTLContext()
-
-  const rIsMounted = React.useRef(false)
+  const { bounds, callbacks, inputs } = useTLContext()
 
   // When the element resizes, update the bounds (stored in inputs)
   // and broadcast via the onBoundsChange callback prop.
-  const updateBounds = React.useCallback(() => {
-    if (rIsMounted.current) {
-      const rect = ref.current?.getBoundingClientRect()
+  const updateBounds = useCallback(() => {
+    const rect = ref.current?.getBoundingClientRect()
 
-      if (rect) {
-        const bounds: TLBounds = {
-          minX: rect.left,
-          maxX: rect.left + rect.width,
-          minY: rect.top,
-          maxY: rect.top + rect.height,
-          width: rect.width,
-          height: rect.height,
-        }
-
-        inputs.bounds = bounds
-
-        onBoundsChange(bounds)
-
-        callbacks.onBoundsChange?.(bounds)
+    if (rect) {
+      const newBounds: TLBounds = {
+        minX: rect.left,
+        maxX: rect.left + rect.width,
+        minY: rect.top,
+        maxY: rect.top + rect.height,
+        width: rect.width,
+        height: rect.height,
       }
-    } else {
-      // Skip the first mount
-      rIsMounted.current = true
-    }
-  }, [ref, inputs, callbacks.onBoundsChange])
 
-  React.useEffect(() => {
-    const debouncedupdateBounds = debounce(updateBounds, 100)
-    window.addEventListener('scroll', debouncedupdateBounds)
-    window.addEventListener('resize', debouncedupdateBounds)
+      // bounds are equal; skip
+      if (boundsAreEqual(bounds, newBounds)) return
+
+      inputs.bounds = newBounds
+      onBoundsChange(newBounds)
+
+      callbacks.onBoundsChange?.(newBounds)
+    }
+  }, [ref, inputs, callbacks, onBoundsChange, bounds])
+
+  useEffect(() => {
+    const dUpdateBounds = debounce(updateBounds, 100)
+
+    window.addEventListener('scroll', dUpdateBounds)
     return () => {
-      window.removeEventListener('scroll', debouncedupdateBounds)
-      window.removeEventListener('resize', debouncedupdateBounds)
+      window.removeEventListener('scroll', dUpdateBounds)
     }
-  }, [])
+  }, [updateBounds])
 
-  React.useEffect(() => {
+  useEffect(() => {
     const resizeObserver = new ResizeObserver((entries) => {
       if (entries[0].contentRect) {
         updateBounds()
@@ -63,10 +57,6 @@ const useResizeObserver = <T extends Element>(
     return () => {
       resizeObserver.disconnect()
     }
-  }, [ref, inputs])
-
-  React.useEffect(() => {
-    updateBounds()
-  }, [ref])
+  }, [ref, inputs, updateBounds])
 }
 export default useResizeObserver

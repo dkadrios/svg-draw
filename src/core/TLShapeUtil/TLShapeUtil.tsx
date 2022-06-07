@@ -1,5 +1,5 @@
-import * as React from 'react'
-import type { TLComponentProps, TLIndicatorProps, TLShape } from '../types'
+import React from 'react'
+import type { TLComponentProps, TLIndicatorProps, TLShape } from 'core/types'
 
 export abstract class TLShapeUtil<T extends TLShape, M = any> {
   // Always render, never hide from canvas

@@ -1,5 +1,5 @@
 import React, { useEffect, useImperativeHandle, useMemo, useState, useSyncExternalStore } from 'react'
-import { Renderer, TLBounds, TLCallbackNames, TLPerformanceMode } from 'core'
+import { Renderer, TLBounds, TLCallbackNames } from 'core'
 import type { TDDocument } from 'types'
 import StateManager from 'state'
 import { StateManagerContext } from 'state/useStateManager'
@@ -48,7 +48,6 @@ export const SvgDraw = ({ data = emptyPage, isAdminMode = true }: SvgDrawProps, 
         hideHandles={false}
         hideIndicators={false}
         hideRotateHandles={false}
-        id={undefined}
         meta={meta}
         onBoundsChange={handleBoundsChange}
         onDoubleClickShape={handleCallback('onDoubleClickShape')}
@@ -74,7 +73,6 @@ export const SvgDraw = ({ data = emptyPage, isAdminMode = true }: SvgDrawProps, 
         onZoom={handleCallback('onZoom')}
         page={page} // resize/drag shapes
         pageState={pageState} // hover / selected indicators
-        performanceMode={TLPerformanceMode.TransformSelected}
         shapeUtils={stateManager.utils}
       />
       <Toolbar />
