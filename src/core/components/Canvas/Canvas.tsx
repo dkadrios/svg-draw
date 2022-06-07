@@ -53,7 +53,7 @@ const Canvas = <T extends TLShape, M extends Record<string, unknown>>({
 
   useResizeObserver(rContainer, onBoundsChange)
   useZoomEvents(rContainer)
-  useCameraCss(rLayer, rContainer, pageState)
+  useCameraCss(rLayer, rContainer, pageState, page.canvas)
   useKeyEvents()
 
   const events = useCanvasEvents()
