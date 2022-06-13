@@ -1,4 +1,4 @@
-import { CanvasRatioScale, HandlesMoveable, TDShapeType, scaleUnits } from 'types'
+import { CanvasRatioScale, HandlesMoveable, TDShapeType } from 'types'
 import { diffForSlope, dist, perpSlope } from 'utils/vec'
 import { BaseEntity } from '../BaseShape'
 import BaseLineShape, { LineShapeHandles } from '../BaseLineShape'
@@ -22,7 +22,7 @@ class MeasureLineShape extends BaseLineShape implements HandlesMoveable {
 
   getDistanceLabel(scale: CanvasRatioScale) {
     const distance = (this.getDistance() * scale.ratio).toFixed(2)
-    return `${distance} ${scaleUnits[scale.unit].short}`
+    return `${distance} ${scale.unit}`
   }
 
   // TODO: use <marker> syntax for these?
