@@ -18,12 +18,6 @@ export const scaleUnits: Record<Unit, { label: string, short: string }> = {
   m: { label: 'Meters', short: 'm' },
 }
 
-export type BgImageScale = {
-  direction: 'horizontal' | 'vertical'
-  distance: number,
-  unit: Unit
-}
-
 export interface CanvasRatioScale {
   ratio: number,
   unit: Unit
@@ -32,13 +26,6 @@ export interface CanvasRatioScale {
 export const BASE_SCALE: CanvasRatioScale = {
   ratio: 1,
   unit: 'px',
-}
-
-export const CANVAS = {
-  widthMin: 500,
-  heightMin: 500,
-  widthDefault: 1080,
-  heightDefault: 720,
 }
 
 /* Page State */

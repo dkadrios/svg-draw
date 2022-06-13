@@ -9,11 +9,10 @@ import type {
   TDSettings,
   TDShape,
   TDShapeStyle,
-  TDShapesList, TLBounds, TLCallbackNames,
+  TDShapesList, TLCallbackNames,
 } from 'types'
 import { BASE_SCALE, TDShapeType, TDToolType } from 'types'
-import { getBoundsFromPoints } from 'utils'
-import { add, div, mul, sub, toFixed } from 'utils/vec'
+import { add, div, mul, sub } from 'utils/vec'
 import { TLShapeUtil, TLShapeUtilsMap } from 'core'
 import { Page, PageState, Toolbar } from './stores'
 import SelectTool from './SelectTool'
@@ -39,11 +38,6 @@ class StateManager {
   pageState: PageState
 
   toolbar: Toolbar
-
-  rendererBounds: TLBounds = getBoundsFromPoints([
-    [0, 0],
-    [100, 100],
-  ])
 
   constructor(document: TDDocument, isAdminMode = true) {
     registerShapes(this)
@@ -163,15 +157,6 @@ class StateManager {
 
   removeShape(id: string) {
     this.page.removeShape(id)
-  }
-
-  updateBounds(bounds: TLBounds) {
-    this.rendererBounds = bounds
-  }
-
-  getCenterPoint() {
-    const { height, width } = this.rendererBounds
-    return toFixed([width / 2, height / 2])
   }
 
   // Screen coords -> canvas point

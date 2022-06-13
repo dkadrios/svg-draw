@@ -36,7 +36,7 @@
     }
   },
   "scripts": {
-    "build:prod": "NODE_ENV=production parcel build src/SvgDraw.tsx --no-source-maps --detailed-report --reporter=@parcel/reporter-bundle-analyzer --no-cache --no-autoinstall",
+    "build:prod": "NODE_ENV=production parcel build src/index.ts --no-source-maps --detailed-report --reporter=@parcel/reporter-bundle-analyzer --no-cache --no-autoinstall",
     "build:report": "open ./parcel-bundle-reports/module.html",
     "build": "yarn run clean && yarn run build:prod",
     "clean": "rimraf dist",

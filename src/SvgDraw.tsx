@@ -1,4 +1,4 @@
-import React, { useEffect, useImperativeHandle, useMemo, useState, useSyncExternalStore } from 'react'
+import React, { useEffect, useImperativeHandle, useMemo, useRef, useState, useSyncExternalStore } from 'react'
 import { Renderer, TLBounds, TLCallbackNames } from 'core'
 import type { TDDocument } from 'types'
 import StateManager from 'state'
@@ -29,8 +29,19 @@ export const SvgDraw = ({ data = emptyPage, isAdminMode = true }: SvgDrawProps, 
   const handleCallback = (eventName: TLCallbackNames) => (...rest: unknown[]) =>
     stateManager.handleCallback(eventName, ...rest)
 
-  const handleBoundsChange = (bounds: TLBounds) =>
-    stateManager.updateBounds(bounds)
+  // On first load move camera to show canvas in the center of viewport
+  const firstLoadHandled = useRef(false)
+  const handleBoundsChange = (bounds: TLBounds) => {
+    if (firstLoadHandled.current) return
+    const { canvas: { size } } = page
+    stateManager.pageState.action((draft) => {
+      draft.camera.point = [
+        (bounds.width - size[0]) / 2,
+        (bounds.height - size[1]) / 2,
+      ]
+    })
+    firstLoadHandled.current = true
+  }
 
   const { settings: { grid, hideGrid } } = pageState
 
