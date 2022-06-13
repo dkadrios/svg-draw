@@ -9,6 +9,15 @@ export { TDEntity, TDShape }
 /* Scale for measure tool */
 export type Unit = 'px' | 'mi' | 'ft' | 'km' | 'm'
 
+/* Labels and short labels for measure tool units */
+export const scaleUnits: Record<Unit, { label: string, short: string }> = {
+  px: { label: 'Pixels', short: 'px' },
+  mi: { label: 'Miles', short: 'mi' },
+  ft: { label: 'Feet', short: 'ft' },
+  km: { label: 'Kilometers', short: 'km' },
+  m: { label: 'Meters', short: 'm' },
+}
+
 export type BgImageScale = {
   direction: 'horizontal' | 'vertical'
   distance: number,
