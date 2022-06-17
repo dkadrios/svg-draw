@@ -39,7 +39,7 @@ class StateManager {
 
   toolbar: Toolbar
 
-  constructor(document: TDDocument, isAdminMode = true) {
+  constructor(document: TDDocument) {
     registerShapes(this)
 
     const { page = { shapes: {} }, pageState, settings } = document
@@ -47,16 +47,16 @@ class StateManager {
     const shapes = this.loadShapes(page.shapes)
     this.page = new Page({ ...page, shapes })
     this.pageState = new PageState(pageState)
-    this.toolbar = new Toolbar(settings, isAdminMode)
+    this.toolbar = new Toolbar(settings)
   }
 
-  setData(document: TDDocument, isAdminMode = true) {
+  setData(document: TDDocument) {
     const { page = { shapes: {} }, pageState, settings } = document
 
     const shapes = this.loadShapes(page.shapes)
     this.page.reset({ ...page, shapes })
     this.pageState.reset(pageState)
-    this.toolbar.reset(settings, isAdminMode)
+    this.toolbar.reset(settings)
   }
 
   registerShape(key: TDShapeType, Shape: Class<TDShape>, util: TLShapeUtil<TDShape>) {

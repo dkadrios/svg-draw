@@ -8,7 +8,7 @@ import './styles.css'
 
 const SvgDrawExample = () => {
   const [doc, setDoc] = useState({ page: defaultPageData } as TDDocument)
-  const exportRef = useRef<() => TDDocument>(null)
+  const exportRef = useRef<{ export:() => TDDocument }>(null)
 
   return (
     <SvgDraw data={doc} ref={exportRef} />

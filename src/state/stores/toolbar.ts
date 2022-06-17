@@ -11,24 +11,22 @@ import Store from './store'
 interface ToolbarState {
   tool: TDToolType,
   styles: TDShapeStyle,
-  isAdminMode: boolean,
   settings: TDDocumentViewSettings
 }
 
 class Toolbar extends Store<ToolbarState> {
   state!: ToolbarState
 
-  constructor(settings?: TDDocumentViewSettings, isAdminMode?: boolean) {
+  constructor(settings?: TDDocumentViewSettings) {
     super()
-    this.reset(settings, isAdminMode)
+    this.reset(settings)
   }
 
-  reset(settings: TDDocumentViewSettings = DEFAULT_VIEW_SETTINGS, isAdminMode = true) {
+  reset(settings: TDDocumentViewSettings = DEFAULT_VIEW_SETTINGS) {
     this.action(() => ({
       tool: TDToolType.Select,
       styles: DEFAULT_STYLES,
       settings,
-      isAdminMode,
     }))
   }
 
@@ -60,8 +58,6 @@ class Toolbar extends Store<ToolbarState> {
 
   isVisible(btnId: string) {
     const { settings } = this.state
-    if (this.state.isAdminMode) return true
-
     return !!settings[btnId as keyof TDDocumentViewSettings] || settings.tools[btnId as TDToolType]
   }
 

@@ -17,6 +17,8 @@ export interface RendererProps<T extends TLShape, M extends TLMeta> extends Part
   // An object containing instances of your shape classes
   shapeUtils: TLShapeUtilsMap<T>
 
+  containerRef?: React.RefObject<HTMLDivElement>
+
   // Current page, containing shapes
   page: TLPage<T>
 
@@ -52,9 +54,6 @@ export interface RendererProps<T extends TLShape, M extends TLMeta> extends Part
 
   // (optional) The size of the grid step
   grid?: number
-
-  // (optional) A callback that is fired when the editor's client bounding box changes
-  onBoundsChange?: (bounds: TLBounds) => void
 }
 
 /**
@@ -65,6 +64,7 @@ export interface RendererProps<T extends TLShape, M extends TLMeta> extends Part
 const Renderer = <T extends TLShape, M extends TLMeta>({
   id = 'tl',
   shapeUtils,
+  containerRef,
   page,
   pageState,
   theme,
@@ -99,6 +99,7 @@ const Renderer = <T extends TLShape, M extends TLMeta>({
   return (
     <TLContext.Provider value={context}>
       <Canvas
+        containerRef={containerRef}
         grid={grid}
         hideBounds={hideBounds}
         hideGrid={hideGrid}

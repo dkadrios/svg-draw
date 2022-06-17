@@ -17,6 +17,7 @@ import Grid from '../Grid'
 import Overlay from '../Overlay'
 
 interface CanvasProps<T extends TLShape, M extends TLMeta> {
+  containerRef?: React.RefObject<HTMLDivElement>
   page: TLPage<T>
   pageState: TLPageState
   grid?: number
@@ -32,6 +33,7 @@ interface CanvasProps<T extends TLShape, M extends TLMeta> {
 
 const Canvas = <T extends TLShape, M extends TLMeta>({
   id,
+  containerRef,
   page,
   pageState,
   grid,
@@ -43,7 +45,8 @@ const Canvas = <T extends TLShape, M extends TLMeta>({
   hideRotateHandle,
   hideGrid,
 }: CanvasProps<T, M>) => {
-  const rContainer = React.useRef<HTMLDivElement>(null)
+  const cRef = React.useRef<HTMLDivElement>(null)
+  const rContainer = containerRef || cRef
   const rLayer = React.useRef<HTMLDivElement>(null)
   const { inputs } = useTLContext()
 
