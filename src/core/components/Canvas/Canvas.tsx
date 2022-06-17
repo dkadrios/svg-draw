@@ -1,23 +1,22 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import type {
-  TLBounds,
+  TLMeta,
   TLPage,
   TLPageState,
   TLShape,
 } from 'core/types'
-import { inputs } from 'core/inputs'
 import {
   useCameraCss,
   useCanvasEvents,
   useKeyEvents,
-  useResizeObserver,
+  useTLContext,
   useZoomEvents,
 } from 'core/hooks'
 import Page from '../Page'
 import Grid from '../Grid'
 import Overlay from '../Overlay'
 
-interface CanvasProps<T extends TLShape, M extends Record<string, unknown>> {
+interface CanvasProps<T extends TLShape, M extends TLMeta> {
   page: TLPage<T>
   pageState: TLPageState
   grid?: number
@@ -29,10 +28,9 @@ interface CanvasProps<T extends TLShape, M extends Record<string, unknown>> {
   hideGrid: boolean
   meta?: M
   id?: string
-  onBoundsChange: (bounds: TLBounds) => void
 }
 
-const Canvas = <T extends TLShape, M extends Record<string, unknown>>({
+const Canvas = <T extends TLShape, M extends TLMeta>({
   id,
   page,
   pageState,
@@ -44,14 +42,17 @@ const Canvas = <T extends TLShape, M extends Record<string, unknown>>({
   hideResizeHandles,
   hideRotateHandle,
   hideGrid,
-  onBoundsChange,
 }: CanvasProps<T, M>) => {
   const rContainer = React.useRef<HTMLDivElement>(null)
   const rLayer = React.useRef<HTMLDivElement>(null)
+  const { inputs } = useTLContext()
+
+  useEffect(() => {
+    inputs.rContainer = rContainer.current
+  }, [rContainer, inputs])
 
   inputs.zoom = pageState.camera.zoom
 
-  useResizeObserver(rContainer, onBoundsChange)
   useZoomEvents(rContainer)
   useCameraCss(rLayer, rContainer, pageState)
   useKeyEvents()
@@ -76,11 +77,10 @@ const Canvas = <T extends TLShape, M extends Record<string, unknown>>({
       >
         <div
           className="tl-positioned tl-absolute tl-canvas"
-          id="canvas"
           style={{
             width: page.canvas.size[0],
             height: page.canvas.size[1],
-            backgroundImage: `url(${page.canvas.src})` || 'none',
+            backgroundImage: page.canvas.src ? `url(${page.canvas.src})` : 'none',
             pointerEvents: 'all',
           }}
           {...events}

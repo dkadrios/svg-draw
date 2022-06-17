@@ -10,7 +10,6 @@ const edgeClassnames = {
 }
 
 interface EdgeHandleProps {
-  targetSize: number
   size: number
   bounds: TLBounds
   edge: TLBoundsEdge

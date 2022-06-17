@@ -1,13 +1,30 @@
 import React from 'react'
-import type { TLPage, TLPageState, TLShape } from 'core/types'
-import { useSelection, useShapeTree, useTLContext } from 'core/hooks'
+import type { IShapeTreeNode, TLMeta, TLPage, TLPageState, TLShape } from 'core/types'
+import { useSelection, useTLContext } from 'core/hooks'
 import Bounds from '../Bounds'
 import BoundsBg from '../Bounds/BoundsBg'
 import Handles from '../Handles'
 import ShapeIndicator from '../ShapeIndicator'
 import Shape from '../Shape'
 
-interface PageProps<T extends TLShape> {
+const getShapeTree = <T extends TLShape, M extends TLMeta>(
+  page: TLPage<T>,
+  pageState: TLPageState,
+  meta?: M,
+): IShapeTreeNode<T, M>[] =>
+    Object
+      .values(page.shapes)
+      .map(shape => ({
+        shape,
+        meta,
+        isGhost: !!shape.isGhost,
+        isEditing: pageState.editingId === shape.id,
+        isSelected: pageState.selectedId === shape.id,
+        isHovered: pageState.hoveredId === shape.id,
+      }))
+      .sort((a, b) => a.shape.childIndex - b.shape.childIndex)
+
+interface PageProps<T extends TLShape, M extends TLMeta> {
   page: TLPage<T>
   pageState: TLPageState
   hideBounds: boolean
@@ -15,13 +32,13 @@ interface PageProps<T extends TLShape> {
   hideIndicators: boolean
   hideRotateHandle: boolean
   hideResizeHandles: boolean
-  meta?: Record<string, unknown>
+  meta?: M
 }
 
 /**
  * The Page component renders the current page.
  */
-const Page = <T extends TLShape>({
+const Page = <T extends TLShape, M extends TLMeta>({
   page,
   pageState,
   hideBounds,
@@ -30,10 +47,10 @@ const Page = <T extends TLShape>({
   hideRotateHandle,
   hideResizeHandles,
   meta,
-}: PageProps<T>) => {
-  const { bounds: rendererBounds, shapeUtils } = useTLContext()
+}: PageProps<T, M>) => {
+  const { shapeUtils } = useTLContext()
 
-  const shapeTree = useShapeTree(page, pageState, meta)
+  const shapeTree = getShapeTree(page, pageState, meta)
 
   const { bounds, isLocked, rotation } = useSelection(page, pageState, shapeUtils)
 
@@ -96,7 +113,6 @@ const Page = <T extends TLShape>({
           isHidden={hideBounds}
           isLocked={isLocked}
           rotation={rotation}
-          viewportWidth={rendererBounds.width}
           zoom={zoom}
         />
       )}

@@ -10,14 +10,6 @@ const SvgDrawExample = () => {
   const [doc, setDoc] = useState({ page: defaultPageData } as TDDocument)
   const exportRef = useRef<() => TDDocument>(null)
 
-  /*
-  const onTransmit = () => {
-    if (!exportRef.current) return
-    const document = exportRef.current()
-    setDoc(document)
-  }
-   */
-
   return (
     <SvgDraw data={doc} ref={exportRef} />
   )

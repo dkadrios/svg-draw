@@ -22,6 +22,8 @@ export interface TLPageState {
   editingId: string | null
 }
 
+export type TLMeta = Record<string, unknown>
+
 export interface TLHandle {
   id: string
   index: number
@@ -248,7 +250,7 @@ export interface TLKeyboardInfo {
 }
 
 /* -------------------- Internal -------------------- */
-export interface IShapeTreeNode<T extends TLShape, M = any> {
+export interface IShapeTreeNode<T extends TLShape, M extends Record<string, unknown>> {
   shape: T
   isGhost: boolean
   isEditing: boolean

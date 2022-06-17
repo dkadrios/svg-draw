@@ -25,17 +25,16 @@ const toolbarButton = ({ title, type, Icon, isVisible }: ToolbarBtnProps) => {
 
 const Toolbar = React.memo(() => {
   const stateManager = useStateManager()
-  const { toolbar } = stateManager
+  const { pageState, toolbar } = stateManager
   const toolbarState = useSyncExternalStore(toolbar.subscribe, () => toolbar.state)
-
-  const { hideGrid } = stateManager.getSettings()
+  const { hideGrid } = useSyncExternalStore(pageState.subscribe, () => pageState.getSettings())
 
   const onToolChange = (e: React.BaseSyntheticEvent, value: TDToolType) => {
     stateManager.setTool(value)
   }
 
   const handleShowGridChange = () => {
-    stateManager.setSettings({ hideGrid: !hideGrid })
+    pageState.setSettings({ hideGrid: !hideGrid })
   }
 
   return (

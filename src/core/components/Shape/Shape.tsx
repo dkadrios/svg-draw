@@ -1,14 +1,14 @@
 import React from 'react'
 import { useShapeEvents, useTLContext } from 'core/hooks'
-import type { IShapeTreeNode, TLShape } from 'core/types'
+import type { IShapeTreeNode, TLMeta, TLShape } from 'core/types'
 import type { TLShapeUtil } from 'core/TLShapeUtil'
 import Container from '../Container'
 
-interface ShapeProps<T extends TLShape, M> extends IShapeTreeNode<T, M> {
+interface ShapeProps<T extends TLShape, M extends TLMeta> extends IShapeTreeNode<T, M> {
   utils: TLShapeUtil<T>
 }
 
-const Shape = React.memo(<T extends TLShape, M>({ shape, utils, meta, ...rest }: ShapeProps<T, M>) => {
+const Shape = React.memo(<T extends TLShape, M extends TLMeta>({ shape, utils, meta, ...rest }: ShapeProps<T, M>) => {
   const { callbacks } = useTLContext()
   const bounds = shape.getBounds()
   const events = useShapeEvents(shape.id)

@@ -1,7 +1,8 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import type {
   TLBounds,
   TLCallbacks,
+  TLMeta,
   TLPage,
   TLPageState,
   TLShape,
@@ -12,7 +13,7 @@ import { TLContext, TLContextType, useTLTheme } from 'core/hooks'
 import type { TLShapeUtilsMap } from 'core/TLShapeUtil'
 import Canvas from '../Canvas'
 
-export interface RendererProps<T extends TLShape> extends Partial<TLCallbacks> {
+export interface RendererProps<T extends TLShape, M extends TLMeta> extends Partial<TLCallbacks> {
   // An object containing instances of your shape classes
   shapeUtils: TLShapeUtilsMap<T>
 
@@ -26,7 +27,7 @@ export interface RendererProps<T extends TLShape> extends Partial<TLCallbacks> {
   id?: string
 
   // (optional) An object of custom options that should be passed to rendered shapes
-  meta?: Record<string, unknown>
+  meta?: M
 
   // (optional) An object of custom theme colors
   theme?: Partial<TLTheme>
@@ -61,7 +62,7 @@ export interface RendererProps<T extends TLShape> extends Partial<TLCallbacks> {
  * accepts the current `page`, the `shapeUtils` needed to interpret
  * and render the shapes on the `page`, and the current pageState.
  */
-const Renderer = <T extends TLShape>({
+const Renderer = <T extends TLShape, M extends TLMeta>({
   id = 'tl',
   shapeUtils,
   page,
@@ -76,7 +77,7 @@ const Renderer = <T extends TLShape>({
   hideBounds = false,
   hideGrid = true,
   ...rest
-}: RendererProps<T>) => {
+}: RendererProps<T, M>) => {
   useTLTheme(theme, `#${ id}`)
 
   const rSelectionBounds = useRef<TLBounds>(null)
@@ -87,25 +88,13 @@ const Renderer = <T extends TLShape>({
     rPageState.current = pageState
   }, [pageState])
 
-  const [context, setContext] = useState<TLContextType<TLShape>>(() => ({
+  const [context] = useState<TLContextType<TLShape>>(() => ({
     callbacks: rest,
     shapeUtils,
     rSelectionBounds,
     rPageState,
-    bounds: {
-      minX: 0,
-      minY: 0,
-      maxX: Infinity,
-      maxY: Infinity,
-      width: Infinity,
-      height: Infinity,
-    },
     inputs: new Inputs(),
   }))
-
-  const onBoundsChange = useCallback((bounds: TLBounds) => {
-    setContext(ctx => ({ ...ctx, bounds }))
-  }, [])
 
   return (
     <TLContext.Provider value={context}>
@@ -119,7 +108,6 @@ const Renderer = <T extends TLShape>({
         hideRotateHandle={hideRotateHandles}
         id={id}
         meta={meta}
-        onBoundsChange={onBoundsChange}
         page={page}
         pageState={pageState}
       />

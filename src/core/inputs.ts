@@ -12,14 +12,7 @@ export class Inputs {
 
   keys: Record<string, boolean> = {}
 
-  bounds: TLBounds = {
-    minX: 0,
-    maxX: 640,
-    minY: 0,
-    maxY: 480,
-    width: 640,
-    height: 480,
-  }
+  rContainer: HTMLDivElement | null = null
 
   zoom = 1
 
@@ -47,7 +40,7 @@ export class Inputs {
   pointerDown<T extends string>(e: PointerEvent | React.PointerEvent, target: T): TLPointerInfo<T> {
     const { altKey, ctrlKey, metaKey, shiftKey } = e
 
-    const point = Inputs.getPoint(e, this.bounds)
+    const point = this.getPoint(e)
 
     this.activePointer = e.pointerId
 
@@ -76,7 +69,7 @@ export class Inputs {
   ): TLPointerInfo<T> {
     const { altKey, ctrlKey, metaKey, shiftKey } = e
 
-    const point = Inputs.getPoint(e, this.bounds)
+    const point = this.getPoint(e)
 
     const info: TLPointerInfo<T> = {
       target,
@@ -102,7 +95,7 @@ export class Inputs {
 
     const prev = this.pointer
 
-    const point = Inputs.getPoint(e, this.bounds)
+    const point = this.getPoint(e)
 
     const delta = prev?.point ? sub(point, prev.point) : [0, 0]
 
@@ -131,7 +124,7 @@ export class Inputs {
 
     const prev = this.pointer
 
-    const point = Inputs.getPoint(e, this.bounds)
+    const point = this.getPoint(e)
 
     const delta = prev?.point ? sub(point, prev.point) : [0, 0]
 
@@ -168,7 +161,7 @@ export class Inputs {
       origin: this.pointer?.origin || [0, 0],
       pressure: 0.5,
       delta,
-      point: Inputs.getPoint(('touches' in e) ? e.touches[0] : e, this.bounds),
+      point: this.getPoint(('touches' in e) ? e.touches[0] : e),
       shiftKey,
       ctrlKey,
       metaKey,
@@ -238,11 +231,10 @@ export class Inputs {
     this.keys = {}
   }
 
-  static getPoint(
-    e: PointerEvent | React.PointerEvent | Touch | React.Touch | WheelEvent,
-    bounds: TLBounds,
-  ): number[] {
-    return [+e.clientX.toFixed(2) - bounds.minX, +e.clientY.toFixed(2) - bounds.minY]
+  getPoint(e: PointerEvent | React.PointerEvent | Touch | React.Touch | WheelEvent): number[] {
+    const rect = this.rContainer?.getBoundingClientRect()
+    if (!rect) return [0, 0]
+    return [+e.clientX.toFixed(2) - rect.left, +e.clientY.toFixed(2) - rect.top]
   }
 
   static getPressure(e: PointerEvent | React.PointerEvent | Touch | React.Touch | WheelEvent) {
@@ -250,5 +242,4 @@ export class Inputs {
   }
 }
 
-export const inputs = new Inputs()
 export default Inputs

@@ -18,13 +18,11 @@ interface BoundsProps {
   isHidden: boolean
   hideRotateHandle: boolean
   hideResizeHandles: boolean
-  viewportWidth: number
 }
 
 const Bounds = ({
   zoom,
   bounds,
-  viewportWidth,
   rotation,
   isHidden,
   isLocked,
@@ -32,7 +30,7 @@ const Bounds = ({
   hideRotateHandle,
 }: BoundsProps) => {
   // Touch target size
-  const targetSize = (viewportWidth < 768 ? 16 : 8) / zoom
+  const targetSize = 16 / zoom
   // Handle size
   const size = 8 / zoom
 
@@ -64,28 +62,24 @@ const Bounds = ({
               edge={TLBoundsEdge.Top}
               isHidden={!showEdgeHandles}
               size={size}
-              targetSize={targetSize}
             />
             <EdgeHandle
               bounds={bounds}
               edge={TLBoundsEdge.Right}
               isHidden={!showEdgeHandles}
               size={size}
-              targetSize={targetSize}
             />
             <EdgeHandle
               bounds={bounds}
               edge={TLBoundsEdge.Bottom}
               isHidden={!showEdgeHandles}
               size={size}
-              targetSize={targetSize}
             />
             <EdgeHandle
               bounds={bounds}
               edge={TLBoundsEdge.Left}
               isHidden={!showEdgeHandles}
               size={size}
-              targetSize={targetSize}
             />
             <CornerHandle
               bounds={bounds}
