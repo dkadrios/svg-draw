@@ -26,7 +26,7 @@ const useCenterCamera = (
     // is getting executed twice in strict mode, erasing effect of camera pan
     // Otherwise containerRef.current.getBoundingClientRect() would be enough
     const resizeObserver = new ResizeObserver((entries) => {
-      if (!entries[0].contentRect) return
+      if (firstLoadHandled.current || !entries[0].contentRect) return
       const { canvas: { size } } = stateManager.page.state
       const { height, width } = entries[0].contentRect
       stateManager.pageState.pan([(width - size[0]) / 2, (height - size[1]) / 2])

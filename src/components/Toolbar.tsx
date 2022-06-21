@@ -1,10 +1,12 @@
 import React, { useSyncExternalStore } from 'react'
 import Box from '@mui/material/Box'
 import AppBar from '@mui/material/AppBar'
-import Stack from '@mui/material/Stack'
+import { useTheme } from '@mui/material/styles'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import ToggleButton from '@mui/material/ToggleButton'
 import BorderClearIcon from '@mui/icons-material/BorderClear'
+import Toolbar from '@mui/material/Toolbar'
 import { useStateManager } from 'state/useStateManager'
 import { TDToolType } from 'types'
 import StylesSelector from './StylesSelector'
@@ -23,11 +25,19 @@ const toolbarButton = ({ title, type, Icon, isVisible }: ToolbarBtnProps) => {
   )
 }
 
-const Toolbar = React.memo(() => {
+const DrawToolbar = React.memo(() => {
   const stateManager = useStateManager()
   const { pageState, toolbar } = stateManager
   const toolbarState = useSyncExternalStore(toolbar.subscribe, () => toolbar.state)
   const { hideGrid } = useSyncExternalStore(pageState.subscribe, () => pageState.getSettings())
+
+  const theme = useTheme()
+  const matches = useMediaQuery(theme.breakpoints.down('sm'))
+  const styles = {
+    size: matches ? 'small' : 'medium' as 'small' | 'medium',
+    margin: matches ? 1 : 4,
+    noGutters: matches,
+  }
 
   const onToolChange = (e: React.BaseSyntheticEvent, value: TDToolType) => {
     stateManager.setTool(value)
@@ -40,23 +50,30 @@ const Toolbar = React.memo(() => {
   return (
     <Box m="auto" p={1} width="fit-content">
       <AppBar color="transparent" position="static">
-        <Stack direction="row" spacing={4}>
-          <ToggleButtonGroup exclusive onChange={onToolChange} value={toolbarState.tool}>
+        <Toolbar disableGutters={styles.noGutters} variant="dense">
+          <ToggleButtonGroup exclusive onChange={onToolChange} size={styles.size} value={toolbarState.tool}>
             {toolsList.map(tool => toolbarButton({
               isVisible: toolbar.isVisible(tool.type),
               ...tool,
             }))}
           </ToggleButtonGroup>
 
-          <ToggleButton onChange={handleShowGridChange} selected={!hideGrid} title="Toggle Grid" value="check">
+          <ToggleButton
+            onChange={handleShowGridChange}
+            selected={!hideGrid}
+            size={styles.size}
+            sx={{ ml: styles.margin, mr: styles.margin }}
+            title="Toggle Grid"
+            value="check"
+          >
             <BorderClearIcon />
           </ToggleButton>
 
           <StylesSelector />
-        </Stack>
+        </Toolbar>
       </AppBar>
     </Box>
   )
 })
 
-export default Toolbar
+export default DrawToolbar

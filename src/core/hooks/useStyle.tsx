@@ -129,6 +129,7 @@ const tlcss = css`
     touch-action: none;
     pointer-events: all;
     background-color: var(--tl-background);
+    background-size: cover;
     box-shadow: 5px 5px 6px -1px #000000;
     overflow: hidden;
   }
