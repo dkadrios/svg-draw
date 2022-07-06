@@ -63,9 +63,8 @@ const StylesSelector = () => {
   return (
     <>
       <Button
-        color="primary"
+        color="secondary"
         onClick={handleClick}
-        variant="outlined"
       >
         Styles
       </Button>
