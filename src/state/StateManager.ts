@@ -255,6 +255,7 @@ class StateManager {
     const shape = this.getSelectedShape()
     if (shape) {
       this.page.updateShape(shape.setStyles(styles))
+      this.fireChangeEvent()
     }
   }
 
