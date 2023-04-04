@@ -31,6 +31,8 @@ class StateManager {
 
   onSessionComplete: (() => void) | null = null
 
+  onChange: ((doc: TDDocument) => void) | null = null
+
   tool: TDCallbacks | null = this.tools[TDToolType.Select]
 
   page: Page
@@ -50,6 +52,14 @@ class StateManager {
     this.toolbar = new Toolbar(settings)
   }
 
+  subscribe(cb: (doc: TDDocument) => void) {
+    this.onChange = cb
+  }
+
+  unsubscribe() {
+    this.onChange = null
+  }
+
   setData(document: TDDocument) {
     const { page = { shapes: {} }, pageState, settings } = document
 
@@ -57,6 +67,11 @@ class StateManager {
     this.page.reset({ ...page, shapes })
     this.pageState.reset(pageState)
     this.toolbar.reset(settings)
+  }
+
+  setShapes(document: TDDocument) {
+    const shapes = this.loadShapes(document.page.shapes || {})
+    this.page.reset({ ...document.page, shapes })
   }
 
   registerShape(key: TDShapeType, Shape: Class<TDShape>, util: TLShapeUtil<TDShape>) {
@@ -143,20 +158,34 @@ class StateManager {
     return this.toolbar.getStyles()
   }
 
+  fireChangeEvent() {
+    this.onChange?.({
+      page: this.page.export(),
+    })
+  }
+
   addShape(shape: TDShape) {
     const newShape = shape
       .produce({ childIndex: this.getNextChildIndex() })
       .setStyles(this.getCurrentStyles())
 
-    return this.page.addShape(newShape)
+    const result = this.page.addShape(newShape)
+    this.fireChangeEvent()
+
+    return result
   }
 
+  // We want onChange event to be fired only when transition/transformation has stopped,
+  // to prevent flood of updates for every pixel the shape has moved during dragging.
+  // So instead of calling fireChangeEvent here, we call it when any session completes.
+  // This covers every transformation finish phase.
   updateShape(shape: TDShape) {
     return this.page.updateShape(shape)
   }
 
   removeShape(id: string) {
     this.page.removeShape(id)
+    this.fireChangeEvent()
   }
 
   // Screen coords -> canvas point
@@ -205,6 +234,7 @@ class StateManager {
       this.onSessionComplete()
       this.onSessionComplete = null
     }
+    this.fireChangeEvent()
   }
 
   setTool(type: TDToolType) {

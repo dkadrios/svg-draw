@@ -1,6 +1,5 @@
 import React, {
   useEffect,
-  useImperativeHandle,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -42,28 +41,29 @@ const useCenterCamera = (
 }
 
 const emptyPage = { page: { id: 'page', shapes: {} } } as TDDocument
-type Ref = React.ForwardedRef<{
-  export: () => TDDocument,
-}>
 type SvgDrawProps = {
   data: TDDocument,
+  onChange?: (doc: TDDocument) => void,
 }
 
-export const SvgDraw = ({ data = emptyPage }: SvgDrawProps, ref?: Ref) => {
+export const SvgDraw = ({ data = emptyPage, onChange }: SvgDrawProps) => {
   const [stateManager] = useState(() => new StateManager(data))
 
   useLayoutEffect(() => {
-    stateManager.setData(data)
+    stateManager.setShapes(data)
   }, [stateManager, data])
+
+  useEffect(() => {
+    if (onChange) {
+      stateManager.subscribe(onChange)
+    }
+    return () => stateManager.unsubscribe()
+  }, [stateManager, onChange])
 
   const page = stateManager.page.state
   // Need this for correct updates of page when page shapes are changed
   useSyncExternalStore(stateManager.page.subscribe, () => stateManager.page.state)
   const pageState = useSyncExternalStore(stateManager.pageState.subscribe, () => stateManager.pageState.state)
-
-  useImperativeHandle(ref, () => ({
-    export: () => stateManager.export(),
-  }))
 
   const handleCallback = (eventName: TLCallbackNames) => (...rest: unknown[]) =>
     stateManager.handleCallback(eventName, ...rest)
@@ -117,5 +117,4 @@ export const SvgDraw = ({ data = emptyPage }: SvgDrawProps, ref?: Ref) => {
   )
 }
 
-const ForwardedSvgDraw = React.forwardRef(SvgDraw)
-export default ForwardedSvgDraw
+export default SvgDraw
