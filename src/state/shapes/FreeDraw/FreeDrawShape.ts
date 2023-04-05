@@ -27,7 +27,7 @@ class FreeDrawShape extends BaseShape implements FreeDrawEntity, Transformable {
 
   constructor(shape: FreeDrawShapeCreateProps) {
     super(shape)
-    this.points = [[0, 0]]
+    this.points = shape.points || [[0, 0]]
     this.initStyles(shape.styles)
   }
 
