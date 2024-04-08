@@ -44,9 +44,10 @@ const emptyPage = { page: { id: 'page', shapes: {} } } as TDDocument
 type SvgDrawProps = {
   data: TDDocument,
   onChange?: (doc: TDDocument) => void,
+  readonly?: boolean,
 }
 
-export const SvgDraw = ({ data = emptyPage, onChange }: SvgDrawProps) => {
+export const SvgDraw = ({ data = emptyPage, onChange, readonly = false }: SvgDrawProps) => {
   const [stateManager] = useState(() => new StateManager(data))
 
   useLayoutEffect(() => {
@@ -65,8 +66,14 @@ export const SvgDraw = ({ data = emptyPage, onChange }: SvgDrawProps) => {
   useSyncExternalStore(stateManager.page.subscribe, () => stateManager.page.state)
   const pageState = useSyncExternalStore(stateManager.pageState.subscribe, () => stateManager.pageState.state)
 
-  const handleCallback = (eventName: TLCallbackNames) => (...rest: unknown[]) =>
+  const handleCallback = (eventName: TLCallbackNames) => (...rest: unknown[]) => {
+    if (readonly
+      && eventName !== 'onZoom'
+      && eventName !== 'onPan'
+      && eventName !== 'onDragCanvas'
+    ) return
     stateManager.handleCallback(eventName, ...rest)
+  }
 
   const containerRef = useRef<HTMLDivElement>(null)
   useCenterCamera(containerRef, stateManager)
