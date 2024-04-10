@@ -1,6 +1,6 @@
 {
   "name": "@studysync/svg-draw",
-  "version": "0.2.12",
+  "version": "0.2.13",
   "publishConfig": {
     "access": "public"
   },
@@ -96,7 +96,7 @@
     "eslint-plugin-react": "7.28.0",
     "eslint-plugin-react-hooks": "4.3.0",
     "eslint-plugin-testing-library": "5.0.5",
-    "immer": "^10.0.1",
+    "immer": "^10.0.4",
     "madge": "^5.0.1",
     "parcel": "^2.2.1",
     "react": "^18.1.0",
