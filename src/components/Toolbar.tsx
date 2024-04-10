@@ -1,4 +1,4 @@
-import React, { useSyncExternalStore } from 'react'
+import React, { useEffect, useSyncExternalStore } from 'react'
 import Box from '@mui/material/Box'
 import AppBar from '@mui/material/AppBar'
 import { useTheme } from '@mui/material/styles'
@@ -51,16 +51,22 @@ const DrawToolbar = React.memo(({ readonly }: DrawToolbarProps) => {
     pageState.setSettings({ hideGrid: !hideGrid })
   }
 
+  useEffect(() => {
+    if (readonly) stateManager.setTool(TDToolType.Select)
+  }, [readonly, stateManager])
+
   return (
     <Box m="auto" p={1} width="fit-content">
       <AppBar color="transparent" position="static">
         <Toolbar disableGutters={styles.noGutters} variant="dense">
-          <ToggleButtonGroup exclusive onChange={onToolChange} size={styles.size} value={toolbarState.tool}>
-            {toolsList.map(tool => toolbarButton({
-              isVisible: !readonly && toolbar.isVisible(tool.type),
-              ...tool,
-            }))}
-          </ToggleButtonGroup>
+          {!readonly && (
+            <ToggleButtonGroup exclusive onChange={onToolChange} size={styles.size} value={toolbarState.tool}>
+              {toolsList.map(tool => toolbarButton({
+                isVisible: !readonly && toolbar.isVisible(tool.type),
+                ...tool,
+              }))}
+            </ToggleButtonGroup>
+          )}
 
           <ToggleButton
             onChange={handleShowGridChange}
@@ -73,7 +79,7 @@ const DrawToolbar = React.memo(({ readonly }: DrawToolbarProps) => {
             <BorderClearIcon />
           </ToggleButton>
 
-          <StylesSelector />
+          {!readonly && <StylesSelector />}
         </Toolbar>
       </AppBar>
     </Box>
