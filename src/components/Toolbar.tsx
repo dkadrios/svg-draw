@@ -25,7 +25,11 @@ const toolbarButton = ({ title, type, Icon, isVisible }: ToolbarBtnProps) => {
   )
 }
 
-const DrawToolbar = React.memo(() => {
+type DrawToolbarProps = {
+  readonly: boolean,
+}
+
+const DrawToolbar = React.memo(({ readonly }: DrawToolbarProps) => {
   const stateManager = useStateManager()
   const { pageState, toolbar } = stateManager
   const toolbarState = useSyncExternalStore(toolbar.subscribe, () => toolbar.state)
@@ -53,7 +57,7 @@ const DrawToolbar = React.memo(() => {
         <Toolbar disableGutters={styles.noGutters} variant="dense">
           <ToggleButtonGroup exclusive onChange={onToolChange} size={styles.size} value={toolbarState.tool}>
             {toolsList.map(tool => toolbarButton({
-              isVisible: toolbar.isVisible(tool.type),
+              isVisible: !readonly && toolbar.isVisible(tool.type),
               ...tool,
             }))}
           </ToggleButtonGroup>
